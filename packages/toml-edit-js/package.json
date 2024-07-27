@@ -1,0 +1,13 @@
+{
+    "name": "toml-edit-js",
+    "type": "module",
+    "version": "0.1.0",
+    "main": "index.js",
+    "module": "index.js",
+    "types": "index.d.ts",
+    "files": [
+        "index.d.ts",
+        "index.js",
+        "index.wasm"
+    ]
+}
