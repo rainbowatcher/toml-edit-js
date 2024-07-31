@@ -3,11 +3,6 @@
 /* eslint-disable */
 /**
 * @param {string} input
-* @returns {string}
-*/
-export function str_input(input: string): string;
-/**
-* @param {string} input
 * @returns {any}
 */
 export function parse(input: string): any;
@@ -28,7 +23,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly str_input: (a: number, b: number, c: number) => void;
   readonly parse: (a: number, b: number, c: number) => void;
   readonly stringify: (a: number, b: number) => void;
   readonly edit: (a: number, b: number, c: number, d: number, e: number, f: number) => void;

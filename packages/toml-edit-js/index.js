@@ -210,29 +210,6 @@ function handleError(f, args) {
 }
 /**
 * @param {string} input
-* @returns {string}
-*/
-export function str_input(input) {
-    let deferred2_0;
-    let deferred2_1;
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        const ptr0 = passStringToWasm0(input, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        wasm.str_input(retptr, ptr0, len0);
-        var r0 = getInt32Memory0()[retptr / 4 + 0];
-        var r1 = getInt32Memory0()[retptr / 4 + 1];
-        deferred2_0 = r0;
-        deferred2_1 = r1;
-        return getStringFromWasm0(r0, r1);
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
-    }
-}
-
-/**
-* @param {string} input
 * @returns {any}
 */
 export function parse(input) {
@@ -631,11 +608,11 @@ async function __wbg_init(input) {
 
     if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {
         if (globalThis.process?.release?.name === "node") {
-            const fs = (await import('fs')).default;
-            input = fs.readFileSync(input);
-        } else {
-            input = fetch(input);
-        }
+        const fs = (await import('fs')).default;
+        input = fs.readFileSync(input);
+    } else {
+        input = fetch(input);
+    }
     }
 
     __wbg_init_memory(imports);
