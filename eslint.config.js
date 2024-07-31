@@ -7,4 +7,6 @@ export default defineConfig({
     style: true,
     toml: true,
     typescript: true,
+}, {
+    ignores: ["packages/toml-edit-js"],
 })
