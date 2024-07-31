@@ -4,7 +4,6 @@
     "version": "0.1.0",
     "private": true,
     "packageManager": "pnpm@9.6.0",
-    "license": "MIT",
     "scripts": {
         "build": "pnpm build:rust",
         "build:rust": "wasmup build .",
