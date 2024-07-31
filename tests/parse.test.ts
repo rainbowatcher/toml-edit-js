@@ -1,4 +1,4 @@
-import init, { parse } from "packages/toml-js/index.js"
+import init, { parse } from "packages/toml-edit-js/index.js"
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
@@ -32,8 +32,8 @@ describe("key", () => {
             "127.0.0.1": "value",
             "character encoding": "value",
             key2: "value",
-            "quoted \"value\"": "value",
             ʎǝʞ: "value",
+            "quoted \"value\"": "value",
         })
     })
 
