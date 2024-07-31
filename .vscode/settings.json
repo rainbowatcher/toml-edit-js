@@ -11,6 +11,6 @@
         "indoc",
         "instanceof",
         "napi",
-        "wasmup"
+        "wasmup",
     ],
 }
