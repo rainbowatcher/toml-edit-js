@@ -2,7 +2,8 @@ import { defineConfig } from "wasmup"
 
 export default defineConfig({
     clean: true,
-    entry: ".",
+    entries: ["."],
     output: "packages/toml-edit-js",
     release: true,
+    scope: "rainbowatcher",
 })
