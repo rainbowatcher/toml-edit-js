@@ -1,1 +1,1 @@
-# Toml edit for web
+# Toml edit for JavaScript
