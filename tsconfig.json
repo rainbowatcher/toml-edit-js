@@ -4,6 +4,7 @@
         "baseUrl": ".",
         "module": "ESNext",
         "moduleResolution": "node",
+        "resolveJsonModule": true,
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
@@ -12,6 +13,7 @@
     "include": [
         "tests/*.ts",
         "packages/**/*.ts",
+        "scripts/*.ts",
         "wasmup.config.ts"
     ]
 }
