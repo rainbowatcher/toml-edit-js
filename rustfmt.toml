@@ -1,2 +1,15 @@
-tab_spaces = 2
+max_width = 100
+# comment_width = 100
+# imports_granularity = "Module"
+hard_tabs = false
+tab_spaces = 4
+newline_style = "Unix"
+reorder_imports = true
+reorder_modules = true
+remove_nested_parens = true
 edition = "2021"
+merge_derives = true
+use_try_shorthand = false
+use_field_init_shorthand = false
+force_explicit_abi = true
+use_small_heuristics = "max"
