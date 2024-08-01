@@ -10,10 +10,13 @@
         "lint": "eslint .",
         "test": "vitest",
         "test:wasm": "wasm-pack test --headless --chrome",
-        "release": "bumpp --all -x 'tsx scripts/bump_cargo.ts' --no-commit --no-tag --no-push"
+        "changelog": "conventional-changelog -si CHANGELOG.md",
+        "bump:cargo": "tsx scripts/bump_cargo.ts",
+        "release": "bumpp --all -x 'pnpm bump:cargo && pnpm changelog' --no-commit --no-tag --no-push",
+        "prepare": "husky"
     },
     "devDependencies": {
-        "@napi-rs/cli": "^2.18.4",
+        "@commitlint/config-conventional": "^19.2.2",
         "@rainbowatcher/eslint-config": "^0.12.0",
         "@rainbowatcher/eslint-config-ignore": "^0.12.0",
         "@rainbowatcher/eslint-config-js": "^0.12.0",
@@ -24,16 +27,18 @@
         "@rainbowatcher/eslint-config-ts": "^0.12.0",
         "@types/node": "^22.0.0",
         "bumpp": "^9.4.1",
+        "commitlint": "^19.3.0",
+        "conventional-changelog-cli": "^5.0.0",
         "eslint": "^9.8.0",
-        "execa": "^9.3.0",
-        "fs-extra": "^11.2.0",
-        "ora": "^8.0.1",
+        "husky": "^9.1.4",
+        "lint-staged": "^15.2.7",
         "picocolors": "^1.0.1",
-        "rimraf": "^6.0.1",
-        "taze": "^0.16.3",
         "tsx": "^4.16.3",
         "typescript": "^5.5.4",
         "vitest": "^2.0.4",
         "wasmup": "^0.4.1"
+    },
+    "lint-staged": {
+        "*.{js,ts,json,toml,md}": "eslint"
     }
 }
