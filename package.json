@@ -27,7 +27,7 @@
         "@rainbowatcher/eslint-config-prettier": "^0.12.0",
         "@rainbowatcher/eslint-config-toml": "^0.12.0",
         "@rainbowatcher/eslint-config-ts": "^0.12.0",
-        "@types/node": "^22.0.0",
+        "@types/node": "^22.0.2",
         "bumpp": "^9.4.1",
         "commitlint": "^19.3.0",
         "conventional-changelog-cli": "^5.0.0",
@@ -36,10 +36,10 @@
         "husky": "^9.1.4",
         "lint-staged": "^15.2.7",
         "picocolors": "^1.0.1",
-        "tsx": "^4.16.3",
+        "tsx": "^4.16.4",
         "typescript": "^5.5.4",
-        "vitest": "^2.0.4",
-        "wasmup": "^0.4.1"
+        "vitest": "^2.0.5",
+        "wasmup": "^0.5.0"
     },
     "lint-staged": {
         "*.{js,ts,json,toml,md}": "eslint"
