@@ -1,3 +1,4 @@
+import dedent from "dedent"
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
@@ -7,106 +8,120 @@ beforeAll(async () => {
     await init()
 })
 
+const input = dedent`
+    [foo]
+    bar = 1
+`
+const opt = { finalNewline: false }
 describe("edit", () => {
     it("set string", () => {
-        const input = "[foo]\nbar = 1"
-        const result = edit(input, "foo.bar", "qux")
-        expect(result).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", "qux", opt)).toBe(dedent`
+            [foo]
             bar = "qux"
-            "
+        `)
+    })
+
+    it("set string with truthy option", () => {
+        expect(edit(input, "foo.bar", "qux", { finalNewline: true })).toBe(dedent`
+            [foo]
+            bar = "qux"\n
         `)
     })
 
     it("set number", () => {
-        const input = "[foo]\nbar = 1"
-        expect(edit(input, "foo.bar", 2)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", 2, opt)).toBe(dedent`
+            [foo]
             bar = 2
-            "
         `)
 
-        expect(edit(input, "foo.bar", 2.2)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", 2.2, opt)).toBe(dedent`
+            [foo]
             bar = 2.2
-            "
         `)
 
-        expect(edit(input, "foo.bar", -2.2)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", -2.2, opt)).toBe(dedent`
+            [foo]
             bar = -2.2
-            "
         `)
 
-        expect(edit(input, "foo.bar", Number.NaN)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", Number.NaN, opt)).toBe(dedent`
+            [foo]
             bar = nan
-            "
         `)
 
-        expect(edit(input, "foo.bar", Infinity)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", Infinity, opt)).toBe(dedent`
+            [foo]
             bar = inf
-            "
         `)
 
-        expect(edit(input, "foo.bar", 10e3)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", 10e3, opt)).toBe(dedent`
+            [foo]
             bar = 10000
-            "
         `)
 
-        expect(edit(input, "foo.bar", -0.1e5)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", -0.1e5, opt)).toBe(dedent`
+            [foo]
             bar = -10000
-            "
         `)
     })
 
     it("bitint", () => {
-        const input = "[foo]\nbar = 1"
-        expect(() => edit(input, "foo.bar", 15_033_211_231_241_234_523_452_345_345_787n))
+        expect(() => edit(input, "foo.bar", 15_033_211_231_241_234_523_452_345_345_787n, opt))
             .toThrowErrorMatchingInlineSnapshot("[Error: bigint is not supported]")
     })
 
     it("null or undefined", () => {
-        const input = "[foo]\nbar = 1"
-        expect(() => edit(input, "foo.bar", null)).toThrowErrorMatchingInlineSnapshot("[Error: null and undefined is not supported]")
+        expect(() => edit(input, "foo.bar", null, opt)).toThrowErrorMatchingInlineSnapshot("[Error: null and undefined is not supported]")
     })
 
     it("boolean", () => {
         const input = "[foo]\nbar = true"
-        expect(edit(input, "foo.bar", false)).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", false, opt)).toBe(dedent`
+            [foo]
             bar = false
-            "
         `)
     })
 
     it("array", () => {
-        const input = "[foo]\nbar = 1"
-        expect(edit(input, "foo.bar", [1, 2, 3])).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", [1, 2, 3], opt)).toBe(dedent`
+            [foo]
             bar = [1, 2, 3]
-            "
         `)
     })
 
     it("object", () => {
-        const input = "[foo]\nbar = 1"
-        expect(edit(input, "foo.bar", { a: 1, b: 2 })).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", { a: 1, b: 2 }, opt)).toBe(dedent`
+            [foo]
             bar = { a = 1, b = 2 }
-            "
         `)
     })
 
     it("datetime", () => {
-        const input = "[foo]\nbar = 1"
-        expect(edit(input, "foo.bar", new Date(0))).toMatchInlineSnapshot(`
-            "[foo]
+        expect(edit(input, "foo.bar", new Date(0), opt)).toBe(dedent`
+            [foo]
             bar = {}
-            "
         `)
+    })
+})
+
+describe("error", () => {
+    it("with unknown field", () => {
+        // @ts-expect-error type error
+        expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot("[Error: unknown property [unknown]]")
+    })
+
+    it("with invalid type", () => {
+        // @ts-expect-error type error
+        expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot("[Error: finalNewline should be a boolean]")
+    })
+
+    it("with array option", () => {
+        // @ts-expect-error type error
+        expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot("[Error: IEditOptions can not be an array]")
+    })
+
+    it("with string option", () => {
+        // @ts-expect-error type error
+        expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot("[Error: IEditOptions should be an object]")
     })
 })
