@@ -1,3 +1,4 @@
+import dedent from "dedent"
 import init, { parse } from "packages/toml-edit-js/index.js"
 import {
     beforeAll, describe, expect, it,
@@ -74,17 +75,18 @@ describe("string", () => {
     })
 
     it("multiline", () => {
-        const toml = `
-str = """
-Roses are red
-Violets are blue"""
+        const toml = dedent`
+            str = """
+            Roses are red
+            Violets are blue"""
 
-str2 = """
-The quick brown \
+            str2 = """
+            The quick brown \
 
 
-fox jumps over \
-the lazy dog."""`
+            fox jumps over \
+            the lazy dog."""
+        `
         expect(parse(toml)).deep.equal({
             str: "Roses are red\nViolets are blue",
             str2: "The quick brown \n\nfox jumps over the lazy dog.",
@@ -92,16 +94,18 @@ the lazy dog."""`
     })
 
     it("single quote", () => {
-        const toml = `# What you see is what you get.
-        winpath  = 'C:\\Users\\nodejs\\templates'
-        winpath2 = '\\ServerX\\admin$\\system32\\'
-        quoted   = 'Tom "Dubs" Preston-Werner'
-        regex    = '<\\i\\c*\\s*>'`
+        const toml = dedent.withOptions({ escapeSpecialCharacters: false })`
+            # What you see is what you get.
+            winpath  = 'C:\Users\nodejs\templates'
+            winpath2 = '\\ServerX\admin$\system32\'
+            quoted   = 'Tom "Dubs" Preston-Werner'
+            regex    = '<\i\c*\s*>'
+        `
         expect(parse(toml)).deep.equal({
             quoted: "Tom \"Dubs\" Preston-Werner",
             regex: String.raw`<\i\c*\s*>`,
             winpath: String.raw`C:\Users\nodejs\templates`,
-            winpath2: "\\ServerX\\admin$\\system32\\",
+            winpath2: "\\\\ServerX\\admin$\\system32\\",
         })
     })
 
@@ -138,10 +142,12 @@ the lazy dog."""`
 
 describe("interger", () => {
     it("normal", () => {
-        const toml = `a = 1
-        b=+99
-        c=0
-        d =-17`
+        const toml = dedent`
+            a = 1
+            b=+99
+            c=0
+            d =-17
+        `
         expect(parse(toml)).deep.equal({
             a: 1,
             b: 99,
@@ -151,10 +157,12 @@ describe("interger", () => {
     })
 
     it("with underscore", () => {
-        const toml = `int5 = 1_000
-        int6 = 5_349_221
-        int7 = 53_49_221
-        int8 = 1_2_3_4_5`
+        const toml = dedent`
+            int5 = 1_000
+            int6 = 5_349_221
+            int7 = 53_49_221
+            int8 = 1_2_3_4_5
+        `
         expect(parse(toml)).deep.equal({
             int5: 1000,
             int6: 5_349_221,
@@ -164,17 +172,19 @@ describe("interger", () => {
     })
 
     it("hexadecimal, octal, or binary", () => {
-        const toml = `# hexadecimal with prefix '0x'
-        hex1 = 0xDEADBEEF
-        hex2 = 0xdeadbeef
-        hex3 = 0xdead_beef
+        const toml = dedent`
+            # hexadecimal with prefix '0x'
+            hex1 = 0xDEADBEEF
+            hex2 = 0xdeadbeef
+            hex3 = 0xdead_beef
 
-        # octal with prefix '0o'
-        oct1 = 0o01234567
-        oct2 = 0o755 # useful for Unix file permissions
+            # octal with prefix '0o'
+            oct1 = 0o01234567
+            oct2 = 0o755 # useful for Unix file permissions
 
-        # binary with prefix '0b'
-        bin1 = 0b11010110`
+            # binary with prefix '0b'
+            bin1 = 0b11010110
+        `
         expect(parse(toml)).deep.equal({
             bin1: 214,
             hex1: 3_735_928_559,
@@ -188,18 +198,20 @@ describe("interger", () => {
 
 describe("float", () => {
     it("normal", () => {
-        const toml = `# fractional
-        flt1 = +1.0
-        flt2 = 3.1415
-        flt3 = -0.01
+        const toml = dedent`
+            # fractional
+            flt1 = +1.0
+            flt2 = 3.1415
+            flt3 = -0.01
 
-        # exponent
-        flt4 = 5e+22
-        flt5 = 1e06
-        flt6 = -2E-2
+            # exponent
+            flt4 = 5e+22
+            flt5 = 1e06
+            flt6 = -2E-2
 
-        # both
-        flt7 = 6.626e-34`
+            # both
+            flt7 = 6.626e-34
+        `
         expect(parse(toml)).deep.equal({
             flt1: 1,
             flt2: 3.1415,
@@ -219,16 +231,17 @@ describe("float", () => {
     })
 
     it("infinity", () => {
-        const toml = `
-        # infinity
-        sf1 = inf
-        sf2 = +inf
-        sf3 = -inf
+        const toml = dedent`
+            # infinity
+            sf1 = inf
+            sf2 = +inf
+            sf3 = -inf
 
-        # not a number
-        sf4 = nan
-        sf5 = +nan
-        sf6 = -nan`
+            # not a number
+            sf4 = nan
+            sf5 = +nan
+            sf6 = -nan
+        `
         expect(parse(toml)).deep.equal({
             sf1: Infinity,
             sf2: Infinity,
@@ -254,17 +267,18 @@ describe("boolean", () => {
 describe("datetime", () => {
     // we convert toml date time to string
     it("normal", () => {
-        const toml = `odt1 = 1979-05-27T07:32:00Z
-        odt2 = 1979-05-27T00:32:00-07:00
-        odt3 = 1979-05-27T00:32:00.999999-07:00
-        odt4 = 1979-05-27 07:32:00Z
+        const toml = dedent`
+            odt1 = 1979-05-27T07:32:00Z
+            odt2 = 1979-05-27T00:32:00-07:00
+            odt3 = 1979-05-27T00:32:00.999999-07:00
+            odt4 = 1979-05-27 07:32:00Z
 
-        ldt1 = 1979-05-27T07:32:00
-        ldt2 = 1979-05-27T00:32:00.999999
+            ldt1 = 1979-05-27T07:32:00
+            ldt2 = 1979-05-27T00:32:00.999999
 
-        ld1 = 1979-05-27
-        lt1 = 07:32:00
-        lt2 = 00:32:00.999999
+            ld1 = 1979-05-27
+            lt1 = 07:32:00
+            lt2 = 00:32:00.999999
         `
         expect(parse(toml)).deep.equal({
             ld1: "1979-05-27",
@@ -283,23 +297,25 @@ describe("datetime", () => {
 
 describe("array", () => {
     it("normal", () => {
-        const toml = `integers = [ 1, 2, 3 ]
-        floats = [
-            1.1,
-            2.2,
-            3.3
-        ]
-        colors = [ "red", "yellow", "green" ]
-        nested_arrays_of_ints = [ [ 1, 2 ], [3, 4, 5] ]
-        nested_mixed_array = [ [ 1, 2 ], ["a", "b", "c"] ]
-        string_array = [ "all", 'strings', """are the same""", '''type''' ]
+        const toml = dedent`
+            integers = [ 1, 2, 3 ]
+            floats = [
+                1.1,
+                2.2,
+                3.3
+            ]
+            colors = [ "red", "yellow", "green" ]
+            nested_arrays_of_ints = [ [ 1, 2 ], [3, 4, 5] ]
+            nested_mixed_array = [ [ 1, 2 ], ["a", "b", "c"] ]
+            string_array = [ "all", 'strings', """are the same""", '''type''' ]
 
-        # Mixed-type arrays are allowed
-        numbers = [ 0.1, 0.2, 0.5, 1, 2, 5 ]
-        contributors = [
-        "Foo Bar <foo@example.com>",
-        { name = "Baz Qux", email = "bazqux@example.com", url = "https://example.com/bazqux" }
-        ]`
+            # Mixed-type arrays are allowed
+            numbers = [ 0.1, 0.2, 0.5, 1, 2, 5 ]
+            contributors = [
+            "Foo Bar <foo@example.com>",
+            { name = "Baz Qux", email = "bazqux@example.com", url = "https://example.com/bazqux" }
+            ]
+        `
         expect(parse(toml)).deep.equal({
             colors: [
                 "red",
@@ -392,17 +408,18 @@ describe("table", () => {
     })
 
     it("array of tables", () => {
-        const toml = `[[products]]
-        name = "Hammer"
-        sku = 738594937
+        const toml = dedent`
+            [[products]]
+            name = "Hammer"
+            sku = 738594937
 
-        [[products]]
+            [[products]]
 
-        [[products]]
-        name = "Nail"
-        sku = 284758393
+            [[products]]
+            name = "Nail"
+            sku = 284758393
 
-        color = "gray"
+            color = "gray"
         `
         expect(parse(toml)).deep.equal({
             products: [
@@ -421,25 +438,26 @@ describe("table", () => {
     })
 
     it("array of tables2", () => {
-        const toml = `[[fruits]]
-        name = "apple"
+        const toml = dedent`
+            [[fruits]]
+            name = "apple"
 
-        [fruits.physical]  # subtable
-        color = "red"
-        shape = "round"
+            [fruits.physical]  # subtable
+            color = "red"
+            shape = "round"
 
-        [[fruits.varieties]]  # nested array of tables
-        name = "red delicious"
+            [[fruits.varieties]]  # nested array of tables
+            name = "red delicious"
 
-        [[fruits.varieties]]
-        name = "granny smith"
+            [[fruits.varieties]]
+            name = "granny smith"
 
 
-        [[fruits]]
-        name = "banana"
+            [[fruits]]
+            name = "banana"
 
-        [[fruits.varieties]]
-        name = "plantain"
+            [[fruits.varieties]]
+            name = "plantain"
         `
         expect(parse(toml)).deep.equal({
             fruits: [
@@ -471,9 +489,11 @@ describe("table", () => {
     })
 
     it("extra", () => {
-        const toml = `points = [ { x = 1, y = 2, z = 3 },
-           { x = 7, y = 8, z = 9 },
-           { x = 2, y = 4, z = 8 } ]`
+        const toml = dedent`
+            points = [ { x = 1, y = 2, z = 3 },
+                       { x = 7, y = 8, z = 9 },
+                       { x = 2, y = 4, z = 8 } ]
+        `
         expect(parse(toml)).deep.equal({
             points: [
                 {
