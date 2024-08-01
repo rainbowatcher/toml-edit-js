@@ -39,7 +39,7 @@
         "tsx": "^4.16.4",
         "typescript": "^5.5.4",
         "vitest": "^2.0.5",
-        "wasmup": "^0.5.1"
+        "wasmup": "^0.5.2"
     },
     "lint-staged": {
         "*.{js,ts,json,toml,md}": "eslint"
