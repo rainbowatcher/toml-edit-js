@@ -1,3 +1,10 @@
+## <small>0.1.1 (2024-08-01)</small>
+
+* chore: add changelog ([6d3ba19](https://github.com/rainbowatcher/toml-edit-js/commit/6d3ba19))
+* refactor: remove build dist ([d3390d0](https://github.com/rainbowatcher/toml-edit-js/commit/d3390d0))
+
+
+
 ## 0.1.0 (2024-08-01)
 
 * chore: add deps ([a49f167](https://github.com/rainbowatcher/toml-edit-js/commit/a49f167))
