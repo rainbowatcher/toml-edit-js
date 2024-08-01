@@ -27,6 +27,15 @@ jobs:
       - name: Install
         run: pnpm i --frozen-lockfile
 
+      - name: wasmup install
+        run: pnpm exec wasmup install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Type Check
+        run: pnpm typecheck
+
       - name: Lint
         run: pnpm lint
 
@@ -67,9 +76,6 @@ jobs:
 
       - name: Build
         run: pnpm build
-
-      - name: Type Check
-        run: pnpm typecheck
 
       - name: Test
         run: pnpm test
