@@ -1,19 +1,19 @@
 {
-    "name": "@rainbowatcher/toml-edit-js",
+    "name": "toml-edit-js",
     "type": "module",
     "version": "0.1.0",
     "private": true,
     "packageManager": "pnpm@9.6.0",
     "scripts": {
-        "build": "pnpm build:rust",
-        "build:rust": "wasmup build .",
-        "lint": "eslint .",
-        "test": "vitest",
-        "test:wasm": "wasm-pack test --headless --chrome",
-        "changelog": "conventional-changelog -si CHANGELOG.md",
+        "build": "wasmup build .",
+        "bump": "bumpp --all -x 'pnpm bump:cargo && pnpm changelog'",
         "bump:cargo": "tsx scripts/bump_cargo.ts",
-        "release": "bumpp --all -x 'pnpm bump:cargo && pnpm changelog' --no-commit --no-tag --no-push",
-        "prepare": "husky"
+        "changelog": "conventional-changelog -si CHANGELOG.md",
+        "lint": "eslint .",
+        "prepare": "husky",
+        "release": "pnpm bump && pnpm build && pnpm -r publish",
+        "test": "vitest",
+        "test:wasm": "wasm-pack test --headless --chrome"
     },
     "devDependencies": {
         "@commitlint/config-conventional": "^19.2.2",
