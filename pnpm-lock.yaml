@@ -72,8 +72,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.0.2)
       wasmup:
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.5.1
+        version: 0.5.1
 
   packages/toml-edit-js: {}
 
@@ -2536,8 +2536,8 @@ packages:
       jsdom:
         optional: true
 
-  wasmup@0.5.0:
-    resolution: {integrity: sha512-cC4QDm8HRAKX2UxB2oEUY1dePOWaboHM8v/SWtPOPjgJeyBYWzkU13DZvJxZGln2jrM5PMtrhJpLSSUiOIhckw==}
+  wasmup@0.5.1:
+    resolution: {integrity: sha512-MVJVQFBm6NsKIDKsJl7PfgU3G+1/32cKZ8v1AtdZl9TFN2gCq0lvdjl/fZjfIgGT1fBVGDUBFlvhebDu0Xe0hQ==}
     hasBin: true
 
   which@2.0.2:
@@ -5120,9 +5120,8 @@ snapshots:
       - supports-color
       - terser
 
-  wasmup@0.5.0:
+  wasmup@0.5.1:
     dependencies:
-      '@antfu/install-pkg': 0.3.3
       '@clack/core': 0.3.4
       cac: 6.7.14
       debug: 4.3.6
