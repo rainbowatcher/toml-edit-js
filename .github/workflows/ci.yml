@@ -41,6 +41,9 @@ jobs:
       - name: Install
         run: pnpm i --frozen-lockfile
 
+      - name: wasmup install
+        run: pnpm exec wasmup install
+
       - name: Build
         run: pnpm build
 
