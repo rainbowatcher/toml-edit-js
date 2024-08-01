@@ -36,10 +36,10 @@
         "husky": "^9.1.4",
         "lint-staged": "^15.2.7",
         "picocolors": "^1.0.1",
-        "tsx": "^4.16.4",
+        "tsx": "^4.16.5",
         "typescript": "^5.5.4",
         "vitest": "^2.0.5",
-        "wasmup": "^0.5.2"
+        "wasmup": "^0.5.3"
     },
     "lint-staged": {
         "*.{js,ts,json,toml,md}": "eslint"
