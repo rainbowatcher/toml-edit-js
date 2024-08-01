@@ -14,7 +14,8 @@
         "prepare": "husky",
         "release": "pnpm bump && pnpm build && pnpm -r publish",
         "test": "vitest",
-        "test:wasm": "wasm-pack test --headless --chrome"
+        "test:wasm": "wasm-pack test --headless --chrome",
+        "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
         "@commitlint/config-conventional": "^19.2.2",
