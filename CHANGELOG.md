@@ -1,3 +1,27 @@
+## 0.2.0 (2024-08-01)
+
+* ci: lint only in linux ([19c0d4b](https://github.com/rainbowatcher/toml-edit-js/commit/19c0d4b))
+* ci: refactor workflows ([a1f76db](https://github.com/rainbowatcher/toml-edit-js/commit/a1f76db))
+* ci: run build before typecheck ([ed08e19](https://github.com/rainbowatcher/toml-edit-js/commit/ed08e19))
+* ci: should build before lint ([32f8c5d](https://github.com/rainbowatcher/toml-edit-js/commit/32f8c5d))
+* ci: try install pre-requisites ([e1d7c30](https://github.com/rainbowatcher/toml-edit-js/commit/e1d7c30))
+* revert: attemp change linebreak-style rule in windows ([4f63ce1](https://github.com/rainbowatcher/toml-edit-js/commit/4f63ce1))
+* chore: add changelog ([6d3ba19](https://github.com/rainbowatcher/toml-edit-js/commit/6d3ba19))
+* chore: add typecheck script ([9fc1966](https://github.com/rainbowatcher/toml-edit-js/commit/9fc1966))
+* chore: attemp change linebreak-style rule in windows ([ee2cfdc](https://github.com/rainbowatcher/toml-edit-js/commit/ee2cfdc))
+* chore: bump deps ([102c8fe](https://github.com/rainbowatcher/toml-edit-js/commit/102c8fe))
+* chore: bump deps, bump wasmup to 0.5.3 ([72c0490](https://github.com/rainbowatcher/toml-edit-js/commit/72c0490))
+* chore: release v0.1.1 ([9963a01](https://github.com/rainbowatcher/toml-edit-js/commit/9963a01))
+* chore: remove .npmignore and move commitlint config to package.json ([724cb49](https://github.com/rainbowatcher/toml-edit-js/commit/724cb49))
+* chore: update wasmup version ([465779b](https://github.com/rainbowatcher/toml-edit-js/commit/465779b))
+* chore: update wasmup version to 0.5.2 ([f802adf](https://github.com/rainbowatcher/toml-edit-js/commit/f802adf))
+* test: use dedent for multiline string ([1f896a4](https://github.com/rainbowatcher/toml-edit-js/commit/1f896a4))
+* test: use dedent for multiline string ([af3b841](https://github.com/rainbowatcher/toml-edit-js/commit/af3b841))
+* feat: add options for edit function ([57f535a](https://github.com/rainbowatcher/toml-edit-js/commit/57f535a))
+* refactor: remove build dist ([d3390d0](https://github.com/rainbowatcher/toml-edit-js/commit/d3390d0))
+
+
+
 ## <small>0.1.1 (2024-08-01)</small>
 
 * chore: add changelog ([6d3ba19](https://github.com/rainbowatcher/toml-edit-js/commit/6d3ba19))
