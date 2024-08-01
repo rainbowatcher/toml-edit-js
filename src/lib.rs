@@ -1,6 +1,9 @@
+mod option;
+
 use std::convert::Into;
 
 use js_sys::{Array as JsArr, Number, Object as JsObj};
+use option::{EditOptions, IEditOptions};
 use serde::{
     ser::{SerializeMap, SerializeSeq},
     Serialize,
@@ -96,7 +99,6 @@ impl From<JsValueWrapper> for toml_edit::Value {
     }
 }
 
-
 #[wasm_bindgen]
 pub fn parse(input: &str) -> Result<JsValue, JsValue> {
     match input.parse::<toml::Value>() {
@@ -119,13 +121,25 @@ pub fn stringify(input: JsValue) -> Result<String, JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn edit(input: &str, path: &str, value: JsValue) -> Result<String, JsValue> {
+pub fn edit(
+    input: &str,
+    path: &str,
+    value: JsValue,
+    option: Option<IEditOptions>,
+) -> Result<String, JsValue> {
     let mut obj: DocumentMut = match input.parse() {
         Ok(value) => value,
         Err(e) => throw_str(e.to_string().as_str()),
     };
 
     set_value(obj.as_item_mut(), path, value)?;
+
+    if let Some(opt) = option {
+        let edit_options = EditOptions::new(opt);
+        if !edit_options.final_newline {
+            return Ok(obj.to_string().trim_end().to_string());
+        }
+    }
     Ok(obj.to_string())
 }
 
@@ -167,9 +181,10 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_parse() {
         let input = indoc! { r#"
-    [foo]
-    bar = "baz"
-    "#};
+            [foo]
+            bar = "baz"
+            "#
+        };
         let result = super::parse(input);
         assert!(result.is_ok());
         let result = result.unwrap();
@@ -179,9 +194,10 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_parse_with_escape_quotes() {
         let input = indoc! { r#"
-    [foo]
-    bar = "baz\""
-    "#};
+            [foo]
+            bar = "baz\""
+            "#
+        };
         let result = super::parse(input);
         assert!(result.is_ok());
         let result = result.unwrap();
@@ -205,10 +221,11 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_edit() {
         let input = indoc! { r#"
-    [foo]
-    bar = "baz"
-    "#};
-        let result = super::edit(input, "foo.bar", JsValue::from_str("qux"));
+            [foo]
+            bar = "baz"
+            "#
+        };
+        let result = super::edit(input, "foo.bar", JsValue::from_str("qux"), None);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, "[foo]\nbar = \"qux\"\n");
