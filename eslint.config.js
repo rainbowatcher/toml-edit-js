@@ -9,4 +9,10 @@ export default defineConfig({
     typescript: true,
 }, {
     ignores: ["packages/toml-edit-js"],
+}, {
+    files: ["**/*.md/**"],
+    rules: {
+        "style-js/lines-around-comment": "off",
+        "style-ts/lines-around-comment": "off",
+    },
 })
