@@ -1,5 +1,7 @@
 # Toml edit for JavaScript
 
+This repo is built on top of the `toml-edit` crate. It brings `toml-edit` to the JavaScript world through WebAssembly.
+
 ## Usage
 
 ```sh
