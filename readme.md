@@ -56,6 +56,16 @@ const str = stringify(parsed)
 /* same as const toml */
 ```
 
+## Options
+
+edit method can receive a options
+
+```ts
+type IEditOptions = {
+    finalNewline: boolean
+}
+```
+
 # License
 
 [MIT](https://github.com/rainbowatcher/toml-edit-js/blob/main/LICENSE).
