@@ -58,4 +58,4 @@ const str = stringify(parsed)
 
 # License
 
-[MIT](https://github.com/rainbowatcher/cross-release/blob/main/LICENSE).
+[MIT](https://github.com/rainbowatcher/toml-edit-js/blob/main/LICENSE).
