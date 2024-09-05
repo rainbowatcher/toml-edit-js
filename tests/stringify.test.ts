@@ -3,11 +3,12 @@ import {
 } from "vitest"
 import init, { stringify } from "../packages/toml-edit-js/index.js"
 
-beforeAll(async () => {
-    await init()
-})
 
 describe("stringify", () => {
+    beforeAll(async () => {
+        await init()
+    })
+
     it("stringify toml", () => {
         const toml = {
             "": 1,
