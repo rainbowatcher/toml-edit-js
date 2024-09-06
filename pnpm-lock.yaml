@@ -72,8 +72,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.5.4)
       wasmup:
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
 
   packages/toml-edit-js: {}
 
@@ -2681,8 +2681,8 @@ packages:
       jsdom:
         optional: true
 
-  wasmup@0.6.0:
-    resolution: {integrity: sha512-xdyWVk4174wqhyVlaG9Rhbm6YgnDF22i6b1CzFaTsujwIU65LM1px5FI/B0Wm7q/61VDTyUp85+8MFJ7GoVuww==}
+  wasmup@0.7.0:
+    resolution: {integrity: sha512-RR4a8r3qLBehFG2qKM8JE/Qe7+GgUWkSzoDDzTG60VSto/ApYFCoQAiUeLXPqOENYiO5eO8A4XYDfe8Vina4CQ==}
     hasBin: true
 
   which@2.0.2:
@@ -3607,9 +3607,9 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  bundle-require@5.0.0(esbuild@0.21.5):
+  bundle-require@5.0.0(esbuild@0.23.1):
     dependencies:
-      esbuild: 0.21.5
+      esbuild: 0.23.1
       load-tsconfig: 0.2.5
 
   c12@1.11.1(magicast@0.3.5):
@@ -4441,9 +4441,9 @@ snapshots:
 
   importx@0.4.3:
     dependencies:
-      bundle-require: 5.0.0(esbuild@0.21.5)
+      bundle-require: 5.0.0(esbuild@0.23.1)
       debug: 4.3.6
-      esbuild: 0.21.5
+      esbuild: 0.23.1
       jiti: 2.0.0-beta.2
       jiti-v1: jiti@1.21.6
       pathe: 1.1.2
@@ -5359,7 +5359,7 @@ snapshots:
       - supports-color
       - terser
 
-  wasmup@0.6.0:
+  wasmup@0.7.0:
     dependencies:
       '@clack/core': 0.3.4
       '@rainbowatcher/fs-extra': 0.2.3
