@@ -6,9 +6,7 @@
     "packageManager": "pnpm@9.9.0",
     "scripts": {
         "build": "wasmup build .",
-        "bump": "bumpp --all -x 'pnpm pre-publish'",
-        "pre-publish": "pnpm bump:cargo && pnpm changelog",
-        "bump:cargo": "tsx scripts/bump_cargo.ts",
+        "bump": "cross-release --all -x 'pnpm changelog'",
         "changelog": "conventional-changelog -si CHANGELOG.md",
         "lint": "eslint .",
         "prepare": "husky",
