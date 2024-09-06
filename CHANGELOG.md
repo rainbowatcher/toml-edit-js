@@ -1,3 +1,22 @@
+## <small>0.2.1 (2024-09-06)</small>
+
+* fix: replace private to publish in cargo project file ([4bb7eb4](https://github.com/rainbowatcher/toml-edit-js/commit/4bb7eb4))
+* chore: add license file ([f3d7fb8](https://github.com/rainbowatcher/toml-edit-js/commit/f3d7fb8))
+* chore: add vscode config for eslint ([3834759](https://github.com/rainbowatcher/toml-edit-js/commit/3834759))
+* chore: apply eslint rule ([0a9ad88](https://github.com/rainbowatcher/toml-edit-js/commit/0a9ad88))
+* chore: bump node dev deps ([ff2e8fd](https://github.com/rainbowatcher/toml-edit-js/commit/ff2e8fd))
+* chore: bump rust deps ([f10cf9a](https://github.com/rainbowatcher/toml-edit-js/commit/f10cf9a))
+* chore: bump wasmup to 0.7.0 ([d461efa](https://github.com/rainbowatcher/toml-edit-js/commit/d461efa))
+* chore: remove cargo bump script ([1abc878](https://github.com/rainbowatcher/toml-edit-js/commit/1abc878))
+* chore: remove lint staged ([7e21418](https://github.com/rainbowatcher/toml-edit-js/commit/7e21418))
+* chore: update eslint config ([8a342b0](https://github.com/rainbowatcher/toml-edit-js/commit/8a342b0))
+* chore(deps): bump deps ([70c3531](https://github.com/rainbowatcher/toml-edit-js/commit/70c3531))
+* docs: add description ([e18d15e](https://github.com/rainbowatcher/toml-edit-js/commit/e18d15e))
+* docs: add description for options ([2085091](https://github.com/rainbowatcher/toml-edit-js/commit/2085091))
+* test: add test case ([7ab9606](https://github.com/rainbowatcher/toml-edit-js/commit/7ab9606))
+
+
+
 ## 0.2.0 (2024-08-01)
 
 * ci: lint only in linux ([19c0d4b](https://github.com/rainbowatcher/toml-edit-js/commit/19c0d4b))
