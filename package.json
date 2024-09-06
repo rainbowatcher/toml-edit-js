@@ -31,18 +31,15 @@
         "bumpp": "^9.5.2",
         "commitlint": "^19.4.1",
         "conventional-changelog-cli": "^5.0.0",
+        "cross-release-cli": "0.1.0-alpha.4",
         "dedent": "^1.5.3",
         "eslint": "^9.9.1",
         "husky": "^9.1.5",
-        "lint-staged": "^15.2.10",
         "picocolors": "^1.1.0",
         "tsx": "^4.19.0",
         "typescript": "^5.5.4",
         "vitest": "^2.0.5",
         "wasmup": "^0.7.0"
-    },
-    "lint-staged": {
-        "*.{js,ts,json,toml,md}": "eslint"
     },
     "commitlint": {
         "extends": [
