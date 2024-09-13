@@ -21,7 +21,7 @@ lto = true
 codegen-units = 1
 `
 
-await init()
+await init({})
 const parsed = parse(toml)
 /*
 the const parsed will be as follow

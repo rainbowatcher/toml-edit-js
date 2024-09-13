@@ -6,7 +6,7 @@ import init, { stringify } from "../packages/toml-edit-js/index.js"
 
 describe("stringify", () => {
     beforeAll(async () => {
-        await init()
+        await init({})
     })
 
     it("stringify toml", () => {

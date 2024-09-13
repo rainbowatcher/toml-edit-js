@@ -6,7 +6,7 @@ import {
 
 describe("parse", () => {
     beforeAll(async () => {
-        await init()
+        await init({})
     })
 
     describe("key", () => {

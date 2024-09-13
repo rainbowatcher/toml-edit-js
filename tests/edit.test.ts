@@ -13,7 +13,7 @@ const opt = { finalNewline: false }
 
 describe("edit", () => {
     beforeAll(async () => {
-        await init()
+        await init({})
     })
 
     it("set string", () => {
