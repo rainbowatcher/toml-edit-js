@@ -15,17 +15,17 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-toml = "^0.8.19"
-toml_edit = "^0.22.16"
-wasm-bindgen = "0.2.93"
-serde = "1.0.210"
+toml = "0.8.19"
+toml_edit = "0.22.22"
+wasm-bindgen = "0.2.95"
+serde = "1.0.213"
 serde-wasm-bindgen = "0.6.5"
-js-sys = "0.3.70"
+js-sys = "0.3.72"
 # num-bigint = "0.4.6"
 
 [dev-dependencies]
-indoc = "*"
-wasm-bindgen-test = "0.3.43"
+indoc = "2.0.5"
+wasm-bindgen-test = "0.3.45"
 
 [profile.release]
 lto = true
