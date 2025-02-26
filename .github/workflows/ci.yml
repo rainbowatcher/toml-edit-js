@@ -27,8 +27,11 @@ jobs:
       - name: Install
         run: pnpm i --frozen-lockfile
 
-      - name: wasmup install
+      - name: Wasmup install
         run: pnpm exec wasmup install
+
+      - name: Verify wasm-opt installation
+        run: wasm-opt --version
 
       - name: Build
         run: pnpm build
@@ -73,6 +76,9 @@ jobs:
 
       - name: wasmup install
         run: pnpm exec wasmup install
+
+      - name: Verify wasm-opt installation
+        run: wasm-opt --version
 
       - name: Build
         run: pnpm build
