@@ -1,12 +1,12 @@
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
-import init, { stringify } from "../packages/toml-edit-js/index.js"
+import init, { stringify } from "../packages/toml-edit-js/shims.js"
 
 
 describe("stringify", () => {
     beforeAll(async () => {
-        await init({})
+        await init()
     })
 
     it("stringify toml", () => {

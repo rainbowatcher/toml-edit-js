@@ -1,12 +1,12 @@
 import dedent from "dedent"
-import init, { parse } from "packages/toml-edit-js/index.js"
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
+import init, { parse } from "../packages/toml-edit-js/shims.js"
 
 describe("parse", () => {
     beforeAll(async () => {
-        await init({})
+        await init()
     })
 
     describe("key", () => {

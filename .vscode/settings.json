@@ -18,6 +18,7 @@
         "indoc",
         "instanceof",
         "napi",
+        "serde",
         "wasmup",
     ],
 }

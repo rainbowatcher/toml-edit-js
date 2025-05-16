@@ -2,7 +2,7 @@ import dedent from "dedent"
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
-import init, { edit } from "../packages/toml-edit-js/index.js"
+import init, { edit } from "../packages/toml-edit-js/shims.js"
 
 
 const input = dedent`
@@ -13,7 +13,7 @@ const opt = { finalNewline: false }
 
 describe("edit", () => {
     beforeAll(async () => {
-        await init({})
+        await init()
     })
 
     it("set string", () => {
@@ -69,11 +69,11 @@ describe("edit", () => {
 
     it("bitint", () => {
         expect(() => edit(input, "foo.bar", 15_033_211_231_241_234_523_452_345_345_787n, opt))
-            .toThrowErrorMatchingInlineSnapshot("[Error: bigint is not supported]")
+            .toThrowErrorMatchingInlineSnapshot(`[Error: bigint is not supported]`)
     })
 
     it("null or undefined", () => {
-        expect(() => edit(input, "foo.bar", null, opt)).toThrowErrorMatchingInlineSnapshot("[Error: null and undefined is not supported]")
+        expect(() => edit(input, "foo.bar", null, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: null and undefined is not supported]`)
     })
 
     it("boolean", () => {
@@ -119,22 +119,22 @@ describe("edit", () => {
     describe("error", () => {
         it("with unknown field", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot("[Error: unknown property [unknown]]")
+            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: unknown property [unknown]]`)
         })
 
         it("with invalid type", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot("[Error: finalNewline should be a boolean]")
+            expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: finalNewline should be a boolean]`)
         })
 
         it("with array option", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot("[Error: IEditOptions can not be an array]")
+            expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot(`[Error: IEditOptions can not be an array]`)
         })
 
         it("with string option", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot("[Error: IEditOptions should be an object]")
+            expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot(`[Error: IEditOptions should be an object]`)
         })
     })
 })
