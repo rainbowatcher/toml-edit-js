@@ -15,17 +15,35 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-toml = "0.8.19"
-toml_edit = "0.22.22"
-wasm-bindgen = "0.2.95"
-serde = "1.0.213"
+toml = "0.8.22"
+toml_edit = "0.22.26"
+wasm-bindgen = "0.2.100"
+serde = "1.0.219"
 serde-wasm-bindgen = "0.6.5"
-js-sys = "0.3.72"
+js-sys = "0.3.77"
 # num-bigint = "0.4.6"
 
 [dev-dependencies]
-indoc = "2.0.5"
-wasm-bindgen-test = "0.3.45"
+indoc = "2.0.6"
+wasm-bindgen-test = "0.3.50"
 
 [profile.release]
 lto = true
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = [
+    # Optimize level 4
+    "-O4",
+    # Run passes to convergence, continuing while binary size decreases
+    "--converge",
+    "--strip-debug",
+    "--strip-dwarf",
+    # flattens out code, removing nesting
+    "--flatten",
+    # inline small functions
+    "--inlining",
+    # removes unreachable code
+    "--dce",
+    # Grand Unified Flow Analysis
+    "--gufa",
+]
