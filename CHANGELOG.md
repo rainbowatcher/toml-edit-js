@@ -1,3 +1,24 @@
+## 0.3.0 (2025-05-21)
+
+* docs: add README shields, update examples, and improve documentation ([c4d92a6](https://github.com/rainbowatcher/toml-edit-js/commit/c4d92a6))
+* chore: bump dev deps ([5ab2246](https://github.com/rainbowatcher/toml-edit-js/commit/5ab2246))
+* chore: refactor test setup and add new array editing tests ([01c2899](https://github.com/rainbowatcher/toml-edit-js/commit/01c2899))
+* chore: remove useless options in eslint config ([e8338f2](https://github.com/rainbowatcher/toml-edit-js/commit/e8338f2))
+* chore: update dependencies and build configurations for consistency ([cb52877](https://github.com/rainbowatcher/toml-edit-js/commit/cb52877))
+* chore: update import paths and refine test initialization procedures ([d23eab6](https://github.com/rainbowatcher/toml-edit-js/commit/d23eab6))
+* chore(deps): bump deps ([31a3f53](https://github.com/rainbowatcher/toml-edit-js/commit/31a3f53))
+* chore(deps): bump deps ([b201689](https://github.com/rainbowatcher/toml-edit-js/commit/b201689))
+* chore(deps): bump rust deps ([0130fca](https://github.com/rainbowatcher/toml-edit-js/commit/0130fca))
+* style: remove trailing spaces ([9adb8ce](https://github.com/rainbowatcher/toml-edit-js/commit/9adb8ce))
+* fix: add empty object to init function to avoid raise warning ([95f4eb0](https://github.com/rainbowatcher/toml-edit-js/commit/95f4eb0))
+* fix: update lock file ([a3b4953](https://github.com/rainbowatcher/toml-edit-js/commit/a3b4953))
+* fix: wasmup option entries is rename to entry ([c4cf574](https://github.com/rainbowatcher/toml-edit-js/commit/c4cf574))
+* ci: add verify wasm-opt install step ([877eafd](https://github.com/rainbowatcher/toml-edit-js/commit/877eafd))
+* ci: simplify CI workflow by removing redundant wasm-opt verification ([4c505c5](https://github.com/rainbowatcher/toml-edit-js/commit/4c505c5))
+* build: optimize build size ([9c0ce48](https://github.com/rainbowatcher/toml-edit-js/commit/9c0ce48))
+
+
+
 ## <small>0.2.1 (2024-09-06)</small>
 
 * fix: replace private to publish in cargo project file ([4bb7eb4](https://github.com/rainbowatcher/toml-edit-js/commit/4bb7eb4))
