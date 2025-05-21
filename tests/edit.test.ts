@@ -2,7 +2,7 @@ import dedent from "dedent"
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
-import init, { edit } from "../packages/toml-edit-js/shims.js"
+import init, { edit, initSync } from "../packages/toml-edit-js/shims.js"
 
 
 const input = dedent`
@@ -146,5 +146,18 @@ describe("edit", () => {
             edit(input, "foo.bar", 1, opt)
             expect(() => edit(input, "foo.bar.baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[RuntimeError: unreachable]`)
         })
+    })
+})
+
+describe("edit with sync init", () => {
+    beforeAll(() => {
+        initSync()
+    })
+
+    it("set string", () => {
+        expect(edit(input, "foo.bar", "qux", opt)).toBe(dedent`
+            [foo]
+            bar = "qux"
+        `)
     })
 })
