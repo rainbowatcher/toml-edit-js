@@ -136,5 +136,15 @@ describe("edit", () => {
             // @ts-expect-error type error
             expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot(`[Error: IEditOptions should be an object]`)
         })
+
+        it("array item replace", () => {
+            const _input = edit(input, "foo.bar", [1, 2, 3], opt)
+            expect(() => edit(_input, "foo.bar.0", 3, opt)).toThrowErrorMatchingInlineSnapshot(`[RuntimeError: unreachable]`)
+        })
+        
+        it("object path is number", () => {
+            edit(input, "foo.bar", 1, opt)
+            expect(() => edit(input, "foo.bar.baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[RuntimeError: unreachable]`)
+        })
     })
 })
