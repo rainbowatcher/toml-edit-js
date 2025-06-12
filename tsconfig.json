@@ -12,6 +12,7 @@
     },
     "include": [
         "tests/*.ts",
+        "bench/*.ts",
         "packages/**/*.ts",
         "scripts/*.ts",
         "wasmup.config.ts"

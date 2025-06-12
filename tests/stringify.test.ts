@@ -22,10 +22,11 @@ describe("stringify", () => {
             expect(result).toBe("false")
         })
 
+        // TODO: Find out the reason why toml automatically converts time zones
         it("stringify date", () => {
-            const toml = new Date(2023, 1, 1, 0, 0, 0)
+            const toml = new Date(0)
             const result = stringify(toml)
-            expect(result).toBe("2023-01-31T16:00:00Z")
+            expect(result).toBe("1970-01-01T00:00:00Z")
         })
 
         it("stringify string", () => {
@@ -61,7 +62,7 @@ describe("stringify", () => {
                 b: 2,
             },
             da: "1979-05-27T00:32:00.999999-07:00",
-            date: new Date(2023, 1, 1),
+            date: new Date(0),
             e: {
                 d: {
                     h: "2023-01-01T00:00:01-07:00",
@@ -85,7 +86,7 @@ describe("stringify", () => {
             c = "hello"
             cargo-feature = "1"
             da = "1979-05-27T00:32:00.999999-07:00"
-            date = 2023-01-31T16:00:00Z
+            date = 1970-01-01T00:00:00Z
 
             [d]
             a = 1
