@@ -78,7 +78,16 @@ edit method can receive a options
 
 ```ts
 type IEditOptions = {
-    finalNewline: boolean
+    /**
+     * whether add the final newline
+     */
+    finalNewline?: boolean
+
+    /**
+     * Write data in InlineTable format when the value to be written is a object type and inline is set to true
+     * @default true
+     */
+    inline?: boolean
 }
 ```
 
