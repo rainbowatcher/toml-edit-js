@@ -192,14 +192,14 @@ describe("edit", () => {
             expect(edit(input1, "foo. bar.baz", 1, opt)).toBe(dedent`
                 [foo.bar]
                 baz = 0
-                
+
                 [foo." bar"]
                 baz = 1
             `)
         })
     })
 
-    describe("key with dot", () => { 
+    describe("key with dot", () => {
         it("value key with dot", () => {
             const input1 = dedent`
                 [foo]
