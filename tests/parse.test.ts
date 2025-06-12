@@ -16,12 +16,14 @@ describe("parse", () => {
             bare-key = "value"
             1234 = "value"
             `
-            expect(parse(toml)).toStrictEqual({
+            const parsed = parse(toml)
+            expect(parsed).toStrictEqual({
                 1234: "value",
                 bare_key: "value",
                 "bare-key": "value",
                 key: "value",
             })
+            expect(parsed.key).toBe("value")
         })
 
         it("quoted keys", () => {

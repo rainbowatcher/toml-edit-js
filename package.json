@@ -3,7 +3,7 @@
     "type": "module",
     "version": "0.3.0",
     "private": true,
-    "packageManager": "pnpm@10.11.0",
+    "packageManager": "pnpm@10.12.1",
     "scripts": {
         "build": "wasmup build .",
         "bump": "cross-release -ayx 'pnpm changelog'",
@@ -13,6 +13,7 @@
         "release": "pnpm bump && pnpm build && pnpm -r publish",
         "test": "vitest",
         "test:wasm": "wasm-pack test --chrome",
+        "bench": "vitest bench",
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
@@ -25,15 +26,15 @@
         "@rainbowatcher/eslint-config-prettier": "^0.21.1",
         "@rainbowatcher/eslint-config-toml": "^0.21.1",
         "@rainbowatcher/eslint-config-ts": "^0.21.1",
-        "@types/node": "^22.15.21",
+        "@types/node": "^24.0.0",
         "commitlint": "^19.8.1",
         "conventional-changelog-cli": "^5.0.0",
         "cross-release-cli": "^0.3.0",
         "dedent": "^1.6.0",
-        "eslint": "^9.27.0",
+        "eslint": "^9.28.0",
         "husky": "^9.1.7",
         "typescript": "^5.8.3",
-        "vitest": "^3.1.4",
+        "vitest": "^3.2.3",
         "wasmup": "^0.9.1"
     },
     "commitlint": {

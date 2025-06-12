@@ -4,7 +4,6 @@ import {
 } from "vitest"
 import init, { edit, initSync } from "../packages/toml-edit-js/shims.js"
 
-
 const input = dedent`
     [foo]
     bar = 1
@@ -23,89 +22,145 @@ describe("edit", () => {
         `)
     })
 
-    it("set string with truthy option", () => {
-        expect(edit(input, "foo.bar", "qux", { finalNewline: true })).toBe(dedent`
-            [foo]
-            bar = "qux"\n
-        `)
+    it("set string with default finalNewline", () => {
+        expect(edit(input, "foo.bar", "qux"))
+            .toBe(dedent`
+                [foo]
+                bar = "qux"\n
+            `)
     })
 
-    it("set number", () => {
-        expect(edit(input, "foo.bar", 2, opt)).toBe(dedent`
-            [foo]
-            bar = 2
-        `)
+    describe("set number", () => {
+        it("integer", () => {
+            expect(edit(input, "foo.bar", 2, opt)).toBe(dedent`
+                [foo]
+                bar = 2
+            `)
+        })
 
-        expect(edit(input, "foo.bar", 2.2, opt)).toBe(dedent`
-            [foo]
-            bar = 2.2
-        `)
+        it("float", () => {
+            expect(edit(input, "foo.bar", 2.2, opt)).toBe(dedent`
+                [foo]
+                bar = 2.2
+            `)
+        })
 
-        expect(edit(input, "foo.bar", -2.2, opt)).toBe(dedent`
-            [foo]
-            bar = -2.2
-        `)
+        it("negative float", () => {
+            expect(edit(input, "foo.bar", -2.2, opt)).toBe(dedent`
+                [foo]
+                bar = -2.2
+            `)
+        })
 
-        expect(edit(input, "foo.bar", Number.NaN, opt)).toBe(dedent`
-            [foo]
-            bar = nan
-        `)
+        it("nan", () => {
+            expect(edit(input, "foo.bar", Number.NaN, opt)).toBe(dedent`
+                [foo]
+                bar = nan
+            `)
+        })
 
-        expect(edit(input, "foo.bar", Infinity, opt)).toBe(dedent`
-            [foo]
-            bar = inf
-        `)
+        it("infinity", () => {
+            expect(edit(input, "foo.bar", Infinity, opt)).toBe(dedent`
+                [foo]
+                bar = inf
+            `)
+        })
 
-        expect(edit(input, "foo.bar", 10e3, opt)).toBe(dedent`
-            [foo]
-            bar = 10000
-        `)
+        it("scientific notation", () => {
+            expect(edit(input, "foo.bar", 10e3, opt)).toBe(dedent`
+                [foo]
+                bar = 10000
+            `)
+            expect(edit(input, "foo.bar", -0.1e5, opt)).toBe(dedent`
+                [foo]
+                bar = -10000
+            `)
+        })
 
-        expect(edit(input, "foo.bar", -0.1e5, opt)).toBe(dedent`
-            [foo]
-            bar = -10000
-        `)
+        it("with safe number boundary", () => {
+            expect(edit(input, "foo.bar", 9_007_199_254_740_991, opt)).toBe(dedent`
+                [foo]
+                bar = 9007199254740991
+            `)
+            expect(edit(input, "foo.bar", -9_007_199_254_740_991, opt)).toBe(dedent`
+                [foo]
+                bar = -9007199254740991
+            `)
+        })
+
+        it("with i64 boundary", () => {
+            // eslint-disable-next-line no-loss-of-precision
+            expect(edit(input, "foo.bar", 9_223_372_036_854_775_807, opt)).toBe(dedent`
+                [foo]
+                bar = 9223372036854775807
+            `)
+            expect(edit(input, "foo.bar", 9_223_372_036_854_775_808, opt)).toMatchInlineSnapshot(`
+                "[foo]
+                bar = 9223372036854775807"
+            `)
+            // eslint-disable-next-line no-loss-of-precision
+            expect(edit(input, "foo.bar", -9_223_372_036_854_775_809, opt)).toMatchInlineSnapshot(`
+                "[foo]
+                bar = -9223372036854775808"
+            `)
+        })
+
+        it("bigint", () => {
+            expect(() => edit(input, "foo.bar", 15_033_211_231_241_234_523_452_345_345_787n, opt))
+                .toThrowErrorMatchingInlineSnapshot(`[Error: Bigint is not supported]`)
+            expect(() => edit(input, "foo.bar", 1n, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Bigint is not supported]`)
+            expect(() => edit(input, "foo.bar", 9_007_199_254_740_992n, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Bigint is not supported]`)
+            expect(() => edit(input, "foo.bar", -9_007_199_254_740_992n, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Bigint is not supported]`)
+        })
     })
 
-    it("bitint", () => {
-        expect(() => edit(input, "foo.bar", 15_033_211_231_241_234_523_452_345_345_787n, opt))
-            .toThrowErrorMatchingInlineSnapshot(`[Error: bigint is not supported]`)
+
+    it("unset", () => {
+        expect(edit(input, "foo.bar", null, opt)).toMatchInlineSnapshot(`"[foo]"`)
+        expect(edit(input, "foo.bar", undefined, opt)).toMatchInlineSnapshot(`"[foo]"`)
     })
 
-    it("null or undefined", () => {
-        expect(() => edit(input, "foo.bar", null, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: null and undefined is not supported]`)
-    })
-
-    it("boolean", () => {
-        const input = "[foo]\nbar = true"
+    it("set boolean", () => {
         expect(edit(input, "foo.bar", false, opt)).toBe(dedent`
             [foo]
             bar = false
         `)
     })
 
-    it("array", () => {
+    it("set array", () => {
         expect(edit(input, "foo.bar", [1, 2, 3], opt)).toBe(dedent`
             [foo]
             bar = [1, 2, 3]
         `)
+        expect(edit(input, "foo.bar", [4, 5, 6], opt)).toBe(dedent`
+            [foo]
+            bar = [4, 5, 6]
+        `)
     })
 
-    it("object", () => {
+    it("set object", () => {
         expect(edit(input, "foo.bar", { a: 1, b: 2 }, opt)).toBe(dedent`
             [foo]
             bar = { a = 1, b = 2 }
         `)
-    })
 
-    it("datetime", () => {
-        expect(edit(input, "foo.bar", new Date(0), opt)).toBe(dedent`
+        expect(edit(input, "foo.bar", { a: 1, b: 2 }, { ...opt, inline: false })).toBe(dedent`
             [foo]
-            bar = {}
+
+            [foo.bar ]
+            a = 1
+            b = 2
         `)
     })
 
-    it("key with dot", () => {
+    it("set datetime", () => {
+        expect(edit(input, "foo.bar", new Date(0), opt)).toBe(dedent`
+            [foo]
+            bar = 1970-01-01T00:00:00Z
+        `)
+    })
+
+    it("nest key", () => {
         const input1 = dedent`
             [foo.bar]
             baz = 0
@@ -116,20 +171,62 @@ describe("edit", () => {
         `)
     })
 
+    describe("key with space", () => {
+        it("value key with space", () => {
+            const input1 = dedent`
+                [foo.bar]
+                baz = 0
+            `
+            expect(edit(input1, "foo.bar. baz", 1, opt)).toBe(dedent`
+                [foo.bar]
+                baz = 0
+                " baz" = 1
+            `)
+        })
+
+        it("path key with space", () => {
+            const input1 = dedent`
+                [foo.bar]
+                baz = 0
+            `
+            expect(edit(input1, "foo. bar.baz", 1, opt)).toBe(dedent`
+                [foo.bar]
+                baz = 0
+                
+                [foo." bar"]
+                baz = 1
+            `)
+        })
+    })
+
+    describe("key with dot", () => { 
+        it("value key with dot", () => {
+            const input1 = dedent`
+                [foo]
+                bar = 0
+            `
+            expect(edit(input1, `foo."bar.baz"`, 1, opt)).toBe(dedent`
+                [foo]
+                bar = 0
+                "bar.baz" = 1
+            `)
+        })
+    })
+
     describe("error", () => {
         it("with unknown field", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: unknown property [unknown]]`)
+            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: Unknown property 'unknown']`)
         })
 
         it("with invalid type", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: finalNewline should be a boolean]`)
+            expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: Type Missmatch, expect finalNewline to be boolean]`)
         })
 
         it("with array option", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot(`[Error: IEditOptions can not be an array]`)
+            expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot(`[Error: Type Missmatch, IEditOptions can not be array]`)
         })
 
         it("with string option", () => {
@@ -137,14 +234,13 @@ describe("edit", () => {
             expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot(`[Error: IEditOptions should be an object]`)
         })
 
-        it("array item replace", () => {
-            const _input = edit(input, "foo.bar", [1, 2, 3], opt)
-            expect(() => edit(_input, "foo.bar.0", 3, opt)).toThrowErrorMatchingInlineSnapshot(`[RuntimeError: unreachable]`)
+        it("last path is invalid", () => {
+            edit(input, "foo.bar", 1, opt)
+            expect(() => edit(input, "foo.bar.baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Invalid key: 'baz']`)
         })
 
-        it("object path is number", () => {
-            edit(input, "foo.bar", 1, opt)
-            expect(() => edit(input, "foo.bar.baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[RuntimeError: unreachable]`)
+        it("invalid array access", () => {
+            expect(() => edit(input, "foo.[0].baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: 'foo' is not a array]`)
         })
     })
 })
