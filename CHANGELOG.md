@@ -1,3 +1,9 @@
+## 0.4.0 (2025-06-12)
+
+* perf: refactor and enhance TOML parsing, editing, and benchmarking infrastructure ([d70fccf](https://github.com/rainbowatcher/toml-edit-js/commit/d70fccf))
+
+
+
 ## 0.3.0 (2025-05-21)
 
 * docs: add README shields, update examples, and improve documentation ([c4d92a6](https://github.com/rainbowatcher/toml-edit-js/commit/c4d92a6))

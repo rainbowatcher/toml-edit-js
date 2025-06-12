@@ -1,7 +1,7 @@
 {
     "name": "toml-edit-js",
     "type": "module",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "private": true,
     "packageManager": "pnpm@10.12.1",
     "scripts": {
