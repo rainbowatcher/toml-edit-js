@@ -1,3 +1,15 @@
+## 0.5.0 (2025-06-22)
+
+* style: apply eslint style rule ([f8e5f29](https://github.com/rainbowatcher/toml-edit-js/commit/f8e5f29))
+* style: apply eslint style rule ([3692ded](https://github.com/rainbowatcher/toml-edit-js/commit/3692ded))
+* feat: follow previous decoration when insert into table ([98618c7](https://github.com/rainbowatcher/toml-edit-js/commit/98618c7))
+* fix: fix path key handling and indentation ([bbda6cf](https://github.com/rainbowatcher/toml-edit-js/commit/bbda6cf))
+* fix: fix pattern matching to handle all Item variants explicitly during conversion from JsArray ([68ba3a5](https://github.com/rainbowatcher/toml-edit-js/commit/68ba3a5))
+* docs: update edit options type definition ([8008be2](https://github.com/rainbowatcher/toml-edit-js/commit/8008be2))
+* test: toml automatic convert timezone ([5009973](https://github.com/rainbowatcher/toml-edit-js/commit/5009973))
+
+
+
 ## 0.4.0 (2025-06-12)
 
 * perf: refactor and enhance TOML parsing, editing, and benchmarking infrastructure ([d70fccf](https://github.com/rainbowatcher/toml-edit-js/commit/d70fccf))
