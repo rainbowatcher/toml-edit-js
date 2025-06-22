@@ -517,5 +517,58 @@ describe("parse", () => {
                 ],
             })
         })
+
+        it("#6", () => {
+            const toml = `
+            [project]
+            name = "prep-pkgs"
+            r_version = "4.4"
+
+            # any CRAN-type repository, order matters. Additional ability to force source package installation
+            # Example: {alias = "CRAN", url = "https://cran.r-project.org", force_source = true}
+            repositories = [
+                {alias = "prism", url = "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/"},
+                {alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest"},
+            ]
+
+            dependencies = [
+                # a comment before the first dep
+                {name = "gsm.core", git = "https://github.com/gilead-biostats/gsm.core", tag = "v1.1.0"},
+                # a comment after the first dep
+                {name = "grail.ado", git = "https://github.com/gilead-rbqm/grail.ado", branch = "main"},
+                "pkgpub",
+                "tomledit"
+            ]`
+            expect(parse(toml)).toStrictEqual({
+                project: {
+                    dependencies: [
+                        {
+                            git: "https://github.com/gilead-biostats/gsm.core",
+                            name: "gsm.core",
+                            tag: "v1.1.0",
+                        },
+                        {
+                            branch: "main",
+                            git: "https://github.com/gilead-rbqm/grail.ado",
+                            name: "grail.ado",
+                        },
+                        "pkgpub",
+                        "tomledit",
+                    ],
+                    name: "prep-pkgs",
+                    r_version: "4.4",
+                    repositories: [
+                        {
+                            alias: "prism",
+                            url: "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/",
+                        },
+                        {
+                            alias: "CRAN",
+                            url: "https://packagemanager.posit.co/cran/latest",
+                        },
+                    ],
+                },
+            })
+        })
     })
 })

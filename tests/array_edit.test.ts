@@ -61,6 +61,21 @@ describe("array edit", () => {
                 bar = [1, 2, 3, 1970-01-01T00:00:00Z]
             `)
         })
+
+        it("array of tables", () => {
+            const aot = dedent`
+            [foo]
+            bar = [
+                { name = "tom",age = 12 }
+            ]
+            `
+            expect(edit(aot, "foo.bar.[0].age", 20, opt)).toBe(dedent`
+              [foo]
+              bar = [
+                  { name = "tom", age = 20 }
+              ]
+            `)
+        })
     })
 
     it("delete", () => {

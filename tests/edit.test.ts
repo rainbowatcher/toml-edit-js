@@ -147,7 +147,7 @@ describe("edit", () => {
         expect(edit(input, "foo.bar", { a: 1, b: 2 }, { ...opt, inline: false })).toBe(dedent`
             [foo]
 
-            [foo.bar ]
+            [foo.bar]
             a = 1
             b = 2
         `)
@@ -189,7 +189,7 @@ describe("edit", () => {
                 [foo.bar]
                 baz = 0
             `
-            expect(edit(input1, "foo. bar.baz", 1, opt)).toBe(dedent`
+            expect(edit(input1, `foo." bar".baz`, 1, opt)).toBe(dedent`
                 [foo.bar]
                 baz = 0
 
@@ -254,6 +254,59 @@ describe("edit with sync init", () => {
         expect(edit(input, "foo.bar", "qux", opt)).toBe(dedent`
             [foo]
             bar = "qux"
+        `)
+    })
+})
+
+
+describe("issue", () => {
+    beforeAll(() => {
+        initSync()
+    })
+    
+    it("issue#6", () => {
+        const toml = dedent`
+            [project]
+            name = "prep-pkgs"
+            r_version = "4.4"
+
+            # any CRAN-type repository, order matters. Additional ability to force source package installation
+            # Example: {alias = "CRAN", url = "https://cran.r-project.org", force_source = true}
+            repositories = [
+                { alias = "prism", url = "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/" },
+                { alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest" },
+            ]
+
+            dependencies = [
+                # a comment before the first dep
+                { name = "gsm.core", git = "https://github.com/gilead-biostats/gsm.core", tag = "v1.1.0" },
+                # a comment after the first dep
+                { name = "grail.ado", git = "https://github.com/gilead-rbqm/grail.ado", branch = "main" },
+                "pkgpub",
+                "tomledit"
+            ]
+        `
+        expect(edit(toml, "project.dependencies.[0].tag", "v1.2.0")).toMatchInlineSnapshot(`
+            "[project]
+            name = "prep-pkgs"
+            r_version = "4.4"
+
+            # any CRAN-type repository, order matters. Additional ability to force source package installation
+            # Example: {alias = "CRAN", url = "https://cran.r-project.org", force_source = true}
+            repositories = [
+                { alias = "prism", url = "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/" },
+                { alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest" },
+            ]
+
+            dependencies = [
+                # a comment before the first dep
+                { name = "gsm.core", git = "https://github.com/gilead-biostats/gsm.core", tag = "v1.2.0" },
+                # a comment after the first dep
+                { name = "grail.ado", git = "https://github.com/gilead-rbqm/grail.ado", branch = "main" },
+                "pkgpub",
+                "tomledit"
+            ]
+            "
         `)
     })
 })

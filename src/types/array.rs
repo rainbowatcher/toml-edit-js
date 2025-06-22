@@ -12,16 +12,16 @@ impl From<ArrayWrapper> for JsValue {
             Ok(len) => {
                 let js_arr = JsArray::new_with_length(len);
                 for (i, value) in arr.0.iter().enumerate() {
-                    let table = JsValue::from(ValueWrapper(value.to_owned()));
-                    js_arr.set(i as u32, table);
+                    let value = JsValue::from(ValueWrapper(value.to_owned()));
+                    js_arr.set(i as u32, value);
                 }
                 js_arr.into()
             }
             Err(_) => {
                 let js_arr = JsArray::new();
                 for value in arr.0.iter() {
-                    let table = JsValue::from(ValueWrapper(value.to_owned()));
-                    js_arr.push(&table);
+                    let value = JsValue::from(ValueWrapper(value.to_owned()));
+                    js_arr.push(&value);
                 }
                 js_arr.into()
             }

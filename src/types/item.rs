@@ -7,21 +7,22 @@ use crate::{
     types::{array_table::ArrayTablesWrapper, table::TableLikeWrapper, value::ValueWrapper},
 };
 
+#[derive(Debug)]
 pub struct ItemWrapper(pub Item);
 
 impl ItemWrapper {
-    pub fn from_js_value(js_value: JsValue, opts: &EditOptions) -> Self {
-        let value_wrapper = ItemWrapper::from(js_value);
-        let value_item = if let Item::Table(table) = value_wrapper.0 {
+    pub fn with_edit_opt(js_value: JsValue, opts: &EditOptions) -> Self {
+        let item_wrapper = ItemWrapper::from(js_value);
+        let item = if let Item::Table(table) = item_wrapper.0 {
             if opts.inline {
                 Item::Value(toml_edit::Value::InlineTable(table.into_inline_table()))
             } else {
                 Item::Table(table)
             }
         } else {
-            return value_wrapper;
+            return item_wrapper;
         };
-        Self(value_item)
+        Self(item)
     }
 }
 

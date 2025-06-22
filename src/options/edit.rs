@@ -1,4 +1,4 @@
-use wasm_bindgen::{prelude::wasm_bindgen, throw_str, JsValue};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
 use web_sys::js_sys::{Array, Object};
 
 #[wasm_bindgen(typescript_custom_section)]
