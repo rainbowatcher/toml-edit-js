@@ -64,16 +64,16 @@ describe("array edit", () => {
 
         it("array of tables", () => {
             const aot = dedent`
-            [foo]
-            bar = [
-                { name = "tom",age = 12 }
-            ]
+                [foo]
+                bar = [
+                    { name = "tom",age = 12 }
+                ]
             `
             expect(edit(aot, "foo.bar.[0].age", 20, opt)).toBe(dedent`
-              [foo]
-              bar = [
-                  { name = "tom", age = 20 }
-              ]
+                [foo]
+                bar = [
+                    { name = "tom", age = 20 }
+                ]
             `)
         })
     })

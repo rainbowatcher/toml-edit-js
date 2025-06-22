@@ -21,6 +21,6 @@
         "napi",
         "rlib",
         "serde",
-        "wasmup"
+        "wasmup",
     ],
 }

@@ -263,7 +263,7 @@ describe("issue", () => {
     beforeAll(() => {
         initSync()
     })
-    
+
     it("issue#6", () => {
         const toml = dedent`
             [project]

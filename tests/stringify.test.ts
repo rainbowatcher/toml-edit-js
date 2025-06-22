@@ -136,12 +136,12 @@ describe("stringify", () => {
             },
         }
         expect(stringify(toml)).toMatchInlineSnapshot(`
-          "[project]
-          dependencies = [{ git = "https://github.com/gilead-biostats/gsm.core", name = "gsm.core", tag = "v1.1.0" }, { branch = "main", git = "https://github.com/gilead-rbqm/grail.ado", name = "grail.ado" }, "pkgpub", "tomledit"]
-          name = "prep-pkgs"
-          r_version = "4.4"
-          repositories = [{ alias = "prism", url = "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/" }, { alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest" }]
-          "
+            "[project]
+            dependencies = [{ git = "https://github.com/gilead-biostats/gsm.core", name = "gsm.core", tag = "v1.1.0" }, { branch = "main", git = "https://github.com/gilead-rbqm/grail.ado", name = "grail.ado" }, "pkgpub", "tomledit"]
+            name = "prep-pkgs"
+            r_version = "4.4"
+            repositories = [{ alias = "prism", url = "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/" }, { alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest" }]
+            "
         `)
     })
 })
