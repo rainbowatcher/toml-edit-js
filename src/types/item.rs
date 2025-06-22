@@ -7,21 +7,22 @@ use crate::{
     types::{array_table::ArrayTablesWrapper, table::TableLikeWrapper, value::ValueWrapper},
 };
 
+#[derive(Debug)]
 pub struct ItemWrapper(pub Item);
 
 impl ItemWrapper {
-    pub fn from_js_value(js_value: JsValue, opts: &EditOptions) -> Self {
-        let value_wrapper = ItemWrapper::from(js_value);
-        let value_item = if let Item::Table(table) = value_wrapper.0 {
+    pub fn with_edit_opt(js_value: JsValue, opts: &EditOptions) -> Self {
+        let item_wrapper = ItemWrapper::from(js_value);
+        let item = if let Item::Table(table) = item_wrapper.0 {
             if opts.inline {
                 Item::Value(toml_edit::Value::InlineTable(table.into_inline_table()))
             } else {
                 Item::Table(table)
             }
         } else {
-            return value_wrapper;
+            return item_wrapper;
         };
-        Self(value_item)
+        Self(item)
     }
 }
 
@@ -84,11 +85,14 @@ impl From<JsArray> for ItemWrapper {
         for i in 0..js_array.length() {
             let element = js_array.get(i);
             let item = ItemWrapper::from(element);
-            if let Item::Value(value) = item.0 {
-                toml_array.push(value);
+            match item.0 {
+                Item::None => (),
+                Item::Value(value) => toml_array.push(value),
+                Item::Table(table) => toml_array.push(table.into_inline_table()),
+                Item::ArrayOfTables(aot) => toml_array.push(aot.into_array()),
             }
         }
-        ItemWrapper(Item::Value(Value::Array(toml_array)))
+        Self(Item::Value(Value::Array(toml_array)))
     }
 }
 

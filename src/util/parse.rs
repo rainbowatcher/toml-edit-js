@@ -1,19 +1,4 @@
 /// parse edit path to path_keys and value_key
-///
-/// ## Example
-/// ```rs
-/// let (path_keys, value_key) = parse_edit_path(r#"foo."bar.baz""#);
-/// assert_eq!(path_keys, vec!["foo"]);
-/// assert_eq!(value_key, "bar.baz");
-///
-/// let (path_keys, value_key) = parse_edit_path(r#"foo."bar.baz".[0].name"#);
-/// assert_eq!(path_keys, vec!["foo", "bar.baz", "[0]"]);
-/// assert_eq!(value_key, "name");
-///
-/// let (path_keys, value_key) = parse_edit_path(r#"foo.bar.[12]"#);
-/// assert_eq!(path_keys, vec!["foo", "bar"]);
-/// assert_eq!(value_key, "[12]");
-/// ```
 #[inline]
 pub fn parse_edit_path(edit_path: &str) -> (Vec<String>, String) {
     let mut path_keys = vec![];
@@ -38,4 +23,28 @@ pub fn parse_edit_path(edit_path: &str) -> (Vec<String>, String) {
     let value_key = current_key;
 
     (path_keys, value_key)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_edit_path() {
+        let (path_keys, value_key) = parse_edit_path(r#"foo."bar.baz""#);
+        assert_eq!(path_keys, vec!["foo"]);
+        assert_eq!(value_key, "bar.baz");
+
+        let (path_keys, value_key) = parse_edit_path(r#"foo."bar.baz".[0].name"#);
+        assert_eq!(path_keys, vec!["foo", "bar.baz", "[0]"]);
+        assert_eq!(value_key, "name");
+
+        let (path_keys, value_key) = parse_edit_path(r#"foo.bar.[12]"#);
+        assert_eq!(path_keys, vec!["foo", "bar"]);
+        assert_eq!(value_key, "[12]");
+
+        let (path_keys, value_key) = parse_edit_path(r#"foo." bar".baz"#);
+        assert_eq!(path_keys, vec!["foo", " bar"]);
+        assert_eq!(value_key, "baz");
+    }
 }

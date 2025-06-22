@@ -25,9 +25,11 @@ pub fn find_parent_item<'a>(item: &'a mut Item, path_keys: Vec<&str>) -> &'a mut
                     }
                 } else {
                     current[key] = toml_edit::table();
+                    current = &mut current[key];
                 }
+            } else {
+                current = &mut current[key];
             }
-            current = &mut current[key];
         } else {
             throw_str(&format!("'{key}' should be table or array"));
         }
