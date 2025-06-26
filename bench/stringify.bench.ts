@@ -1,5 +1,6 @@
 import v2init, { stringify as v2stringify } from "@rainbowatcher/toml-edit-js@v0.2"
 import v3init, { stringify as v3stringify } from "@rainbowatcher/toml-edit-js@v0.3"
+import { stringify as smolStringify } from "smol-toml"
 import { beforeAll, bench, describe } from "vitest"
 import { options } from "./benchOptions"
 import curr4init, { stringify } from "../packages/toml-edit-js/shims"
@@ -49,6 +50,10 @@ describe("middle", () => {
 
     bench("v0.3", () => {
         v3stringify(toml)
+    }, options)
+
+    bench("smol-toml", () => {
+        smolStringify(toml)
     }, options)
 
     bench("current", () => {
