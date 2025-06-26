@@ -264,6 +264,7 @@ describe("issue", () => {
         initSync()
     })
 
+    // https://github.com/rainbowatcher/toml-edit-js/issues/6
     it("issue#6", () => {
         const toml = dedent`
             [project]
