@@ -3,7 +3,7 @@
     "type": "module",
     "version": "0.5.0",
     "private": true,
-    "packageManager": "pnpm@10.12.1",
+    "packageManager": "pnpm@10.12.3",
     "scripts": {
         "build": "wasmup build .",
         "bump": "cross-release -ayx 'pnpm changelog'",
@@ -26,16 +26,16 @@
         "@rainbowatcher/eslint-config-prettier": "^0.21.1",
         "@rainbowatcher/eslint-config-toml": "^0.21.1",
         "@rainbowatcher/eslint-config-ts": "^0.21.1",
-        "@types/node": "^24.0.0",
+        "@types/node": "^24.0.4",
         "commitlint": "^19.8.1",
         "conventional-changelog-cli": "^5.0.0",
         "cross-release-cli": "^0.3.0",
         "dedent": "^1.6.0",
-        "eslint": "^9.28.0",
+        "eslint": "^9.29.0",
         "husky": "^9.1.7",
         "typescript": "^5.8.3",
-        "vitest": "^3.2.3",
-        "wasmup": "^0.9.1"
+        "vitest": "^3.2.4",
+        "wasmup": "^0.9.2"
     },
     "commitlint": {
         "extends": [
