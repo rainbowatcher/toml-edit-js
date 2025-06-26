@@ -5,11 +5,11 @@ import { parse as smolParse } from "smol-toml"
 import { bench } from "vitest"
 import curr4init, { parse } from "../packages/toml-edit-js/shims"
 
+
 await v2init()
 await v3init()
 await curr4init()
-const toml = await fs.readFile(`${process.cwd()}/bench/fixture/pyproject.toml`, "utf8")
-
+const toml = await fs.readFile(`${process.cwd()}/bench/fixture/5mb-mixed.toml`, "utf8")
 
 bench("v0.2", () => {
     v2parse(toml)

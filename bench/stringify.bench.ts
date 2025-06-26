@@ -1,8 +1,7 @@
 import v2init, { stringify as v2stringify } from "@rainbowatcher/toml-edit-js@v0.2"
 import v3init, { stringify as v3stringify } from "@rainbowatcher/toml-edit-js@v0.3"
 import { stringify as smolStringify } from "smol-toml"
-import { beforeAll, bench, describe } from "vitest"
-import { options } from "./benchOptions"
+import { bench } from "vitest"
 import curr4init, { stringify } from "../packages/toml-edit-js/shims"
 
 
@@ -36,27 +35,24 @@ const toml = {
     version: "0.3.0",
 }
 
-beforeAll(async () => {
-    await v2init()
-    await v3init()
-    await curr4init()
+
+await v2init()
+await v3init()
+await curr4init()
+
+
+bench("v0.2", () => {
+    v2stringify(toml)
 })
 
+bench("v0.3", () => {
+    v3stringify(toml)
+})
 
-describe("middle", () => {
-    bench("v0.2", () => {
-        v2stringify(toml)
-    }, options)
+bench("smol-toml", () => {
+    smolStringify(toml)
+})
 
-    bench("v0.3", () => {
-        v3stringify(toml)
-    }, options)
-
-    bench("smol-toml", () => {
-        smolStringify(toml)
-    }, options)
-
-    bench("current", () => {
-        stringify(toml)
-    }, options)
+bench("current", () => {
+    stringify(toml)
 })
