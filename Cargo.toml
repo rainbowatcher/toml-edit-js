@@ -15,7 +15,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-toml_edit = { version = "0.22.27" }
+toml_edit = { version = "0.23.1" }
 wasm-bindgen = "0.2.100"
 console_error_panic_hook = "0.1.7"
 web-sys = { version = "0.3.77", features = ["console"] }
