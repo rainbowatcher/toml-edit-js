@@ -1,3 +1,16 @@
+## <small>0.5.1 (2025-07-18)</small>
+
+* test: error message update ([4dc2436](https://github.com/rainbowatcher/toml-edit-js/commit/4dc2436))
+* test: refactor test cases to reference issue#6 for clarity ([cc7822d](https://github.com/rainbowatcher/toml-edit-js/commit/cc7822d)), closes [issue#6](https://github.com/issue/issues/6) [#6](https://github.com/rainbowatcher/toml-edit-js/issues/6) [issue#6](https://github.com/issue/issues/6)
+* chore: add large toml parse bench and adjust code style ([b8cd773](https://github.com/rainbowatcher/toml-edit-js/commit/b8cd773))
+* chore: add support for smol-toml parsing and benchmarking ([6b9b7d8](https://github.com/rainbowatcher/toml-edit-js/commit/6b9b7d8))
+* chore: bump deps ([e96a53d](https://github.com/rainbowatcher/toml-edit-js/commit/e96a53d))
+* chore: remove entry point and release flag configurations ([6cf5307](https://github.com/rainbowatcher/toml-edit-js/commit/6cf5307))
+* chore: update toml_edit dependency to latest version ([1d7f254](https://github.com/rainbowatcher/toml-edit-js/commit/1d7f254))
+* ci: update CI Node.js versions and matrix configurations ([4dab5de](https://github.com/rainbowatcher/toml-edit-js/commit/4dab5de))
+
+
+
 ## 0.5.0 (2025-06-22)
 
 * style: apply eslint style rule ([f8e5f29](https://github.com/rainbowatcher/toml-edit-js/commit/f8e5f29))
