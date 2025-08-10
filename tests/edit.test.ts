@@ -153,19 +153,19 @@ describe("edit", () => {
         `)
 
         const input1 = dedent`
-        [foo]
-        # comment
-        bar = 1
+            [foo]
+            # comment
+            bar = 1
         `
         expect(edit(input1, "foo.bar", 2, opt)).toBe(dedent`
-          [foo]
-          # comment
-          bar = 2
+            [foo]
+            # comment
+            bar = 2
         `)
         expect(edit(input1, "foo.bar", { baz: 3 }, opt)).toBe(dedent`
-          [foo]
-          # comment
-          bar = { baz = 3 }
+            [foo]
+            # comment
+            bar = { baz = 3 }
         `)
         // TODO: This is a known bug: https://github.com/toml-rs/toml/issues/691
         // expect(edit(input1, "foo.bar", { baz: 3 }, {...opt, inline: false})).toMatchInlineSnapshot(`
