@@ -1,3 +1,14 @@
+## <small>0.5.2 (2025-08-10)</small>
+
+* docs: update ([94c6a02](https://github.com/rainbowatcher/toml-edit-js/commit/94c6a02))
+* chore: bump deps ([cfdbd1a](https://github.com/rainbowatcher/toml-edit-js/commit/cfdbd1a))
+* chore: bump deps ([7ea324a](https://github.com/rainbowatcher/toml-edit-js/commit/7ea324a))
+* chore: move ImDocument to Document ([78dcf52](https://github.com/rainbowatcher/toml-edit-js/commit/78dcf52))
+* style: adjust indent ([98a383c](https://github.com/rainbowatcher/toml-edit-js/commit/98a383c))
+* fix: edit table value using value mut object instead of insert ([1bc1f5c](https://github.com/rainbowatcher/toml-edit-js/commit/1bc1f5c))
+
+
+
 ## <small>0.5.1 (2025-07-18)</small>
 
 * test: error message update ([4dc2436](https://github.com/rainbowatcher/toml-edit-js/commit/4dc2436))
