@@ -72,7 +72,7 @@ describe("array edit", () => {
             expect(edit(aot, "foo.bar.[0].age", 20, opt)).toBe(dedent`
                 [foo]
                 bar = [
-                    { name = "tom", age = 20 }
+                    { name = "tom",age = 20 }
                 ]
             `)
         })

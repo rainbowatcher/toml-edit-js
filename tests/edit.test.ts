@@ -151,6 +151,29 @@ describe("edit", () => {
             a = 1
             b = 2
         `)
+
+        const input1 = dedent`
+            [foo]
+            # comment
+            bar = 1
+        `
+        expect(edit(input1, "foo.bar", 2, opt)).toBe(dedent`
+            [foo]
+            # comment
+            bar = 2
+        `)
+        expect(edit(input1, "foo.bar", { baz: 3 }, opt)).toBe(dedent`
+            [foo]
+            # comment
+            bar = { baz = 3 }
+        `)
+        // TODO: This is a known bug: https://github.com/toml-rs/toml/issues/691
+        // expect(edit(input1, "foo.bar", { baz: 3 }, {...opt, inline: false})).toMatchInlineSnapshot(`
+        //   "[foo]
+        //   # comment
+        //   [foo.bar]
+        //   baz = 3"
+        // `)
     })
 
     it("set datetime", () => {
@@ -308,6 +331,19 @@ describe("issue", () => {
                 "tomledit"
             ]
             "
+        `)
+    })
+
+    it("issue#8", () => {
+        const toml = dedent`
+            [package]
+            # comment
+            rand = "1"
+        `
+        expect(edit(toml, "package.rand", "2", opt)).toBe(dedent`
+            [package]
+            # comment
+            rand = "2"
         `)
     })
 })
