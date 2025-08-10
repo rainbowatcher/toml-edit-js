@@ -52,17 +52,23 @@ pub fn set_value(
     }
 }
 
+// insert will overwrite the decoration of the original key
+// When the table is empty, only write the default decoration
+// When the table has values, we need to read the existing decoration and apply it to the newly written value
+// When the key to be written exists, only the value should be modified without changing the key's decoration
 fn insert_tablelike<'a>(table: &mut (dyn TableLike + 'a), key: &str, value: Item) {
     if table.is_empty() {
         table.insert(key, value);
-    } else if table.contains_key(key) {
-        let pre_value = table.get(key).unwrap();
+    } else if let Some((mut pre_key, pre_value)) = table.get_key_value_mut(key) {
         let (prefix, suffix) = get_item_decor(pre_value);
         if let Item::Value(value) = value {
-            // insert function will auto foramt the key in table and inlinetable
-            table.insert(key, Item::Value(value.decorated(prefix, suffix)));
+            *pre_value = Item::Value(value.decorated(prefix, suffix));
+        } else if value.is_table() && !pre_value.is_table() {
+            // remove space before equal sign
+            pre_key.leaf_decor_mut().set_suffix("");
+            *pre_value = value;
         } else {
-            table.insert(key, value);
+            *pre_value = value;
         };
     } else {
         if let Item::Value(value) = value {
