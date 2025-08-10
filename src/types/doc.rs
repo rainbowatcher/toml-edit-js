@@ -1,12 +1,12 @@
-use toml_edit::{ImDocument, Item};
+use toml_edit::{Document, Item};
 use wasm_bindgen::JsValue;
 
 use crate::types::{array_table::ArrayTablesWrapper, table::TableLikeWrapper, value::ValueWrapper};
 
-pub struct ImDocumentWrapper(pub ImDocument<String>);
+pub struct DocumentWrapper(pub Document<String>);
 
-impl From<ImDocumentWrapper> for JsValue {
-    fn from(val: ImDocumentWrapper) -> Self {
+impl From<DocumentWrapper> for JsValue {
+    fn from(val: DocumentWrapper) -> Self {
         match val.0.as_item() {
             Item::None => JsValue::NULL,
             Item::Value(value) => JsValue::from(ValueWrapper(value.to_owned())),

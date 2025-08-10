@@ -1,13 +1,13 @@
 use std::{convert::Into, str::FromStr};
 
-use toml_edit::{DocumentMut, ImDocument, Item};
+use toml_edit::{Document, DocumentMut, Item};
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
 
 use crate::{
     EditOptions,
     ops::set::set_value,
     options::IEditOptions,
-    types::{im_doc::ImDocumentWrapper, item::ItemWrapper},
+    types::{doc::DocumentWrapper, item::ItemWrapper},
     util::parse_edit_path,
 };
 
@@ -18,8 +18,8 @@ pub fn init_panic_hook() {
 
 #[wasm_bindgen]
 pub fn parse(input: &str) -> Result<JsValue, JsValue> {
-    match ImDocument::from_str(input) {
-        Ok(doc) => Ok(JsValue::from(ImDocumentWrapper(doc))),
+    match Document::from_str(input) {
+        Ok(doc) => Ok(JsValue::from(DocumentWrapper(doc))),
         Err(e) => throw_str(e.to_string().as_str()),
     }
 }
