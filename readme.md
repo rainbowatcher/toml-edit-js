@@ -5,7 +5,7 @@
 
 # Toml edit for JavaScript
 
-This repo is built on top of the `toml-edit` crate. It brings `toml-edit` to the JavaScript world through WebAssembly.
+Bring [`toml-edit`](https://github.com/toml-rs/toml) to the JavaScript world via WebAssembly.
 
 ## Usage
 
@@ -63,6 +63,8 @@ codegen-units = 1
 const str = stringify(parsed)
 /* same as const toml */
 ```
+
+more example see [tests](https://github.com/rainbowatcher/toml-edit-js/tree/main/tests)
 
 ## API
 
