@@ -17,7 +17,7 @@ pub fn init_panic_hook() {
 
 #[wasm_bindgen]
 pub fn parse(input: &str) -> Result<JsValue, JsValue> {
-    match Document::from_str(input) {
+    match Document::parse(input) {
         Ok(doc) => Ok(JsValue::from(DocumentWrapper(doc))),
         Err(e) => throw_str(e.to_string().as_str()),
     }
