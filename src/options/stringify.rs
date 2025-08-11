@@ -9,18 +9,6 @@ interface IStringifyOptions {
      * @default true
      */
     finalNewline?: boolean;
-
-    /**
-     * Specify the indent number
-     * @default 2
-     */
-    indent?: number;
-
-    /**
-     * requires line breaks if the number of elements is at least the given integer
-     * @default 3
-     */
-    minItems?: number;
 };
 "#;
 
@@ -32,13 +20,17 @@ extern "C" {
 
 pub struct StringifyOptions {
     pub final_newline: bool,
-    pub indent: u8,
-    pub min_items: u8,
+    // pub indent: u8,
+    // pub min_items: u8,
 }
 
 impl Default for StringifyOptions {
     fn default() -> Self {
-        Self { final_newline: true, indent: 2, min_items: 3 }
+        Self {
+            final_newline: true,
+            // indent: 2,
+            // min_items: 3
+        }
     }
 }
 
@@ -67,14 +59,14 @@ impl StringifyOptions {
                             }
                             _ => throw_str("Type Missmatch, expect finalNewline to be boolean"),
                         },
-                        "indent" => match val.as_f64() {
-                            Some(n) => opt.indent = n as u8,
-                            _ => throw_str("Type Missmatch, expect indent to be number"),
-                        },
-                        "minItems" => match val.as_f64() {
-                            Some(n) => opt.min_items = n as u8,
-                            _ => throw_str("Type Missmatch, expect minItems to be number"),
-                        },
+                        // "indent" => match val.as_f64() {
+                        //     Some(n) => opt.indent = n as u8,
+                        //     _ => throw_str("Type Missmatch, expect indent to be number"),
+                        // },
+                        // "minItems" => match val.as_f64() {
+                        //     Some(n) => opt.min_items = n as u8,
+                        //     _ => throw_str("Type Missmatch, expect minItems to be number"),
+                        // },
                         _ => throw_str(format!("Unknown property '{key}'").as_str()),
                     }
                 }

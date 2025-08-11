@@ -4,9 +4,8 @@ use toml_edit::{Document, DocumentMut, Item};
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
 
 use crate::{
-    EditOptions,
     ops::set::set_value,
-    options::IEditOptions,
+    options::{EditOptions, IEditOptions, IStringifyOptions, StringifyOptions},
     types::{doc::DocumentWrapper, item::ItemWrapper},
     util::parse_edit_path,
 };
@@ -25,7 +24,7 @@ pub fn parse(input: &str) -> Result<JsValue, JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn stringify(input: JsValue) -> Result<String, JsValue> {
+pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<String, JsValue> {
     let value = ItemWrapper::from(input);
     let str = match value.0 {
         Item::Table(table) => DocumentMut::from(table).to_string(),
@@ -34,13 +33,14 @@ pub fn stringify(input: JsValue) -> Result<String, JsValue> {
             .map(|t| DocumentMut::from(t.to_owned()).to_string())
             .collect::<Vec<_>>()
             .join("\n"),
-        Item::Value(v) => match v.as_str() {
-            Some(s) => s.to_string(),
-            None => v.to_string(),
-        },
+        Item::Value(v) => v.to_string(),
         Item::None => "null".to_owned(),
     };
-    Ok(str)
+    let stringify_opts = StringifyOptions::new(opts);
+    if stringify_opts.final_newline {
+        return Ok(str);
+    }
+    Ok(str.trim_end().to_string())
 }
 
 #[wasm_bindgen]
@@ -115,7 +115,7 @@ mod tests {
         Reflect::set(&foo, &JsValue::from_str("bar"), &JsValue::from_str("baz")).unwrap();
         Reflect::set(&root, &JsValue::from_str("foo"), &JsValue::from(foo)).unwrap();
 
-        let result = super::stringify(root.into());
+        let result = super::stringify(root.into(), None);
         assert!(result.is_ok());
         let result = result.unwrap();
         println!("result: {}", result);

@@ -2,7 +2,9 @@ import {
     beforeAll, describe, expect, it,
 } from "vitest"
 import init, { stringify } from "../packages/toml-edit-js/shims.js"
+import dedent from "dedent"
 
+const opts = { finalNewline: false }
 
 describe("stringify", () => {
     beforeAll(async () => {
@@ -12,33 +14,28 @@ describe("stringify", () => {
     describe("simple value", () => {
         it("stringify number", () => {
             const toml = 2
-            const result = stringify(toml)
-            expect(result).toBe("2")
+            expect(stringify(toml)).toBe("2")
         })
 
         it("stringify bool", () => {
             const toml = false
-            const result = stringify(toml)
-            expect(result).toBe("false")
+            expect(stringify(toml)).toBe("false")
         })
 
         // TODO: Find out the reason why toml automatically converts time zones
         it("stringify date", () => {
             const toml = new Date(0)
-            const result = stringify(toml)
-            expect(result).toBe("1970-01-01T00:00:00Z")
+            expect(stringify(toml)).toBe("1970-01-01T00:00:00Z")
         })
 
         it("stringify string", () => {
             const toml = "foo"
-            const result = stringify(toml)
-            expect(result).toBe("foo")
+            expect(stringify(toml)).toBe('"foo"')
         })
 
         it("stringify array", () => {
             const toml = [1, 2, 3]
-            const result = stringify(toml)
-            expect(result).toBe("[1, 2, 3]")
+            expect(stringify(toml)).toBe("[1, 2, 3]")
         })
     })
 
@@ -74,9 +71,8 @@ describe("stringify", () => {
             },
         }
 
-        const result = stringify(toml)
-        expect(result).toMatchInlineSnapshot(`
-            """ = 1
+        expect(stringify(toml, opts)).toStrictEqual(dedent`
+            "" = 1
             "🀄" = inf
             "$" = nan
             0-1 = -18
@@ -100,7 +96,6 @@ describe("stringify", () => {
             i = "2023-01-01T00:00:01Z"
             j = "2023-01-01T00:00:01"
             k = "2023-01-01"
-            "
         `)
     })
 
@@ -136,13 +131,12 @@ describe("stringify", () => {
                 ],
             },
         }
-        expect(stringify(toml)).toMatchInlineSnapshot(`
-            "[project]
+        expect(stringify(toml, opts)).toStrictEqual(dedent`
+            [project]
             dependencies = [{ git = "https://github.com/gilead-biostats/gsm.core", name = "gsm.core", tag = "v1.1.0" }, { branch = "main", git = "https://github.com/gilead-rbqm/grail.ado", name = "grail.ado" }, "pkgpub", "tomledit"]
             name = "prep-pkgs"
             r_version = "4.4"
             repositories = [{ alias = "prism", url = "https://prism.dev.a2-ai.cloud/rpkgs/stratus/2025-04-26/" }, { alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest" }]
-            "
         `)
     })
 })
