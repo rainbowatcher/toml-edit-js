@@ -3,7 +3,7 @@ use wasm_bindgen::{JsCast, JsValue, throw_str};
 use web_sys::js_sys::{Array as JsArray, Date as JsDate, Object as JsObject};
 
 use crate::{
-    EditOptions,
+    options::EditOptions,
     types::{array_table::ArrayTablesWrapper, table::TableLikeWrapper, value::ValueWrapper},
 };
 

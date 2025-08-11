@@ -26,20 +26,12 @@ extern "C" {
 pub struct EditOptions {
     pub final_newline: bool,
     pub inline: bool,
-    pub action: Action,
 }
 
 impl Default for EditOptions {
     fn default() -> Self {
-        Self { final_newline: true, inline: true, action: Action::Set }
+        Self { final_newline: true, inline: true }
     }
-}
-
-pub enum Action {
-    Append,
-    Prepend,
-    Set,
-    Insert,
 }
 
 impl EditOptions {
