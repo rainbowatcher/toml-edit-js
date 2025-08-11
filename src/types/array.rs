@@ -4,10 +4,10 @@ use web_sys::js_sys::Array as JsArray;
 
 use crate::types::value::ValueWrapper;
 
-pub struct ArrayWrapper(pub Array);
+pub struct ArrayWrapper<'a>(pub &'a Array);
 
-impl From<ArrayWrapper> for JsValue {
-    fn from(arr: ArrayWrapper) -> Self {
+impl From<ArrayWrapper<'_>> for JsValue {
+    fn from(arr: ArrayWrapper<'_>) -> Self {
         match u32::try_from(arr.0.len()) {
             Ok(len) => {
                 let js_arr = JsArray::new_with_length(len);

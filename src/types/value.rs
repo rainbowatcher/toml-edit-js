@@ -13,7 +13,7 @@ impl From<ValueWrapper> for JsValue {
             Value::Float(formatted) => JsValue::from_f64(*formatted.value()),
             Value::Boolean(formatted) => JsValue::from_bool(*formatted.value()),
             Value::Datetime(formatted) => JsValue::from_str(&formatted.value().to_string()),
-            Value::Array(arr) => JsValue::from(ArrayWrapper(arr)),
+            Value::Array(arr) => JsValue::from(ArrayWrapper(&arr)),
             Value::InlineTable(table) => JsValue::from(TableLikeWrapper::from(table)),
         }
     }

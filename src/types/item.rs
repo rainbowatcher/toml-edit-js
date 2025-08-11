@@ -54,7 +54,7 @@ impl From<JsValue> for ItemWrapper {
         } else if let Ok(js_array) = inn.to_owned().dyn_into::<JsArray>() {
             Self::from(js_array).0
         } else if let Ok(js_obj) = inn.to_owned().dyn_into::<JsObject>() {
-            let table = TableLikeWrapper::from(js_obj);
+            let table = TableLikeWrapper::from(&js_obj);
             Item::Table(table.inner)
         } else {
             Item::Value(Value::String(Formatted::new(inn.as_string().unwrap_or_default())))

@@ -3,9 +3,9 @@ use wasm_bindgen::JsValue;
 
 use crate::types::{array_table::ArrayTablesWrapper, table::TableLikeWrapper, value::ValueWrapper};
 
-pub struct DocumentWrapper(pub Document<String>);
+pub struct DocumentWrapper<'a>(pub Document<&'a str>);
 
-impl From<DocumentWrapper> for JsValue {
+impl<'a> From<DocumentWrapper<'a>> for JsValue {
     fn from(val: DocumentWrapper) -> Self {
         match val.0.as_item() {
             Item::None => JsValue::NULL,

@@ -33,8 +33,8 @@ where
     }
 }
 
-impl From<JsObject> for TableLikeWrapper<Table> {
-    fn from(obj: JsObject) -> Self {
+impl From<&JsObject> for TableLikeWrapper<Table> {
+    fn from(obj: &JsObject) -> Self {
         let entries = JsObject::entries(&obj);
         let mut table = Table::new();
 
@@ -49,6 +49,6 @@ impl From<JsObject> for TableLikeWrapper<Table> {
             }
         }
 
-        TableLikeWrapper::from(table)
+        TableLikeWrapper { inner: table }
     }
 }
