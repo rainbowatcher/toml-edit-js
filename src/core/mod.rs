@@ -1,5 +1,3 @@
-use std::{convert::Into, str::FromStr};
-
 use toml_edit::{Document, DocumentMut, Item};
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
 
@@ -48,24 +46,24 @@ pub fn edit(
     input: &str,
     path: &str,
     value: JsValue,
-    options: Option<IEditOptions>,
+    opts: Option<IEditOptions>,
 ) -> Result<String, JsValue> {
     let mut doc: DocumentMut = match input.parse() {
         Ok(d) => d,
         Err(e) => throw_str(e.to_string().as_str()),
     };
 
-    let edit_options = EditOptions::new(options);
+    let edit_opts = EditOptions::new(opts);
     let (path_keys, value_key) = parse_edit_path(path);
     set_value(
         doc.as_item_mut(),
         path_keys.iter().map(|x| &**x).collect(),
         &value_key,
         value,
-        &edit_options,
+        &edit_opts,
     );
 
-    if edit_options.final_newline {
+    if edit_opts.final_newline {
         return Ok(doc.to_string());
     }
     Ok(doc.to_string().trim_end().to_string())
