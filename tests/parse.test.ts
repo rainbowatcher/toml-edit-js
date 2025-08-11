@@ -114,7 +114,7 @@ describe("parse", () => {
 
         it("comments", () => {
             const toml = "# this is a comment"
-            expect(parse(toml)).toMatchInlineSnapshot("{}")
+            expect(parse(toml)).toStrictEqual({})
 
             const toml2 = `str = "I'm a string." # this is a comment`
             expect(parse(toml2)).toStrictEqual({

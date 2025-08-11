@@ -90,18 +90,18 @@ describe("edit", () => {
 
         it("with i64 boundary", () => {
             // eslint-disable-next-line no-loss-of-precision
-            expect(edit(input, "foo.bar", 9_223_372_036_854_775_807, opt)).toBe(dedent`
+            expect(edit(input, "foo.bar", 9_223_372_036_854_775_807, opt)).toStrictEqual(dedent`
                 [foo]
                 bar = 9223372036854775807
             `)
-            expect(edit(input, "foo.bar", 9_223_372_036_854_775_808, opt)).toMatchInlineSnapshot(`
-                "[foo]
-                bar = 9223372036854775807"
+            expect(edit(input, "foo.bar", 9_223_372_036_854_775_808, opt)).toStrictEqual(dedent`
+                [foo]
+                bar = 9223372036854775807
             `)
             // eslint-disable-next-line no-loss-of-precision
-            expect(edit(input, "foo.bar", -9_223_372_036_854_775_809, opt)).toMatchInlineSnapshot(`
-                "[foo]
-                bar = -9223372036854775808"
+            expect(edit(input, "foo.bar", -9_223_372_036_854_775_809, opt)).toStrictEqual(dedent`
+                [foo]
+                bar = -9223372036854775808
             `)
         })
 
@@ -116,8 +116,8 @@ describe("edit", () => {
 
 
     it("unset", () => {
-        expect(edit(input, "foo.bar", null, opt)).toMatchInlineSnapshot(`"[foo]"`)
-        expect(edit(input, "foo.bar", undefined, opt)).toMatchInlineSnapshot(`"[foo]"`)
+        expect(edit(input, "foo.bar", null, opt)).toStrictEqual("[foo]")
+        expect(edit(input, "foo.bar", undefined, opt)).toStrictEqual("[foo]")
     })
 
     it("set boolean", () => {
