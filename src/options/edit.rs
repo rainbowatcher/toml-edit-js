@@ -6,6 +6,7 @@ const I_EDIT_OPTIONS: &'static str = r#"
 interface IEditOptions {
     /**
      * whether add the final newline
+     * @default true
      */
     finalNewline?: boolean;
 
@@ -30,7 +31,11 @@ pub struct EditOptions {
 
 impl Default for EditOptions {
     fn default() -> Self {
-        Self { final_newline: true, inline: true }
+        Self {
+            // keep multiline format
+            final_newline: true,
+            inline: true,
+        }
     }
 }
 

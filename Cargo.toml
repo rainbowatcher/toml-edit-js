@@ -29,10 +29,6 @@ wasm-bindgen-test = "0.3.50"
 lto = true
 
 [package.metadata.wasm-pack.profile.release]
-debug-js-glue = false
-demangle-name-section = true
-dwarf-debug-info = false
-omit-default-module-path = false
 wasm-opt = [
     # Optimize level 4
     "-O4",
@@ -49,3 +45,9 @@ wasm-opt = [
     # Grand Unified Flow Analysis
     "--gufa",
 ]
+
+[package.metadata.wasm-pack.profile.release.wasm-bindgen]
+debug-js-glue = false
+demangle-name-section = true
+dwarf-debug-info = false
+omit-default-module-path = false

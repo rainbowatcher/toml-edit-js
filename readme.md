@@ -82,12 +82,30 @@ edit method can receive a options
 type IEditOptions = {
     /**
      * whether add the final newline
+     * @default true
      */
     finalNewline?: boolean
 
     /**
-     * Write data in InlineTable format when the value to be written is a object type and inline is set to true
+     * write data in InlineTable format when the value to be written is a object type and inline is set to true
      * @default true
+     */
+    inline?: boolean
+}
+```
+
+stringify method can receive a options
+
+```ts
+type IStringifyOptions = {
+    /**
+     * whether add the final newline
+     */
+    finalNewline?: boolean
+
+    /**
+     * prefer inline table style
+     * @default false
      */
     inline?: boolean
 }

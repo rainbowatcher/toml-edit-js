@@ -5,9 +5,11 @@ use wasm_bindgen::{JsValue, throw_str};
 
 use crate::{
     options::EditOptions,
-    types::item::ItemWrapper,
     util::{
-        find_parent_item, get_array_decor, get_item_decor, get_value_dector, parse_array_index,
+        array::parse_array_index,
+        decoration::{get_array_decor, get_item_decor, get_value_dector},
+        find::find_parent_item,
+        js_value::to_item,
     },
 };
 
@@ -20,7 +22,7 @@ pub fn set_value(
 ) {
     let parent = find_parent_item(obj, path_keys);
 
-    let value_item = ItemWrapper::with_edit_opt(value, options);
+    let value_item = to_item(&value, options.inline);
 
     // handle array
     if value_key.starts_with("[") && value_key.ends_with("]") {
@@ -28,7 +30,7 @@ pub fn set_value(
         if parent.get(i).is_none() {
             let arr = parent.as_array_mut().unwrap();
 
-            match value_item.0 {
+            match value_item {
                 Item::None => (),
                 Item::Value(value) => {
                     let (prefix, suffix) = get_array_decor(arr);
@@ -42,11 +44,11 @@ pub fn set_value(
                 Item::ArrayOfTables(aot) => arr.insert(i, aot.into_array()),
             }
         } else {
-            parent[i] = value_item.0;
+            parent[i] = value_item;
         }
     // handle other
     } else if let Some(table) = parent.as_table_like_mut() {
-        insert_tablelike(table, value_key, value_item.0);
+        insert_tablelike(table, value_key, value_item);
     } else {
         throw_str(&format!("Invalid key: '{value_key}'"))
     }

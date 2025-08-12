@@ -4,8 +4,11 @@ use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
 use crate::{
     ops::set::set_value,
     options::{EditOptions, IEditOptions, IStringifyOptions, StringifyOptions},
-    types::{doc::DocumentWrapper, item::ItemWrapper},
-    util::parse_edit_path,
+    util::{
+        js_value::{from_item, to_item},
+        parse::parse_edit_path,
+        string::remove_final_newline,
+    },
 };
 
 #[wasm_bindgen(start)]
@@ -16,29 +19,37 @@ pub fn init_panic_hook() {
 #[wasm_bindgen]
 pub fn parse(input: &str) -> Result<JsValue, JsValue> {
     match Document::parse(input) {
-        Ok(doc) => Ok(JsValue::from(DocumentWrapper(doc))),
+        Ok(doc) => Ok(from_item(doc.as_item())),
         Err(e) => throw_str(e.to_string().as_str()),
     }
 }
 
 #[wasm_bindgen]
 pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<String, JsValue> {
-    let value = ItemWrapper::from(input);
-    let str = match value.0 {
+    let _opts = StringifyOptions::new(opts);
+
+    let value = to_item(&input, _opts.inline);
+    let mut text = match value {
         Item::Table(table) => DocumentMut::from(table).to_string(),
-        Item::ArrayOfTables(aot) => aot
-            .iter()
-            .map(|t| DocumentMut::from(t.to_owned()).to_string())
-            .collect::<Vec<_>>()
-            .join("\n"),
+        Item::ArrayOfTables(aot) => {
+            let capacity = aot.iter().map(|t| t.to_string().len() + 1).sum();
+            let mut result = String::with_capacity(capacity);
+            for (i, t) in aot.iter().enumerate() {
+                if i > 0 {
+                    result.push('\n');
+                }
+                result.push_str(&DocumentMut::from(t.to_owned()).to_string());
+            }
+            result
+        }
         Item::Value(v) => v.to_string(),
         Item::None => "null".to_owned(),
     };
-    let stringify_opts = StringifyOptions::new(opts);
-    if stringify_opts.final_newline {
-        return Ok(str);
+
+    if !_opts.final_newline {
+        remove_final_newline(&mut text)
     }
-    Ok(str.trim_end().to_string())
+    Ok(text)
 }
 
 #[wasm_bindgen]
@@ -63,10 +74,11 @@ pub fn edit(
         &edit_opts,
     );
 
-    if edit_opts.final_newline {
-        return Ok(doc.to_string());
+    let mut result_str = doc.to_string();
+    if !edit_opts.final_newline {
+        remove_final_newline(&mut result_str);
     }
-    Ok(doc.to_string().trim_end().to_string())
+    Ok(result_str)
 }
 
 #[cfg(test)]

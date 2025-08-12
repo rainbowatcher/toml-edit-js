@@ -9,6 +9,12 @@ interface IStringifyOptions {
      * @default true
      */
     finalNewline?: boolean;
+
+    /**
+     * prefer inline table style
+     * @default false
+     */
+    inline?: boolean;
 };
 "#;
 
@@ -20,6 +26,7 @@ extern "C" {
 
 pub struct StringifyOptions {
     pub final_newline: bool,
+    pub inline: bool,
     // pub indent: u8,
     // pub min_items: u8,
 }
@@ -28,6 +35,7 @@ impl Default for StringifyOptions {
     fn default() -> Self {
         Self {
             final_newline: true,
+            inline: false,
             // indent: 2,
             // min_items: 3
         }
@@ -58,6 +66,14 @@ impl StringifyOptions {
                                 }
                             }
                             _ => throw_str("Type Missmatch, expect finalNewline to be boolean"),
+                        },
+                        "inline" => match val.as_bool() {
+                            Some(n) => {
+                                if n {
+                                    opt.inline = true
+                                }
+                            }
+                            _ => throw_str("Type Missmatch, expect inline to be boolean"),
                         },
                         // "indent" => match val.as_f64() {
                         //     Some(n) => opt.indent = n as u8,
