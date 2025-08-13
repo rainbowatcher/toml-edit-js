@@ -7,7 +7,7 @@ use crate::{
     options::EditOptions,
     util::{
         array::parse_array_index,
-        decoration::{get_array_decor, get_item_decor, get_value_dector},
+        decoration::{get_array_decor, get_item_decor, get_value_decor},
         find::find_parent_item,
         js_value::to_item,
     },
@@ -72,32 +72,30 @@ fn insert_tablelike<'a>(table: &mut (dyn TableLike + 'a), key: &str, value: Item
         } else {
             *pre_value = value;
         };
-    } else {
-        if let Item::Value(value) = value {
-            let values = table.get_values();
-            let first = values.first().unwrap();
-            let last = values.last().unwrap();
-            let (first_prefix, first_suffix) = get_value_dector(first.1);
-            let (last_prefix, last_suffix) = get_value_dector(last.1);
-            match (
-                first.0.first().unwrap().cmp(&&Key::new(key)),
-                last.0.first().unwrap().cmp(&&Key::new(key)),
-            ) {
-                // insert into last
-                (Less, Less) => {
-                    table.insert(key, Item::Value(value.decorated(last_prefix, last_suffix)));
-                }
-                // insert into middle
-                (Less, _) => {
-                    table.insert(key, Item::Value(value.decorated(last_prefix, first_suffix)));
-                }
-                // insert into first
-                _ => {
-                    table.insert(key, Item::Value(value.decorated(first_prefix, first_suffix)));
-                }
+    } else if let Item::Value(value) = value {
+        let values = table.get_values();
+        let first = values.first().unwrap();
+        let last = values.last().unwrap();
+        let (first_prefix, first_suffix) = get_value_decor(first.1);
+        let (last_prefix, last_suffix) = get_value_decor(last.1);
+        match (
+            first.0.first().unwrap().cmp(&&Key::new(key)),
+            last.0.first().unwrap().cmp(&&Key::new(key)),
+        ) {
+            // insert into last
+            (Less, Less) => {
+                table.insert(key, Item::Value(value.decorated(last_prefix, last_suffix)));
             }
-        } else {
-            table.insert(key, value);
+            // insert into middle
+            (Less, _) => {
+                table.insert(key, Item::Value(value.decorated(last_prefix, first_suffix)));
+            }
+            // insert into first
+            _ => {
+                table.insert(key, Item::Value(value.decorated(first_prefix, first_suffix)));
+            }
         }
+    } else {
+        table.insert(key, value);
     }
 }
