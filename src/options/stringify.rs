@@ -1,5 +1,5 @@
-use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
-use web_sys::js_sys::{Array, Object};
+use wasm_bindgen::{JsCast as _, JsValue, prelude::wasm_bindgen, throw_str};
+use web_sys::js_sys::{Array as JsArray, Object as JsObject};
 
 #[wasm_bindgen(typescript_custom_section)]
 const I_STRINGIFY_OPTIONS: &'static str = r#"
@@ -24,6 +24,7 @@ extern "C" {
     pub type IStringifyOptions;
 }
 
+#[derive(Clone)]
 pub struct StringifyOptions {
     pub final_newline: bool,
     pub inline: bool,
@@ -52,38 +53,39 @@ impl StringifyOptions {
                     throw_str("Type Missmatch, IStringifyOptions can not be array");
                 }
 
-                let entries = Object::entries(&js_value.into());
+                let entries = JsObject::entries(&js_value.into());
 
                 for entry in entries.iter() {
-                    let arr = Array::from(&entry);
-                    let key = arr.get(0).as_string().unwrap();
-                    let val = arr.get(1);
-                    match key.as_str() {
-                        "finalNewline" => match val.as_bool() {
-                            Some(b) => {
-                                if !b {
-                                    opt.final_newline = false
+                    if let Some(arr) = entry.dyn_ref::<JsArray>() {
+                        let key = arr.get(0).as_string().unwrap();
+                        let val = arr.get(1);
+                        match key.as_str() {
+                            "finalNewline" => match val.as_bool() {
+                                Some(b) => {
+                                    if !b {
+                                        opt.final_newline = false
+                                    }
                                 }
-                            }
-                            _ => throw_str("Type Missmatch, expect finalNewline to be boolean"),
-                        },
-                        "inline" => match val.as_bool() {
-                            Some(n) => {
-                                if n {
-                                    opt.inline = true
+                                _ => throw_str("Type Missmatch, expect finalNewline to be boolean"),
+                            },
+                            "inline" => match val.as_bool() {
+                                Some(n) => {
+                                    if n {
+                                        opt.inline = true
+                                    }
                                 }
-                            }
-                            _ => throw_str("Type Missmatch, expect inline to be boolean"),
-                        },
-                        // "indent" => match val.as_f64() {
-                        //     Some(n) => opt.indent = n as u8,
-                        //     _ => throw_str("Type Missmatch, expect indent to be number"),
-                        // },
-                        // "minItems" => match val.as_f64() {
-                        //     Some(n) => opt.min_items = n as u8,
-                        //     _ => throw_str("Type Missmatch, expect minItems to be number"),
-                        // },
-                        _ => throw_str(format!("Unknown property '{key}'").as_str()),
+                                _ => throw_str("Type Missmatch, expect inline to be boolean"),
+                            },
+                            // "indent" => match val.as_f64() {
+                            //     Some(n) => opt.indent = n as u8,
+                            //     _ => throw_str("Type Missmatch, expect indent to be number"),
+                            // },
+                            // "minItems" => match val.as_f64() {
+                            //     Some(n) => opt.min_items = n as u8,
+                            //     _ => throw_str("Type Missmatch, expect minItems to be number"),
+                            // },
+                            _ => throw_str(format!("Unknown property '{key}'").as_str()),
+                        }
                     }
                 }
             } else {
