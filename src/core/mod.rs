@@ -26,27 +26,17 @@ pub fn parse(input: &str) -> Result<JsValue, JsValue> {
 
 #[wasm_bindgen]
 pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<String, JsValue> {
-    let _opts = StringifyOptions::new(opts);
+    let opts = StringifyOptions::new(opts);
 
-    let value = to_item(&input, _opts.inline);
+    let value = to_item(&input, opts.inline);
     let mut text = match value {
         Item::Table(table) => DocumentMut::from(table).to_string(),
-        Item::ArrayOfTables(aot) => {
-            let capacity = aot.iter().map(|t| t.to_string().len() + 1).sum();
-            let mut result = String::with_capacity(capacity);
-            for (i, t) in aot.iter().enumerate() {
-                if i > 0 {
-                    result.push('\n');
-                }
-                result.push_str(&DocumentMut::from(t.to_owned()).to_string());
-            }
-            result
-        }
+        Item::ArrayOfTables(aot) => aot.iter().fold(String::new(), |acc, x| acc + &x.to_string()),
         Item::Value(v) => v.to_string(),
         Item::None => "null".to_owned(),
     };
 
-    if !_opts.final_newline {
+    if !opts.final_newline {
         remove_final_newline(&mut text)
     }
     Ok(text)
@@ -69,7 +59,7 @@ pub fn edit(
     set_value(
         doc.as_item_mut(),
         path_keys.iter().map(|x| &**x).collect(),
-        &value_key,
+        value_key,
         value,
         &edit_opts,
     );
