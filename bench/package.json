@@ -8,6 +8,8 @@
     "dependencies": {
         "@rainbowatcher/toml-edit-js@v0.2": "npm:@rainbowatcher/toml-edit-js@0.2.0",
         "@rainbowatcher/toml-edit-js@v0.3": "npm:@rainbowatcher/toml-edit-js@0.3.0",
+        "@rainbowatcher/toml-edit-js@v0.4": "npm:@rainbowatcher/toml-edit-js@0.4.0",
+        "@rainbowatcher/toml-edit-js@v0.5": "npm:@rainbowatcher/toml-edit-js@0.5.2",
         "smol-toml": "^1.4.2"
     }
 }
