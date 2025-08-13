@@ -120,70 +120,26 @@ pub fn from_item(item: &Item) -> JsValue {
 
 #[inline]
 pub fn from_table_like(table: &dyn TableLike) -> JsValue {
-    let entries = if let Ok(len) = u32::try_from(table.len()) {
-        let entries = JsArray::new_with_length(len);
-        for (idx, (key, item)) in table.iter().enumerate() {
+    let entries = table
+        .iter()
+        .map(|(key, item)| {
             let entry = JsArray::new_with_length(2);
             entry.set(0, JsValue::from_str(key));
             entry.set(1, from_item(item));
-            entries.set(idx as u32, entry.into());
-        }
-        entries
-    } else {
-        let entries = JsArray::new();
-        for (key, item) in table.iter() {
-            let entry = JsArray::new_with_length(2);
-            entry.set(0, JsValue::from_str(key));
-            entry.set(1, from_item(item));
-            entries.push(&entry);
-        }
-        entries
-    };
+            JsValue::from(entry)
+        })
+        .collect::<JsArray>();
     JsObject::from_entries(&entries).unwrap().into()
 }
 
 #[inline]
 pub fn from_array_of_tables(aot: &ArrayOfTables) -> JsValue {
-    match u32::try_from(aot.len()) {
-        Ok(len) => {
-            let js_arr = JsArray::new_with_length(len);
-            for (i, value) in aot.iter().enumerate() {
-                let table = from_table_like(value);
-                js_arr.set(i as u32, table);
-            }
-            js_arr.into()
-        }
-        Err(_) => {
-            let js_arr = JsArray::new();
-            for value in aot.iter() {
-                let table = from_table_like(value);
-                js_arr.push(&table);
-            }
-            js_arr.into()
-        }
-    }
+    aot.iter().map(|tbl| from_table_like(tbl)).collect::<JsArray>().into()
 }
 
 #[inline]
 pub fn from_array(arr: &Array) -> JsValue {
-    match u32::try_from(arr.len()) {
-        Ok(len) => {
-            let js_arr = JsArray::new_with_length(len);
-            for (i, value) in arr.iter().enumerate() {
-                let value = from_value(value);
-                js_arr.set(i as u32, value);
-            }
-            js_arr.into()
-        }
-        Err(_) => {
-            let js_arr = JsArray::new();
-            for value in arr.iter() {
-                let value = from_value(value);
-                js_arr.push(&value);
-            }
-            js_arr.into()
-        }
-    }
+    arr.iter().map(|val| from_value(val)).collect::<JsArray>().into()
 }
 
 #[inline]
