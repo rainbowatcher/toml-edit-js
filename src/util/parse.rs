@@ -1,6 +1,6 @@
 /// parse edit path to path_keys and value_key
 #[inline]
-pub fn parse_edit_path<'a>(edit_path: &'a str) -> (Vec<&'a str>, &'a str) {
+pub fn parse_edit_path(edit_path: &str) -> (Vec<&str>, &str) {
     if edit_path.is_empty() {
         return (vec![], "");
     }
