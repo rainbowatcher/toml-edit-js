@@ -1,6 +1,6 @@
 use toml_edit::{Formatted, Value};
 
-pub fn f64_to_value(value: f64) -> Value {
+#[inline]
     if value.fract() != 0.0 || !value.is_finite() {
         return Value::from(value);
     }

@@ -13,6 +13,7 @@ use crate::{
     },
 };
 
+#[inline]
 pub fn set_value(
     obj: &mut Item,
     path_keys: Vec<&str>,
@@ -58,6 +59,7 @@ pub fn set_value(
 // When the table is empty, only write the default decoration
 // When the table has values, we need to read the existing decoration and apply it to the newly written value
 // When the key to be written exists, only the value should be modified without changing the key's decoration
+#[inline]
 fn insert_tablelike<'a>(table: &mut (dyn TableLike + 'a), key: &str, value: Item) {
     if table.is_empty() {
         table.insert(key, value);

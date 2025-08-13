@@ -3,6 +3,7 @@ use wasm_bindgen::throw_str;
 
 use crate::util::array::parse_array_index;
 
+#[inline]
 pub fn find_parent_item<'a>(item: &'a mut Item, path_keys: Vec<&str>) -> &'a mut Item {
     let mut current = item;
 
