@@ -28,6 +28,15 @@ wasm-bindgen-test = "0.3.50"
 [profile.release]
 lto = true
 
+[package.metadata.wasm-pack.profile.dev]
+wasm-opt = false
+
+[package.metadata.wasm-pack.profile.dev.wasm-bindgen]
+debug-js-glue = true
+demangle-name-section = true
+dwarf-debug-info = true
+omit-default-module-path = false
+
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = [
     # Optimize level 4

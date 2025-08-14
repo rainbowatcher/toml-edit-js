@@ -6,6 +6,8 @@
     "packageManager": "pnpm@10.14.0",
     "scripts": {
         "build": "wasmup build .",
+        "build:debug": "wasmup build --dev . && pnpm debug:cp",
+        "debug:cp": "cp tests/fixture/debug.html packages/toml-edit-js/",
         "bump": "cross-release -ayx 'pnpm changelog'",
         "changelog": "conventional-changelog -si CHANGELOG.md",
         "lint": "eslint .",

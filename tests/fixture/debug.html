@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script type="module">
+        import init, { parse, stringify, edit } from "./shims.js"
+        await init({})
+        const toml = `
+[package]
+name = "toml-edit-js"
+version = "0.5.2"
+edition = "2024"
+authors = ["rainbowatcher <rainobw-w@qq.com>"]
+description = "Edit TOML files in JavaScript"
+repository = "https://github.com/rainbowatcher/toml-edit-js"
+license = "MIT"
+readme = "README.md"
+categories = ["wasm"]
+keywords = ["wasm", "toml", "edit", "javascript"]
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+toml_edit = { version = "0.23.3" }
+wasm-bindgen = { version = "0.2.100" }
+console_error_panic_hook = "0.1.7"
+web-sys = { version = "0.3.77", features = ["console"] }
+once_cell = "1.21.3"
+
+[dev-dependencies]
+indoc = "2.0.6"
+wasm-bindgen-test = "0.3.50"
+
+[profile.release]
+lto = true
+
+[package.metadata.wasm-pack.profile.dev]
+wasm-opt = false
+
+[package.metadata.wasm-pack.profile.dev.wasm-bindgen]
+debug-js-glue = true
+demangle-name-section = true
+dwarf-debug-info = true
+omit-default-module-path = false
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = [
+    # Optimize level 4
+    "-O4",
+    # Run passes to convergence, continuing while binary size decreases
+    "--converge",
+    "--strip-debug",
+    "--strip-dwarf",
+    # flattens out code, removing nesting
+    # "--flatten",
+    # inline small functions
+    "--inlining",
+    # removes unreachable code
+    "--dce",
+    # Grand Unified Flow Analysis
+    "--gufa",
+]
+
+[package.metadata.wasm-pack.profile.release.wasm-bindgen]
+debug-js-glue = false
+demangle-name-section = true
+dwarf-debug-info = false
+omit-default-module-path = false
+`
+        const tomlEl = document.getElementById("toml")
+        const jsonEl = document.getElementById("json")
+        
+        function _reset() {
+            tomlEl.textContent = toml
+            jsonEl.textContent = ""
+        }
+        
+        function _parse() {
+            jsonEl.textContent = JSON.stringify(parse(tomlEl.textContent), null, 2)
+        }
+        function _stringify() {
+            tomlEl.textContent = stringify(JSON.parse(jsonEl.textContent))
+        }
+        function _edit() {
+            tomlEl.textContent = edit(toml, "package.name", "unknown")
+        }
+        const stringifyBtn = document.getElementById("stringify")
+        const parseBtn = document.getElementById("parse")
+        const editBtn = document.getElementById("edit")
+        const resetBtn = document.getElementById("reset")
+
+        stringifyBtn.onclick = _stringify
+        parseBtn.onclick = _parse
+        editBtn.onclick = _edit
+        resetBtn.onclick = _reset
+
+        _reset()
+    </script>
+    <title>Document</title>
+</head>
+<body data-keep-debug="true">
+    <div id="root">
+        <div class="grid grid-cols-2">
+            <pre id="toml" class="h-120 w-full overflow-auto"></pre>
+            <pre id="json" class="h-120 w-full overflow-auto"></pre>
+        </div>
+        <div class="flex gap-4 [&>button]:ring [&>button]:rounded [&>button]:ring-offset-2 m-2">
+            <button id="parse">parse</button>
+            <button id="stringify">stringify</button>
+            <button id="edit">edit</button>
+            <button id="reset">reset</button>
+        </div>
+    </div>
+    
+</body>
+</html>
