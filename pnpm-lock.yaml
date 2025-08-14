@@ -74,9 +74,6 @@ importers:
       '@ltd/j-toml':
         specifier: ^1.38.0
         version: 1.38.0
-      '@rainbowatcher/toml-edit-js@v0.2':
-        specifier: npm:@rainbowatcher/toml-edit-js@0.2.0
-        version: '@rainbowatcher/toml-edit-js@0.2.0'
       '@rainbowatcher/toml-edit-js@v0.3':
         specifier: npm:@rainbowatcher/toml-edit-js@0.3.0
         version: '@rainbowatcher/toml-edit-js@0.3.0'
@@ -588,9 +585,6 @@ packages:
 
   '@rainbowatcher/path-extra@0.7.0':
     resolution: {integrity: sha512-vCyrsXkomN4VRnUjUe4Xha1000rIHTCcIXxWYEA5wdwdnIYG8H1qIes0Wj2yOj5DNEXtmRUdd65nOLZNdCGnng==}
-
-  '@rainbowatcher/toml-edit-js@0.2.0':
-    resolution: {integrity: sha512-s9PoHPUxqRCX1PTNH1MzXsUYKMzdP4UksA1WkvsvFfJ+3HLfUBsbRZCuJLjo1dqJlYTXyXwL4lihsT/F3OIhZw==}
 
   '@rainbowatcher/toml-edit-js@0.2.1':
     resolution: {integrity: sha512-y+/mngtoqbgMjHCbi4C5U+1sTFb4/Fl8wrG1v4ndkaAPRb6wlX9EHgT1+mm2EYhhjUJXLHVfBf1W5SRFCULrhA==}
@@ -3117,8 +3111,6 @@ snapshots:
   '@rainbowatcher/fs-extra@0.7.0': {}
 
   '@rainbowatcher/path-extra@0.7.0': {}
-
-  '@rainbowatcher/toml-edit-js@0.2.0': {}
 
   '@rainbowatcher/toml-edit-js@0.2.1': {}
 
