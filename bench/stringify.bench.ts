@@ -1,11 +1,11 @@
-import v2init, { stringify as v2stringify } from "@rainbowatcher/toml-edit-js@v0.2"
+import { stringify as iarnaTomlStringify } from "@iarna/toml"
+import { stringify as ltdJTomlStringify } from "@ltd/j-toml"
 import v3init, { stringify as v3stringify } from "@rainbowatcher/toml-edit-js@v0.3"
 import v4init, { stringify as v4stringify } from "@rainbowatcher/toml-edit-js@v0.4"
 import v5init, { stringify as v5stringify } from "@rainbowatcher/toml-edit-js@v0.5"
 import { stringify as smolStringify } from "smol-toml"
 import { bench } from "vitest"
 import init, { stringify } from "../packages/toml-edit-js/shims"
-
 
 const toml = {
     author: "rainbowatcher <rainobw-w@qq.com>",
@@ -38,16 +38,11 @@ const toml = {
 }
 
 
-await v2init()
 await v3init()
 await v4init()
 await v5init()
 await init()
 
-
-bench("v0.2", () => {
-    v2stringify(toml)
-})
 
 bench("v0.3", () => {
     v3stringify(toml)
@@ -63,6 +58,14 @@ bench("v0.5", () => {
 
 bench("smol-toml", () => {
     smolStringify(toml)
+})
+
+bench("@iarna/toml", () => {
+    iarnaTomlStringify(toml)
+})
+
+bench("@ltd/j-toml", () => {
+    ltdJTomlStringify(toml)
 })
 
 bench("current", () => {

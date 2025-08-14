@@ -1,8 +1,8 @@
+import dedent from "dedent"
 import {
     beforeAll, describe, expect, it,
 } from "vitest"
 import init, { stringify } from "../packages/toml-edit-js/shims.js"
-import dedent from "dedent"
 
 const opts = { finalNewline: false }
 

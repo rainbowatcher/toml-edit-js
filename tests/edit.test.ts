@@ -116,8 +116,8 @@ describe("edit", () => {
 
 
     it("unset", () => {
-        expect(edit(input, "foo.bar", null, opt)).toStrictEqual("[foo]")
-        expect(edit(input, "foo.bar", undefined, opt)).toStrictEqual("[foo]")
+        expect(edit(input, "foo.bar", null, opt)).toBe("[foo]")
+        expect(edit(input, "foo.bar", undefined, opt)).toBe("[foo]")
     })
 
     it("set boolean", () => {

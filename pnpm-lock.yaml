@@ -68,6 +68,12 @@ importers:
 
   bench:
     dependencies:
+      '@iarna/toml':
+        specifier: ^2.2.5
+        version: 2.2.5
+      '@ltd/j-toml':
+        specifier: ^1.38.0
+        version: 1.38.0
       '@rainbowatcher/toml-edit-js@v0.2':
         specifier: npm:@rainbowatcher/toml-edit-js@0.2.0
         version: '@rainbowatcher/toml-edit-js@0.2.0'
@@ -80,6 +86,9 @@ importers:
       '@rainbowatcher/toml-edit-js@v0.5':
         specifier: npm:@rainbowatcher/toml-edit-js@0.5.2
         version: '@rainbowatcher/toml-edit-js@0.5.2'
+      fast-toml:
+        specifier: ^0.5.4
+        version: 0.5.4
       smol-toml:
         specifier: ^1.4.2
         version: 1.4.2
@@ -442,6 +451,9 @@ packages:
     resolution: {integrity: sha512-e5+YUKENATs1JgYHMzTr2MW/NDcXGfYFAuOQU8gJgF/kEh4EqKgfGrfLI67bMD4tbhZVlkigz/9YYwWcbOFthg==}
     engines: {node: '>=10.13.0'}
 
+  '@iarna/toml@2.2.5':
+    resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
+
   '@inquirer/core@10.1.15':
     resolution: {integrity: sha512-8xrp836RZvKkpNbVvgWUlxjT4CraKk2q+I3Ksy+seI2zkcE+y6wNs1BVhgcv8VyImFecUhdQrYLdW32pAjwBdA==}
     engines: {node: '>=18'}
@@ -475,6 +487,9 @@ packages:
 
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
+
+  '@ltd/j-toml@1.38.0':
+    resolution: {integrity: sha512-lYtBcmvHustHQtg4X7TXUu1Xa/tbLC3p2wLvgQI+fWVySguVZJF60Snxijw5EiohumxZbR10kWYFFebh1zotiw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1461,6 +1476,9 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  fast-toml@0.5.4:
+    resolution: {integrity: sha512-nUX94P84wE3gcem12g4FAH3xV7BmcCoV8FXcFVV+NIQAOwRJnyqVKhdGd9DqI4CunW+wOZhVBGKI6Jut/OlLTw==}
 
   fast-uri@3.0.1:
     resolution: {integrity: sha512-MWipKbbYiYI0UC7cl8m/i/IWTqfC8YXsqjzybjddLsFjStroQzsHXkc73JutMvBiXmOvapk+axIl79ig5t55Bw==}
@@ -2934,6 +2952,8 @@ snapshots:
 
   '@hutson/parse-repository-url@5.0.0': {}
 
+  '@iarna/toml@2.2.5': {}
+
   '@inquirer/core@10.1.15(@types/node@24.2.1)':
     dependencies:
       '@inquirer/figures': 1.0.13
@@ -2964,6 +2984,8 @@ snapshots:
       '@types/node': 24.2.1
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
+
+  '@ltd/j-toml@1.38.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -4121,6 +4143,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-toml@0.5.4: {}
 
   fast-uri@3.0.1: {}
 
