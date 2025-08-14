@@ -1,6 +1,6 @@
 use toml_edit::{
     Array, ArrayOfTables, Date, Datetime, Formatted, InlineTable, Item, Offset, Table, TableLike,
-    Time, Value, value,
+    Time, Value,
 };
 use wasm_bindgen::{JsCast, JsValue, throw_str};
 use web_sys::js_sys::{Array as JsArray, Date as JsDate, Object as JsObject};
@@ -10,19 +10,21 @@ use crate::util::value::from_f64;
 #[inline]
 pub fn to_value(js_value: &JsValue, inline: bool) -> Option<Value> {
     if let Some(b) = js_value.as_bool() {
-        Some(Value::from(b))
+        Some(Value::Boolean(Formatted::new(b)))
     } else if let Some(s) = js_value.as_string() {
-        Some(Value::from(s))
+        Some(Value::String(Formatted::new(s)))
     } else if let Some(n) = js_value.as_f64() {
         Some(from_f64(n))
-    } else if let Some(date) = js_value.dyn_ref::<JsDate>() {
-        Some(Value::from(to_datetime(date)))
-    } else if let Some(js_array) = js_value.dyn_ref::<JsArray>() {
-        Some(Value::from(to_array(js_array)))
-    } else if let Some(js_array) = js_value.dyn_ref::<JsObject>()
-        && inline
-    {
-        Some(Value::from(to_inline_table(js_array)))
+    } else if let Some(js_obj) = js_value.dyn_ref::<JsObject>() {
+        if let Some(js_array) = js_obj.dyn_ref::<JsArray>() {
+            Some(Value::Array(to_array(js_array)))
+        } else if let Some(date) = js_obj.dyn_ref::<JsDate>() {
+            Some(Value::Datetime(Formatted::new(to_datetime(date))))
+        } else if inline {
+            Some(Value::InlineTable(to_inline_table(js_obj)))
+        } else {
+            None
+        }
     } else {
         None
     }
@@ -30,14 +32,14 @@ pub fn to_value(js_value: &JsValue, inline: bool) -> Option<Value> {
 
 #[inline]
 pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
-    if js_value.is_null() || js_value.is_undefined() {
-        Item::None
-    } else if js_value.is_bigint() {
+    if js_value.is_bigint() {
         throw_str("Bigint is not supported")
     } else if let Some(v) = to_value(js_value, inline) {
-        value(v)
+        Item::Value(v)
     } else if let Some(js_obj) = js_value.dyn_ref::<JsObject>() {
         Item::Table(to_table(js_obj, inline))
+    } else if js_value.is_null() || js_value.is_undefined() {
+        Item::None
     } else {
         web_sys::console::log_1(&JsValue::from_str(&format!("not covered value {:?}", js_value)));
         Item::Value(Value::String(Formatted::new(js_value.as_string().unwrap_or_default())))
@@ -48,41 +50,42 @@ pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
 pub fn to_table(js_object: &JsObject, inline: bool) -> Table {
     let entries = JsObject::entries(js_object);
 
-    let vec = entries.iter().filter_map(|entry| {
-        let arr = entry.dyn_ref::<JsArray>().expect("entry of object should be array");
-        if arr.length() == 2 {
-            let (key, value) = (arr.get(0), arr.get(1));
-            let key_str = key.as_string().unwrap();
+    entries
+        .iter()
+        .filter_map(|entry| {
+            let arr = entry.dyn_ref::<JsArray>().expect("entry of object should be array");
+            if arr.length() == 2 {
+                let (key, value) = (arr.get(0), arr.get(1));
+                let key_str = key.as_string().unwrap();
 
-            Some((key_str, to_item(&value, inline)))
-        } else {
-            None
-        }
-    });
-
-    Table::from_iter(vec)
+                Some((key_str, to_item(&value, inline)))
+            } else {
+                None
+            }
+        })
+        .collect::<Table>()
 }
 
 #[inline]
 pub fn to_inline_table(js_object: &JsObject) -> InlineTable {
     let entries = JsObject::entries(js_object);
 
-    let vec = entries.iter().filter_map(|entry| match entry.dyn_ref::<JsArray>() {
-        Some(arr) if arr.length() == 2 => {
-            let (key, value) = (arr.get(0), arr.get(1));
-            let key_str = key.as_string().unwrap();
-            to_value(&value, true).map(|v| (key_str, v))
-        }
-        _ => None,
-    });
-
-    InlineTable::from_iter(vec)
+    entries
+        .iter()
+        .filter_map(|entry| match entry.dyn_ref::<JsArray>() {
+            Some(arr) if arr.length() == 2 => {
+                let (key, value) = (arr.get(0), arr.get(1));
+                let key_str = key.as_string().unwrap();
+                to_value(&value, true).map(|v| (key_str, v))
+            }
+            _ => None,
+        })
+        .collect::<InlineTable>()
 }
 
 #[inline]
 pub fn to_array(js_array: &JsArray) -> Array {
-    let iter = js_array.iter().filter_map(|i| to_value(&i, true));
-    Array::from_iter(iter)
+    js_array.iter().filter_map(|i| to_value(&i, true)).collect::<Array>()
 }
 
 #[inline]
@@ -139,7 +142,7 @@ pub fn from_array_of_tables(aot: &ArrayOfTables) -> JsValue {
 
 #[inline]
 pub fn from_array(arr: &Array) -> JsValue {
-    arr.iter().map(|val| from_value(val)).collect::<JsArray>().into()
+    arr.iter().map(from_value).collect::<JsArray>().into()
 }
 
 #[inline]
