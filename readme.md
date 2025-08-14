@@ -83,7 +83,6 @@ The `edit` function allows you to change a value at a specific path. The origina
 
 ```javascript
 const originalToml = `
-const tomlString = `
 # Main package configuration
 [package]
 name = "my-app"
@@ -94,12 +93,11 @@ version = "0.1.0" # Initial version
 strip = "symbols"
 lto = true
 codegen-units = 1
-`;
-`;
+`
 
-const updatedToml = edit(originalToml, "package.rand", { version: "1.0" });
+const updatedToml = edit(originalToml, "package.rand", { version: "1.0" })
 
-console.log(updatedToml);
+console.log(updatedToml)
 /*
 Output:
 const tomlString = `
