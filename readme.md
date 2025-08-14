@@ -3,39 +3,68 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/rainbowatcher/toml-edit-js/ci.yml)
 ![NPM Downloads](https://img.shields.io/npm/dm/%40rainbowatcher%2Ftoml-edit-js)
 
-# Toml edit for JavaScript
+# TOML Edit for JavaScript
 
-Bring [`toml-edit`](https://github.com/toml-rs/toml) to the JavaScript world via WebAssembly.
+This library brings the power of Rust's `toml_edit` to the JavaScript ecosystem through WebAssembly. It allows you to edit TOML files while preserving all comments, spacing, and formatting. It also provides `parse` and `stringify` functions for standard TOML handling.
 
-## Usage
+## Features
+
+- **Format-Preserving Editing**: Modify specific values in your TOML data while keeping your TOML file's formatting, comments, and whitespace intact.
+- **Standard TOML Parsing**: Parses TOML text into a JavaScript object.
+- **Standard TOML Stringifying**: Converts a JavaScript object back into a TOML string.
+- **Synchronous & Asynchronous API**: Supports both sync and async initialization for flexible integration.
+- **High Performance**: Built with Rust and WebAssembly for great performance. Check out the [benchmarks](https://github.com/rainbowatcher/toml-edit-js/tree/main/bench).
+
+## Installation
 
 ```sh
 npm install @rainbowatcher/toml-edit-js
 ```
 
-```js
+## Usage
+
+First, you need to initialize the WebAssembly module. You can do this either asynchronously or synchronously.
+
+```javascript
 import init, {
-    edit, initSync, parse, stringify,
-} from "@rainbowatcher/toml-edit-js"
+    edit,
+    initSync,
+    parse,
+    stringify,
+} from "@rainbowatcher/toml-edit-js";
 
-const toml = `
+// Asynchronous initialization
+await init();
+
+// Or synchronous initialization (e.g., in a CommonJS environment)
+// initSync();
+```
+
+### Parse a TOML String
+
+```javascript
+const tomlString = `
+# Main package configuration
 [package]
-rand = "1"
+name = "my-app"
+version = "0.1.0" # Initial version
 
+# Release profile settings
 [profile.release]
 strip = "symbols"
 lto = true
 codegen-units = 1
-`
+`;
 
-await init()
-// or initSync()
-const parsed = parse(toml)
+const parsed = parse(tomlString);
+
+console.log(parsed);
 /*
-the parsed will be a js object as follow
+Output:
 {
     "package": {
-        "rand": "1"
+        "name": "my-app",
+        "version": "0.1.0"
     },
     "profile": {
         "release": {
@@ -46,71 +75,130 @@ the parsed will be a js object as follow
     }
 }
 */
+```
 
-const edited = edit(toml, "package.rand", { version: "1.0" })
-/*
-the edited will be a string as follow
+### Edit a TOML String
 
+The `edit` function allows you to change a value at a specific path. The original formatting and comments are preserved.
+
+```javascript
+const originalToml = `
+const tomlString = `
+# Main package configuration
 [package]
-rand = { version = "1.0" }
+name = "my-app"
+version = "0.1.0" # Initial version
 
+# Release profile settings
 [profile.release]
 strip = "symbols"
 lto = true
 codegen-units = 1
-*/
+`;
+`;
 
-const str = stringify(parsed)
-/* same as const toml */
+const updatedToml = edit(originalToml, "package.rand", { version: "1.0" });
+
+console.log(updatedToml);
+/*
+Output:
+const tomlString = `
+# Main package configuration
+[package]
+name = "my-app"
+version = "1.0" # Initial version
+
+# Release profile settings
+[profile.release]
+strip = "symbols"
+lto = true
+codegen-units = 1
+`;
+*/
 ```
 
-more example see [tests](https://github.com/rainbowatcher/toml-edit-js/tree/main/tests)
+### Stringify a JavaScript Object
+
+You can convert a JavaScript object back into a TOML string.
+
+```javascript
+const data = {
+    database: {
+        ip: "192.168.1.1",
+        ports: [8001, 8002],
+    },
+};
+
+const tomlStr = stringify(data);
+
+console.log(tomlStr);
+/*
+Output:
+[database]
+ip = "192.168.1.1"
+ports = [8001, 8002]
+*/
+```
+
+For more examples, please see the [tests](https://github.com/rainbowatcher/toml-edit-js/tree/main/tests).
 
 ## API
 
-```ts
-function parse(input: string): any
-function stringify(input: any): string
-function edit(input: string, path: string, value: any, option?: IEditOptions): string
-```
+### `init(): Promise<void>`
+Asynchronously initializes the WebAssembly module.
 
-### Options
+### `initSync(): void`
+Synchronously initializes the WebAssembly module.
 
-edit method can receive a options
+### `parse(input: string): any`
+Parses a TOML string into a JavaScript object.
+
+### `stringify(input: any, opts?: IStringifyOptions | null): string`
+Stringifies a JavaScript object into a TOML string.
+
+### `edit(input: string, path: string, value: any, opts?: IEditOptions | null): string`
+Edits a TOML string at a given path with a new value, preserving formatting.
+
+## Options
+
+### `IEditOptions`
+Options for the `edit` function.
 
 ```ts
 type IEditOptions = {
     /**
-     * whether add the final newline
+     * Whether to add a final newline to the output.
      * @default true
      */
-    finalNewline?: boolean
+    finalNewline?: boolean;
 
     /**
-     * write data in InlineTable format when the value to be written is a object type and inline is set to true
+     * When the value to be written is an object, write it as an inline table.
      * @default true
      */
-    inline?: boolean
+    inline?: boolean;
 }
 ```
 
-stringify method can receive a options
+### `IStringifyOptions`
+Options for the `stringify` function.
 
 ```ts
 type IStringifyOptions = {
     /**
-     * whether add the final newline
+     * Whether to add a final newline to the output.
+     * @default true
      */
-    finalNewline?: boolean
+    finalNewline?: boolean;
 
     /**
-     * prefer inline table style
+     * Prefer using inline tables for all tables.
      * @default false
      */
-    inline?: boolean
+    inline?: boolean;
 }
 ```
 
-# License
+## License
 
-[MIT](https://github.com/rainbowatcher/toml-edit-js/blob/main/LICENSE).
+This project is licensed under the [MIT License](https://github.com/rainbowatcher/toml-edit-js/blob/main/LICENSE).
