@@ -11,7 +11,6 @@ import { bench } from "vitest"
 import curr4init, { parse } from "../packages/toml-edit-js/shims"
 
 
-
 await v3init()
 await v4init()
 await v5init()

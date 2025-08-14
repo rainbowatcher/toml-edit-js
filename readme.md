@@ -31,10 +31,10 @@ import init, {
     initSync,
     parse,
     stringify,
-} from "@rainbowatcher/toml-edit-js";
+} from "@rainbowatcher/toml-edit-js"
 
 // Asynchronous initialization
-await init();
+await init()
 
 // Or synchronous initialization (e.g., in a CommonJS environment)
 // initSync();
@@ -54,11 +54,11 @@ version = "0.1.0" # Initial version
 strip = "symbols"
 lto = true
 codegen-units = 1
-`;
+`
 
-const parsed = parse(tomlString);
+const parsed = parse(tomlString)
 
-console.log(parsed);
+console.log(parsed)
 /*
 Output:
 {
@@ -127,11 +127,11 @@ const data = {
         ip: "192.168.1.1",
         ports: [8001, 8002],
     },
-};
+}
 
-const tomlStr = stringify(data);
+const tomlStr = stringify(data)
 
-console.log(tomlStr);
+console.log(tomlStr)
 /*
 Output:
 [database]
@@ -145,23 +145,29 @@ For more examples, please see the [tests](https://github.com/rainbowatcher/toml-
 ## API
 
 ### `init(): Promise<void>`
+
 Asynchronously initializes the WebAssembly module.
 
 ### `initSync(): void`
+
 Synchronously initializes the WebAssembly module.
 
 ### `parse(input: string): any`
+
 Parses a TOML string into a JavaScript object.
 
 ### `stringify(input: any, opts?: IStringifyOptions | null): string`
+
 Stringifies a JavaScript object into a TOML string.
 
 ### `edit(input: string, path: string, value: any, opts?: IEditOptions | null): string`
+
 Edits a TOML string at a given path with a new value, preserving formatting.
 
 ## Options
 
 ### `IEditOptions`
+
 Options for the `edit` function.
 
 ```ts
@@ -170,17 +176,18 @@ type IEditOptions = {
      * Whether to add a final newline to the output.
      * @default true
      */
-    finalNewline?: boolean;
+    finalNewline?: boolean
 
     /**
      * When the value to be written is an object, write it as an inline table.
      * @default true
      */
-    inline?: boolean;
+    inline?: boolean
 }
 ```
 
 ### `IStringifyOptions`
+
 Options for the `stringify` function.
 
 ```ts
@@ -189,13 +196,13 @@ type IStringifyOptions = {
      * Whether to add a final newline to the output.
      * @default true
      */
-    finalNewline?: boolean;
+    finalNewline?: boolean
 
     /**
      * Prefer using inline tables for all tables.
      * @default false
      */
-    inline?: boolean;
+    inline?: boolean
 }
 ```
 
