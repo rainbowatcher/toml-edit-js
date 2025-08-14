@@ -1,4 +1,4 @@
-use toml_edit::{Document, DocumentMut, Item};
+use toml_edit::{Document, DocumentMut, Item, Value};
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
 
 use crate::{
@@ -32,6 +32,7 @@ pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<Stri
     let mut text = match value {
         Item::Table(table) => DocumentMut::from(table).to_string(),
         Item::ArrayOfTables(aot) => aot.iter().fold(String::new(), |acc, x| acc + &x.to_string()),
+        Item::Value(Value::InlineTable(table)) => table.into_table().to_string(),
         Item::Value(v) => v.to_string(),
         Item::None => "null".to_owned(),
     };
