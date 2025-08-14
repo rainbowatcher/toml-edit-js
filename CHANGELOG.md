@@ -1,3 +1,33 @@
+## 0.6.0 (2025-08-14)
+
+* style: apply lint style rule ([8117984](https://github.com/rainbowatcher/toml-edit-js/commit/8117984))
+* docs: improve documentation, examples, and clarify API usage ([1f14f9c](https://github.com/rainbowatcher/toml-edit-js/commit/1f14f9c))
+* feat: implement inline table support in serialization logic ([2e42512](https://github.com/rainbowatcher/toml-edit-js/commit/2e42512))
+* feat: refactor stringify to improve newline control ([eb7a210](https://github.com/rainbowatcher/toml-edit-js/commit/eb7a210))
+* ci: add GitHub Actions workflow for automated release process ([1bce830](https://github.com/rainbowatcher/toml-edit-js/commit/1bce830))
+* perf: add multiple TOML parser and serializer benchmarks ([e1ecb05](https://github.com/rainbowatcher/toml-edit-js/commit/e1ecb05))
+* perf: optimize functions with inline attributes for performance gains ([b513b64](https://github.com/rainbowatcher/toml-edit-js/commit/b513b64))
+* refactor: fix parse_edit_path signature and improve float-to-integer conversion ([4326fc3](https://github.com/rainbowatcher/toml-edit-js/commit/4326fc3))
+* refactor: functions to convert between Js Value and TOML Item to avoid unnecessary object copying ([0054900](https://github.com/rainbowatcher/toml-edit-js/commit/0054900))
+* refactor: improve parse_edit_path robustness and performance ([dffae90](https://github.com/rainbowatcher/toml-edit-js/commit/dffae90))
+* refactor: move `from_str` to `parse` for document parsing ([6483cd5](https://github.com/rainbowatcher/toml-edit-js/commit/6483cd5))
+* refactor: refactor and clarify array concatenation and stringification logic ([b902ec6](https://github.com/rainbowatcher/toml-edit-js/commit/b902ec6))
+* refactor: refactor and optimize data conversion and serialization logic ([4c6e8de](https://github.com/rainbowatcher/toml-edit-js/commit/4c6e8de))
+* refactor: refactor decoration functions for clarity and performance ([f4f2a03](https://github.com/rainbowatcher/toml-edit-js/commit/f4f2a03))
+* refactor: refactor EditOptions by removing deprecated action field ([b8aa5d9](https://github.com/rainbowatcher/toml-edit-js/commit/b8aa5d9))
+* refactor: refactor parameter naming and clean up import statements ([753105e](https://github.com/rainbowatcher/toml-edit-js/commit/753105e))
+* refactor: refactor table and array conversions for conciseness ([389bd3d](https://github.com/rainbowatcher/toml-edit-js/commit/389bd3d))
+* refactor: refactor type casting and object iteration for safety and clarity ([ccb2e69](https://github.com/rainbowatcher/toml-edit-js/commit/ccb2e69))
+* refactor: refactor wrappers to use references for improved memory management ([14b80c2](https://github.com/rainbowatcher/toml-edit-js/commit/14b80c2))
+* refactor: refine JavaScript value conversions and object handling ([5079dbd](https://github.com/rainbowatcher/toml-edit-js/commit/5079dbd))
+* build: configure WASM build profiles and testing fixtures ([f4b0b3f](https://github.com/rainbowatcher/toml-edit-js/commit/f4b0b3f))
+* chore: change visibility of modules ([e0fd83a](https://github.com/rainbowatcher/toml-edit-js/commit/e0fd83a))
+* chore: update benchmarks and dependencies for toml-edit-js v0.4 and v0.5 ([360e04b](https://github.com/rainbowatcher/toml-edit-js/commit/360e04b))
+* fix: fix shims can't run in browser by update wasmup dependency to version 0.10.1 ([9e2e7e9](https://github.com/rainbowatcher/toml-edit-js/commit/9e2e7e9))
+* fix: improve test assertions for strict equality and correctness ([02da875](https://github.com/rainbowatcher/toml-edit-js/commit/02da875))
+
+
+
 ## <small>0.5.2 (2025-08-10)</small>
 
 * docs: update ([94c6a02](https://github.com/rainbowatcher/toml-edit-js/commit/94c6a02))
