@@ -239,31 +239,31 @@ describe("edit", () => {
     describe("error", () => {
         it("with unknown field", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: Unknown property 'unknown']`)
+            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`"Type error: Unknown property 'unknown'"`)
         })
 
         it("with invalid type", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot(`[Error: Type Missmatch, expect finalNewline to be boolean]`)
+            expect(() => edit(input, "foo.bar", 1, { finalNewline: "true" })).toThrowErrorMatchingInlineSnapshot(`"Type error: expect finalNewline to be boolean"`)
         })
 
         it("with array option", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot(`[Error: Type Missmatch, IEditOptions can not be array]`)
+            expect(() => edit(input, "foo.bar", 1, ["true"])).toThrowErrorMatchingInlineSnapshot(`"Type error: IEditOptions can not be array"`)
         })
 
         it("with string option", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot(`[Error: IEditOptions should be an object]`)
+            expect(() => edit(input, "foo.bar", 1, "true")).toThrowErrorMatchingInlineSnapshot(`"Type error: IEditOptions should be an object"`)
         })
 
         it("last path is invalid", () => {
             edit(input, "foo.bar", 1, opt)
-            expect(() => edit(input, "foo.bar.baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Invalid key: 'baz']`)
+            expect(() => edit(input, "foo.bar.baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: invalid key 'baz'"`)
         })
 
         it("invalid array access", () => {
-            expect(() => edit(input, "foo.[0].baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: 'foo' is not a array]`)
+            expect(() => edit(input, "foo.[0].baz", { a: 1, b: 2 }, opt)).toThrowErrorMatchingInlineSnapshot(`"Type error: item 'foo' is not an array"`)
         })
     })
 })

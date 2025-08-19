@@ -88,19 +88,19 @@ describe("array edit", () => {
 
     describe("invalid case", () => {
         it("set out of boundary", () => {
-            expect(() => edit(array, "foo.bar.[12]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Index out of boundary: '12']`)
+            expect(() => edit(array, "foo.bar.[12]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: index out of boundary '12' for 'foo.bar'"`)
         })
 
         it("empty index", () => {
-            expect(() => edit(array, "foo.bar.[]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Invalid array index: '']`)
+            expect(() => edit(array, "foo.bar.[]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: invalid key '[]'"`)
         })
 
         it("negative index", () => {
-            expect(() => edit(array, "foo.bar.[-1]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Invalid array index: '-1']`)
+            expect(() => edit(array, "foo.bar.[-1]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: invalid key '[-1]'"`)
         })
 
         it("range index", () => {
-            expect(() => edit(array, "foo.bar.[1:3]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`[Error: Invalid array index: '1:3']`)
+            expect(() => edit(array, "foo.bar.[1:3]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: invalid key '[1:3]'"`)
         })
     })
 })

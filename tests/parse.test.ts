@@ -132,12 +132,12 @@ describe("parse", () => {
         it("error with wrong escape chars", () => {
             const errToml = `str = "I'm a string. "You can quote me". Name\tJos\u00E9\nLocation\tSF."`
             expect(() => { parse(errToml) }).toThrowErrorMatchingInlineSnapshot(`
-              [Error: TOML parse error at line 1, column 23
+              "Parse Error: TOML parse error at line 1, column 23
                 |
               1 | str = "I'm a string. "You can quote me". Name	José
                 |                       ^
               unexpected key or value, expected newline, \`#\`
-              ]
+              "
             `)
         })
     })

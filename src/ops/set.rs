@@ -1,10 +1,12 @@
 use std::cmp::Ordering::Less;
 
 use toml_edit::{Item, Key, TableLike};
-use wasm_bindgen::{JsValue, throw_str};
+use wasm_bindgen::JsValue;
 
 use crate::{
+    core::error::TomlEditJsError,
     options::EditOptions,
+    toml_err,
     util::{
         array::parse_array_index,
         decoration::{get_array_decor, get_item_decor, get_value_decor},
@@ -14,20 +16,19 @@ use crate::{
 };
 
 #[inline]
-pub fn set_value(
-    obj: &mut Item,
-    path_keys: Vec<&str>,
-    value_key: &str,
+pub fn set_value<'a>(
+    obj: &'a mut Item,
+    path_keys: Vec<&'a str>,
+    value_key: &'a str,
     value: JsValue,
-    options: &EditOptions,
-) {
-    let parent = find_parent_item(obj, path_keys);
+    options: &'a EditOptions,
+) -> Result<(), TomlEditJsError<'a>> {
+    let parent = find_parent_item(obj, path_keys.clone())?;
 
     let value_item = to_item(&value, options.inline);
 
     // handle array
-    if value_key.starts_with("[") && value_key.ends_with("]") {
-        let i = parse_array_index(value_key);
+    if let Ok(i) = parse_array_index(value_key) {
         if parent.get(i).is_none() {
             let arr = parent.as_array_mut().unwrap();
 
@@ -36,7 +37,7 @@ pub fn set_value(
                 Item::Value(value) => {
                     let (prefix, suffix) = get_array_decor(arr);
                     if i > arr.len() {
-                        throw_str(&format!("Index out of boundary: '{i}'"))
+                        return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
                     } else {
                         arr.insert_formatted(i, value.decorated(prefix, suffix))
                     }
@@ -51,8 +52,10 @@ pub fn set_value(
     } else if let Some(table) = parent.as_table_like_mut() {
         insert_tablelike(table, value_key, value_item);
     } else {
-        throw_str(&format!("Invalid key: '{value_key}'"))
-    }
+        return toml_err!(KeyError(value_key));
+    };
+
+    Ok(())
 }
 
 // insert will overwrite the decoration of the original key

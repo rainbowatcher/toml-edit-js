@@ -1,13 +1,7 @@
-use wasm_bindgen::throw_str;
-
 #[inline]
-pub fn parse_array_index(key: &str) -> usize {
-    let index = key
-        .strip_prefix('[')
+pub fn parse_array_index(key: &str) -> Result<usize, ()> {
+    key.strip_prefix('[')
         .and_then(|s| s.strip_suffix(']'))
-        .unwrap_or_else(|| throw_str(&format!("Invalid array index format: {key}")));
-
-    index
-        .parse::<usize>()
-        .unwrap_or_else(|_| throw_str(&format!("Invalid array index: '{}'", index)))
+        .ok_or_else(|| ())
+        .and_then(|i| i.parse::<usize>().map_err(|_| ()))
 }

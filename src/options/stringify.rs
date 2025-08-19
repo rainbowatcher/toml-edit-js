@@ -1,6 +1,8 @@
 use wasm_bindgen::{JsCast as _, JsValue, prelude::wasm_bindgen, throw_str};
 use web_sys::js_sys::{Array as JsArray, Object as JsObject};
 
+use crate::{core::error::TomlEditJsError, toml_err};
+
 #[wasm_bindgen(typescript_custom_section)]
 const I_STRINGIFY_OPTIONS: &'static str = r#"
 interface IStringifyOptions {
@@ -44,7 +46,7 @@ impl Default for StringifyOptions {
 }
 
 impl StringifyOptions {
-    pub fn new(i: Option<IStringifyOptions>) -> StringifyOptions {
+    pub fn new(i: Option<IStringifyOptions>) -> Result<StringifyOptions, TomlEditJsError<'static>> {
         let mut opt = StringifyOptions::default();
         if let Some(ieo) = i {
             let js_value: JsValue = ieo.into();
@@ -66,7 +68,11 @@ impl StringifyOptions {
                                         opt.final_newline = false
                                     }
                                 }
-                                _ => throw_str("Type Missmatch, expect finalNewline to be boolean"),
+                                _ => {
+                                    return toml_err!(TypeError(format!(
+                                        "expect finalNewline to be boolean"
+                                    )));
+                                }
                             },
                             "inline" => match val.as_bool() {
                                 Some(n) => {
@@ -74,7 +80,11 @@ impl StringifyOptions {
                                         opt.inline = true
                                     }
                                 }
-                                _ => throw_str("Type Missmatch, expect inline to be boolean"),
+                                _ => {
+                                    return toml_err!(TypeError(format!(
+                                        "expect inline to be boolean"
+                                    )));
+                                }
                             },
                             // "indent" => match val.as_f64() {
                             //     Some(n) => opt.indent = n as u8,
@@ -84,7 +94,7 @@ impl StringifyOptions {
                             //     Some(n) => opt.min_items = n as u8,
                             //     _ => throw_str("Type Missmatch, expect minItems to be number"),
                             // },
-                            _ => throw_str(format!("Unknown property '{key}'").as_str()),
+                            _ => return toml_err!(TypeError(format!("unknown property '{key}'"))),
                         }
                     }
                 }
@@ -92,6 +102,6 @@ impl StringifyOptions {
                 throw_str("IEditOptions should be an object");
             }
         }
-        opt
+        Ok(opt)
     }
 }

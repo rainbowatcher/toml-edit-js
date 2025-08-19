@@ -1,7 +1,10 @@
+pub(crate) mod error;
+
 use toml_edit::{Document, DocumentMut, Item, Value};
-use wasm_bindgen::{JsValue, prelude::wasm_bindgen, throw_str};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 use crate::{
+    core::error::TomlEditJsError,
     ops::set::set_value,
     options::{EditOptions, IEditOptions, IStringifyOptions, StringifyOptions},
     util::{
@@ -20,13 +23,13 @@ pub fn init_panic_hook() {
 pub fn parse(input: &str) -> Result<JsValue, JsValue> {
     match Document::parse(input) {
         Ok(doc) => Ok(from_item(doc.as_item())),
-        Err(e) => throw_str(e.to_string().as_str()),
+        Err(e) => Err(TomlEditJsError::ParseError(e).into()),
     }
 }
 
 #[wasm_bindgen]
 pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<String, JsValue> {
-    let opts = StringifyOptions::new(opts);
+    let opts = StringifyOptions::new(opts)?;
 
     let value = to_item(&input, opts.inline);
     let mut text = match value {
@@ -50,12 +53,10 @@ pub fn edit(
     value: JsValue,
     opts: Option<IEditOptions>,
 ) -> Result<String, JsValue> {
-    let mut doc: DocumentMut = match input.parse() {
-        Ok(d) => d,
-        Err(e) => throw_str(e.to_string().as_str()),
-    };
+    let mut doc: DocumentMut =
+        input.parse().map_err(|e| JsValue::from(TomlEditJsError::ParseError(e)))?;
 
-    let edit_opts = EditOptions::new(opts);
+    let edit_opts = EditOptions::new(opts)?;
     let (path_keys, value_key) = parse_edit_path(path);
     set_value(
         doc.as_item_mut(),
@@ -63,7 +64,7 @@ pub fn edit(
         value_key,
         value,
         &edit_opts,
-    );
+    )?;
 
     let mut result_str = doc.to_string();
     if !edit_opts.final_newline {
