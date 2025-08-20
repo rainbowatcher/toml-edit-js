@@ -1,3 +1,13 @@
+## <small>0.6.1 (2025-08-20)</small>
+
+* fix: fix code formatting and syntax errors in example code ([6a0ae5c](https://github.com/rainbowatcher/toml-edit-js/commit/6a0ae5c))
+* fix: fix error message string to match expected output ([1b015a6](https://github.com/rainbowatcher/toml-edit-js/commit/1b015a6))
+* refactor: improve error handling and validation in core module ([b38776c](https://github.com/rainbowatcher/toml-edit-js/commit/b38776c))
+* chore: remove support for legacy toml-edit-js versions ([e09e01b](https://github.com/rainbowatcher/toml-edit-js/commit/e09e01b))
+* chore: update lock file ([bbdfc43](https://github.com/rainbowatcher/toml-edit-js/commit/bbdfc43))
+
+
+
 ## 0.6.0 (2025-08-14)
 
 * style: apply lint style rule ([8117984](https://github.com/rainbowatcher/toml-edit-js/commit/8117984))
