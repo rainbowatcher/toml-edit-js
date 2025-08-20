@@ -239,7 +239,7 @@ describe("edit", () => {
     describe("error", () => {
         it("with unknown field", () => {
             // @ts-expect-error type error
-            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`"Type error: Unknown property 'unknown'"`)
+            expect(() => edit(input, "foo.bar", 1, { unknown: "true" })).toThrowErrorMatchingInlineSnapshot(`"Type error: unknown property 'unknown'"`)
         })
 
         it("with invalid type", () => {
