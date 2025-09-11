@@ -2,7 +2,7 @@
     "name": "bench",
     "version": "0.3.0",
     "private": true,
-    "packageManager": "pnpm@10.15.0",
+    "packageManager": "pnpm@10.15.1",
     "license": "MIT",
     "scripts": {},
     "dependencies": {
