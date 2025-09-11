@@ -100,7 +100,6 @@ const updatedToml = edit(originalToml, "package.rand", { version: "1.0" })
 console.log(updatedToml)
 /*
 Output:
-const tomlString = `
 # Main package configuration
 [package]
 name = "my-app"
@@ -111,7 +110,6 @@ version = "1.0" # Initial version
 strip = "symbols"
 lto = true
 codegen-units = 1
-`;
 */
 ```
 
