@@ -5,34 +5,37 @@ pub fn parse_edit_path(edit_path: &str) -> (Vec<&str>, &str) {
         return (vec![], "");
     }
 
-    let mut path_keys = Vec::new();
+    // Estimated capacity: number of points + 1
+    let estimated_capacity = edit_path.bytes().filter(|&b| b == b'.').count() + 1;
+    let mut path_keys = Vec::with_capacity(estimated_capacity);
+
     let mut start = 0;
     let mut in_quotes = false;
     let bytes = edit_path.as_bytes();
 
     for (i, &byte) in bytes.iter().enumerate() {
-        if byte == b'"' {
-            in_quotes = !in_quotes;
-        } else if byte == b'.' && !in_quotes {
-            let mut seg_start = start;
-            let mut seg_end = i;
-
-            if bytes.get(seg_start) == Some(&b'"') {
-                seg_start += 1;
+        match byte {
+            b'"' => in_quotes = !in_quotes,
+            b'.' if !in_quotes => {
+                let (seg_start, seg_end) = trim_quotes(start, i, bytes);
+                let segment = &edit_path[seg_start..seg_end];
+                path_keys.push(segment);
+                start = i + 1;
             }
-            if seg_end > seg_start && bytes.get(seg_end - 1) == Some(&b'"') {
-                seg_end -= 1;
-            }
-
-            let segment = unsafe { std::str::from_utf8_unchecked(&bytes[seg_start..seg_end]) };
-            path_keys.push(segment);
-
-            start = i + 1;
+            _ => {}
         }
     }
 
+    let (seg_start, seg_end) = trim_quotes(start, bytes.len(), bytes);
+    let value_key = &edit_path[seg_start..seg_end];
+
+    (path_keys, value_key)
+}
+
+#[inline]
+fn trim_quotes(start: usize, end: usize, bytes: &[u8]) -> (usize, usize) {
     let mut seg_start = start;
-    let mut seg_end = bytes.len();
+    let mut seg_end = end;
 
     if bytes.get(seg_start) == Some(&b'"') {
         seg_start += 1;
@@ -41,9 +44,7 @@ pub fn parse_edit_path(edit_path: &str) -> (Vec<&str>, &str) {
         seg_end -= 1;
     }
 
-    let value_key = unsafe { std::str::from_utf8_unchecked(&bytes[seg_start..seg_end]) };
-
-    (path_keys, value_key)
+    (seg_start, seg_end)
 }
 
 #[cfg(test)]
