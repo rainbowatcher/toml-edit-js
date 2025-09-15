@@ -50,7 +50,7 @@ pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<Stri
 pub fn edit(
     input: &str,
     path: &str,
-    value: JsValue,
+    value: &JsValue,
     opts: Option<IEditOptions>,
 ) -> Result<String, JsValue> {
     let mut doc: DocumentMut =
@@ -131,7 +131,7 @@ mod tests {
             bar = "baz"
             "#
         };
-        let result = super::edit(input, "foo.bar", JsValue::from_str("qux"), None);
+        let result = super::edit(input, "foo.bar", &JsValue::from_str("qux"), None);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, "[foo]\nbar = \"qux\"\n");

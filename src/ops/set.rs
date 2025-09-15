@@ -20,12 +20,12 @@ pub fn set_value<'a>(
     obj: &'a mut Item,
     path_keys: Vec<&'a str>,
     value_key: &'a str,
-    value: JsValue,
+    value: &JsValue,
     options: &'a EditOptions,
 ) -> Result<(), TomlEditJsError<'a>> {
     let parent = find_parent_item(obj, path_keys.clone())?;
 
-    let value_item = to_item(&value, options.inline);
+    let value_item = to_item(value, options.inline);
 
     // handle array
     if let Ok(i) = parse_array_index(value_key) {
