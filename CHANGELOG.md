@@ -1,3 +1,13 @@
+## <small>0.6.2 (2025-09-15)</small>
+
+* refactor: refactor and optimize path parsing and quote handling logic ([ade0d35](https://github.com/rainbowatcher/toml-edit-js/commit/ade0d35))
+* refactor: refactor function parameters to use references for consistency ([72c155c](https://github.com/rainbowatcher/toml-edit-js/commit/72c155c))
+* chore: bump deps ([738d52b](https://github.com/rainbowatcher/toml-edit-js/commit/738d52b))
+* chore: update dependencies ([fac853c](https://github.com/rainbowatcher/toml-edit-js/commit/fac853c))
+* docs: correct output ([8ea67e2](https://github.com/rainbowatcher/toml-edit-js/commit/8ea67e2))
+
+
+
 ## <small>0.6.1 (2025-08-20)</small>
 
 * fix: fix code formatting and syntax errors in example code ([6a0ae5c](https://github.com/rainbowatcher/toml-edit-js/commit/6a0ae5c))
