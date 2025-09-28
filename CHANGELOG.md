@@ -1,3 +1,9 @@
+## <small>0.6.3 (2025-09-28)</small>
+
+* chore: bump deps ([a8184cd](https://github.com/rainbowatcher/toml-edit-js/commit/a8184cd))
+
+
+
 ## <small>0.6.2 (2025-09-15)</small>
 
 * refactor: refactor and optimize path parsing and quote handling logic ([ade0d35](https://github.com/rainbowatcher/toml-edit-js/commit/ade0d35))
