@@ -3,7 +3,7 @@
     "type": "module",
     "version": "0.6.2",
     "private": true,
-    "packageManager": "pnpm@10.15.1",
+    "packageManager": "pnpm@10.17.1",
     "scripts": {
         "build": "wasmup build .",
         "build:debug": "wasmup build --dev . && pnpm debug:cp",
@@ -19,7 +19,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@commitlint/config-conventional": "^19.8.1",
+        "@commitlint/config-conventional": "^20.0.0",
         "@rainbowatcher/eslint-config": "^0.21.1",
         "@rainbowatcher/eslint-config-ignore": "^0.21.1",
         "@rainbowatcher/eslint-config-js": "^0.21.1",
@@ -28,12 +28,12 @@
         "@rainbowatcher/eslint-config-prettier": "^0.21.1",
         "@rainbowatcher/eslint-config-toml": "^0.21.1",
         "@rainbowatcher/eslint-config-ts": "^0.21.1",
-        "@types/node": "^24.3.1",
-        "commitlint": "^19.8.1",
+        "@types/node": "^24.5.2",
+        "commitlint": "^20.0.0",
         "conventional-changelog-cli": "^5.0.0",
         "cross-release-cli": "^0.4.0",
         "dedent": "^1.7.0",
-        "eslint": "^9.35.0",
+        "eslint": "^9.36.0",
         "husky": "^9.1.7",
         "typescript": "^5.9.2",
         "vitest": "^3.2.4",
