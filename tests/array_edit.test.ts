@@ -89,6 +89,7 @@ describe("array edit", () => {
     describe("invalid case", () => {
         it("set out of boundary", () => {
             expect(() => edit(array, "foo.bar.[12]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: index out of boundary '12' for 'foo.bar'"`)
+            expect(() => edit(array, "foo.bar.[4]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: index out of boundary '4' for 'foo.bar'"`)
         })
 
         it("empty index", () => {
@@ -101,6 +102,62 @@ describe("array edit", () => {
 
         it("range index", () => {
             expect(() => edit(array, "foo.bar.[1:3]", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: invalid key '[1:3]'"`)
+        })
+    })
+
+    describe("array boundary tests", () => {
+        it("empty array boundary", () => {
+            const emptyArray = dedent`
+                [foo]
+                bar = [
+                  { baz = 1 }
+                ]
+            `
+            // Delete non-existent element should fail
+            expect(() => edit(emptyArray, "foo.bar.[1].baz", 4, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: index out of boundary '1' for 'foo.bar.[1]'"`)
+        })
+
+        it("array of tables boundary", () => {
+            const aot = dedent`
+                [[foo.bar]]
+                name = "test1"
+                [[foo.bar]]
+                name = "test2"
+            `
+            expect(edit(aot, "foo.bar.[0]", { name: "test3" }, opt)).toStrictEqual(dedent`
+                [[foo.bar]]
+                name = "test3"
+                [[foo.bar]]
+                name = "test2"
+            `)
+            expect(edit(aot, "foo.bar.[1]", { name: "test3" }, opt)).toStrictEqual(dedent`
+                [[foo.bar]]
+                name = "test1"
+
+                [[foo.bar]]
+                name = "test3"
+            `)
+            expect(edit(aot, "foo.bar.[2]", { name: "test3" }, opt)).toStrictEqual(dedent`
+                [[foo.bar]]
+                name = "test1"
+                [[foo.bar]]
+                name = "test2"
+
+                [[foo.bar]]
+                name = "test3"
+            `)
+        })
+
+        it("large index out of boundary", () => {
+            expect(() => edit(array, "foo.bar.[999]", 1, opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: index out of boundary '999' for 'foo.bar'"`)
+        })
+
+        it("boundary in nested array", () => {
+            const nested = dedent`
+                [foo]
+                bar = [[1,2], [3,4]]
+            `
+            expect(() => edit(nested, "foo.bar.[3]", [5, 6], opt)).toThrowErrorMatchingInlineSnapshot(`"Key Error: index out of boundary '3' for 'foo.bar'"`)
         })
     })
 })

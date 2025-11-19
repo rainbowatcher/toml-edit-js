@@ -1,6 +1,6 @@
 use std::cmp::Ordering::Less;
 
-use toml_edit::{Item, Key, TableLike};
+use toml_edit::{Item, Key, TableLike, Value};
 use wasm_bindgen::JsValue;
 
 use crate::{
@@ -30,20 +30,60 @@ pub fn set_value<'a>(
     // handle array
     if let Ok(i) = parse_array_index(value_key) {
         if parent.get(i).is_none() {
-            let arr = parent.as_array_mut().unwrap();
-
-            match value_item {
-                Item::None => (),
-                Item::Value(value) => {
-                    let (prefix, suffix) = get_array_decor(arr);
-                    if i > arr.len() {
-                        return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
-                    } else {
-                        arr.insert_formatted(i, value.decorated(prefix, suffix))
+            if let Item::Value(Value::Array(arr)) = parent {
+                match value_item {
+                    Item::None => (),
+                    Item::Value(value) => {
+                        let (prefix, suffix) = get_array_decor(arr);
+                        if i > arr.len() {
+                            return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
+                        } else {
+                            arr.insert_formatted(i, value.decorated(prefix, suffix))
+                        }
+                    }
+                    Item::Table(table) => arr.insert(i, table.into_inline_table()),
+                    Item::ArrayOfTables(aot) => arr.insert(i, aot.into_array()),
+                }
+            } else if let Item::ArrayOfTables(aot) = parent {
+                if i > aot.len() {
+                    return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
+                } else {
+                    match value_item {
+                        Item::Table(table) => {
+                            aot.push(table);
+                        }
+                        Item::Value(Value::InlineTable(inline_table)) => {
+                            aot.push(inline_table.into_table());
+                        }
+                        _ => toml_err!(TypeError(format!(
+                            "cannot insert {} into array of tables at index {}",
+                            value_item.type_name(),
+                            i
+                        )))?,
                     }
                 }
-                Item::Table(table) => arr.insert(i, table.into_inline_table()),
-                Item::ArrayOfTables(aot) => arr.insert(i, aot.into_array()),
+            } else {
+                return toml_err!(TypeError(format!(
+                    "item '{}' is not an array",
+                    parent.type_name()
+                )));
+            }
+        } else if let Item::ArrayOfTables(aot) = parent {
+            if let Some(table) = aot.get_mut(i) {
+                match value_item {
+                    Item::Table(value_table) => *table = value_table,
+                    Item::Value(Value::InlineTable(inline_table)) => {
+                        *table = inline_table.into_table()
+                    }
+                    _ => {
+                        return toml_err!(TypeError(format!(
+                            "cannot set non-table value into array of tables at index {}",
+                            i
+                        )));
+                    }
+                }
+            } else {
+                return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
             }
         } else {
             parent[i] = value_item;

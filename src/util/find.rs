@@ -18,12 +18,12 @@ pub fn find_parent_item<'a>(
         let parent_key = if idx > 0 { path_keys[idx - 1] } else { "root" };
         if let Ok(i) = parse_array_index(key) {
             if let Item::Value(Value::Array(arr)) = current {
-                if i > arr.len() {
+                if i >= arr.len() {
                     return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
                 }
                 current = &mut current[i];
             } else if let Item::ArrayOfTables(aot) = current {
-                if i > aot.len() {
+                if i >= aot.len() {
                     return toml_err!(IndexOutOfBounds(i, path_keys.join(".")));
                 }
                 current = &mut current[i];
@@ -139,7 +139,7 @@ mod tests {
         assert_eq!(found_item.as_str(), Some("192.168.1.1"));
     }
 
-    // --- Panic test ---
+    // --- Error test ---
     #[wasm_bindgen_test]
     fn test_panic_on_array_index_out_of_bounds() {
         let mut item = Item::Table(Table::new());
@@ -147,47 +147,48 @@ mod tests {
 
         let path = vec!["data", "[13]"];
         let result = find_parent_item(&mut item, path);
-        assert!(result.is_err(), "Function should panic");
-        assert!(result.err().unwrap().to_string().contains("index out of bounds"));
+        assert!(result.is_err(), "Function should return error");
+        println!("{:?}", result);
+        assert!(result.err().unwrap().to_string().contains("index out of boundary"));
     }
 
     #[wasm_bindgen_test]
-    #[should_panic(expected = "is not an array")]
-    fn test_panic_on_indexing_a_table() {
+    fn test_error_on_indexing_a_table() {
         let toml_str = "[a]\nb = 1\n";
         let mut doc: DocumentMut = toml_str.parse().unwrap();
         let mut item = doc.as_item_mut();
         let path = vec!["a", "[0]"];
         let result = find_parent_item(&mut item, path);
-        assert!(result.is_err(), "Function should panic");
+        assert!(result.is_err(), "Function should return error");
+        assert!(result.err().unwrap().to_string().contains("is not an array"));
     }
 
     #[wasm_bindgen_test]
-    #[should_panic(expected = "must be a table")]
-    fn test_panic_on_keying_an_array() {
+    fn test_error_on_keying_an_array() {
         let mut item = Item::Table(Table::new());
         item["data"] = Item::Value(Value::Array(Array::from_iter(vec![1, 2])));
         let path = vec!["data", "key"];
         let result = find_parent_item(&mut item, path);
-        assert!(result.is_err(), "Function should panic");
+        assert!(result.is_err(), "Function should return error");
+        assert!(result.err().unwrap().to_string().contains("is not a table"));
     }
 
     #[wasm_bindgen_test]
-    #[should_panic(expected = "must be a table")]
-    fn test_panic_on_keying_a_value() {
+    fn test_error_on_keying_a_value() {
         let mut item = Item::Table(Table::new());
         item["config"] = value("enabled");
         let path = vec!["config", "timeout"];
         let result = find_parent_item(&mut item, path);
-        assert!(result.is_err(), "Function should panic");
+        assert!(result.is_err(), "Function should return error");
+        assert!(result.err().unwrap().to_string().contains("is not a table"));
     }
 
     #[wasm_bindgen_test]
-    #[should_panic(expected = "must be a table")]
-    fn test_panic_if_root_is_not_table() {
+    fn test_error_if_root_is_not_table() {
         let mut item = value("I am a string, not a table");
         let path = vec!["a"];
         let result = find_parent_item(&mut item, path);
-        assert!(result.is_err(), "Function should panic");
+        assert!(result.is_err(), "Function should return error");
+        assert!(result.err().unwrap().to_string().contains("item root is not a table or array"));
     }
 }
