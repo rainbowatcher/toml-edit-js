@@ -2,7 +2,7 @@
     "name": "bench",
     "version": "0.3.0",
     "private": true,
-    "packageManager": "pnpm@10.17.1",
+    "packageManager": "pnpm@10.22.0",
     "license": "MIT",
     "scripts": {},
     "dependencies": {
@@ -12,6 +12,6 @@
         "@rainbowatcher/toml-edit-js@v0.4": "npm:@rainbowatcher/toml-edit-js@0.4.0",
         "@rainbowatcher/toml-edit-js@v0.5": "npm:@rainbowatcher/toml-edit-js@0.5.2",
         "fast-toml": "^0.5.4",
-        "smol-toml": "^1.4.2"
+        "smol-toml": "^1.5.2"
     }
 }

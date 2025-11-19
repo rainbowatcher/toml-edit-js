@@ -15,16 +15,16 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-toml_edit = { version = "0.23.6" }
-wasm-bindgen = { version = "0.2.104" }
+toml_edit = { version = "0.23.7" }
+wasm-bindgen = { version = "0.2.105" }
 console_error_panic_hook = "0.1.7"
-web-sys = { version = "0.3.81", features = ["console"] }
+web-sys = { version = "0.3.82", features = ["console"] }
 once_cell = "1.21.3"
-thiserror = "2.0.16"
+thiserror = "2.0.17"
 
 [dev-dependencies]
-indoc = "2.0.6"
-wasm-bindgen-test = "0.3.54"
+indoc = "2.0.7"
+wasm-bindgen-test = "0.3.55"
 
 [profile.release]
 lto = true
