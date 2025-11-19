@@ -1,3 +1,11 @@
+## <small>0.6.4 (2025-11-19)</small>
+
+* chore: disable commit body max line length in commitlint ([1958900](https://github.com/rainbowatcher/toml-edit-js/commit/1958900))
+* chore(deps): update Rust and Node.js dependencies to latest versions ([b575a17](https://github.com/rainbowatcher/toml-edit-js/commit/b575a17))
+* refactor: enhance array boundary checks and update related tests ([0f5ce50](https://github.com/rainbowatcher/toml-edit-js/commit/0f5ce50))
+
+
+
 ## <small>0.6.3 (2025-09-28)</small>
 
 * chore: bump deps ([a8184cd](https://github.com/rainbowatcher/toml-edit-js/commit/a8184cd))
