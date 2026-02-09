@@ -169,3 +169,55 @@ pub fn from_value(value: &Value) -> JsValue {
         Value::InlineTable(table) => from_table_like(table),
     }
 }
+
+#[cfg(all(test, target_arch = "wasm32"))]
+mod wasm_tests {
+    use super::{from_item, to_item, to_value};
+    use toml_edit::{Item, Value};
+    use wasm_bindgen::JsValue;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+    use web_sys::js_sys::{Array as JsArray, Object as JsObject, Reflect};
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn to_value_converts_primitives() {
+        let b = to_value(&JsValue::from_bool(true), true);
+        assert!(matches!(b, Some(Value::Boolean(_))));
+
+        let s = to_value(&JsValue::from_str("hello"), true);
+        assert!(matches!(s, Some(Value::String(_))));
+
+        let n = to_value(&JsValue::from_f64(42.0), true);
+        assert!(matches!(n, Some(Value::Integer(_))));
+    }
+
+    #[wasm_bindgen_test]
+    fn to_item_converts_null_to_none() {
+        let item = to_item(&JsValue::NULL, true);
+        assert!(matches!(item, Item::None));
+    }
+
+    #[wasm_bindgen_test]
+    fn to_item_converts_object_to_table_when_not_inline() {
+        let obj = JsObject::new();
+        Reflect::set(&obj, &JsValue::from_str("name"), &JsValue::from_str("tom")).unwrap();
+        let item = to_item(&obj.into(), false);
+        assert!(matches!(item, Item::Table(_)));
+        assert_eq!(item["name"].as_str(), Some("tom"));
+    }
+
+    #[wasm_bindgen_test]
+    fn from_item_converts_array_value_to_js_array() {
+        let mut arr = toml_edit::Array::new();
+        arr.push(1);
+        arr.push(2);
+        let item = Item::Value(Value::Array(arr));
+
+        let js_value = from_item(&item);
+        let js_arr = js_value.dyn_into::<JsArray>().unwrap();
+        assert_eq!(js_arr.length(), 2);
+        assert_eq!(js_arr.get(0).as_f64(), Some(1.0));
+        assert_eq!(js_arr.get(1).as_f64(), Some(2.0));
+    }
+}

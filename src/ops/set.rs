@@ -522,7 +522,12 @@ fn insert_inline_tablelike_last(
 mod tests {
     use std::cmp::Ordering::{Equal, Greater, Less};
 
-    use super::{InlineInsertPosition, decide_inline_insert_position};
+    use super::{
+        InlineInsertPosition, decide_inline_insert_position, handle_array_path, handle_tablelike_path,
+        insert_into_aot, insert_into_value_array, preserve_existing_value_decor, replace_aot_item,
+        remove_existing_array_item, replace_existing_array_item, update_existing_tablelike_key,
+    };
+    use toml_edit::{Array, ArrayOfTables, Formatted, Item, Table, Value, value};
 
     #[test]
     fn decide_inline_position_last() {
@@ -544,4 +549,156 @@ mod tests {
             InlineInsertPosition::First
         ));
     }
+
+    #[test]
+    fn insert_into_value_array_rejects_out_of_bounds_index() {
+        let mut arr = Array::from_iter([Value::Integer(Formatted::new(1))]);
+        let result = insert_into_value_array(
+            &mut arr,
+            3,
+            Item::Value(Value::Integer(Formatted::new(2))),
+            "foo.items",
+        );
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("index out of boundary"));
+    }
+
+    #[test]
+    fn insert_into_value_array_converts_table_to_inline_table() {
+        let mut arr = Array::new();
+        let mut table = Table::new();
+        table.insert("name", value("tom"));
+
+        let result = insert_into_value_array(&mut arr, 0, Item::Table(table), "foo.items");
+        assert!(result.is_ok());
+        assert_eq!(arr.len(), 1);
+        assert!(matches!(arr.get(0), Some(Value::InlineTable(_))));
+    }
+
+    #[test]
+    fn insert_into_aot_rejects_non_table_value() {
+        let mut aot = ArrayOfTables::new();
+        let result = insert_into_aot(
+            &mut aot,
+            0,
+            Item::Value(Value::Integer(Formatted::new(1))),
+            "foo.items",
+        );
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("cannot insert"));
+    }
+
+    #[test]
+    fn replace_aot_item_accepts_inline_table_value() {
+        let mut aot = ArrayOfTables::new();
+        let mut old = Table::new();
+        old.insert("name", value("old"));
+        aot.push(old);
+
+        let mut new_table = Table::new();
+        new_table.insert("name", value("new"));
+        let inline = new_table.into_inline_table();
+
+        let result = replace_aot_item(&mut aot, 0, Item::Value(Value::InlineTable(inline)), "foo.aot");
+        assert!(result.is_ok());
+        assert_eq!(aot.get(0).and_then(|t| t.get("name")).and_then(Item::as_str), Some("new"));
+    }
+
+    #[test]
+    fn handle_tablelike_path_rejects_non_table_parent() {
+        let mut parent = Item::Value(Value::Integer(Formatted::new(1)));
+        let result = handle_tablelike_path(&mut parent, "x", value("ok"));
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("invalid key"));
+    }
+
+    #[test]
+    fn preserve_existing_value_decor_applies_to_replacement_value() {
+        let mut existing = Value::Integer(Formatted::new(1));
+        existing.decor_mut().set_prefix(" ");
+        existing.decor_mut().set_suffix("\n");
+
+        let replaced = preserve_existing_value_decor(&existing, value(2));
+        match replaced {
+            Item::Value(v) => {
+                assert_eq!(v.decor().prefix().and_then(|d| d.as_str()), Some(" "));
+                assert_eq!(v.decor().suffix().and_then(|d| d.as_str()), Some("\n"));
+                assert_eq!(v.as_integer(), Some(2));
+            }
+            _ => panic!("expected Item::Value"),
+        }
+    }
+
+    #[test]
+    fn handle_array_path_removes_existing_item_on_none() {
+        let mut arr = Array::new();
+        arr.push(1);
+        arr.push(2);
+        let mut parent = Item::Value(Value::Array(arr));
+
+        let result = handle_array_path(&mut parent, 0, Item::None, "foo.arr");
+        assert!(result.is_ok());
+        assert_eq!(parent.as_array().map(Array::len), Some(1));
+        assert_eq!(parent[0].as_integer(), Some(2));
+    }
+
+    #[test]
+    fn insert_into_aot_rejects_out_of_bounds_index() {
+        let mut aot = ArrayOfTables::new();
+        let result = insert_into_aot(&mut aot, 1, Item::Table(Table::new()), "foo.aot");
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("index out of boundary"));
+    }
+
+    #[test]
+    fn replace_aot_item_rejects_out_of_bounds_index() {
+        let mut aot = ArrayOfTables::new();
+        let result = replace_aot_item(&mut aot, 0, Item::Table(Table::new()), "foo.aot");
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("index out of boundary"));
+    }
+
+    #[test]
+    fn replace_existing_array_item_updates_plain_value() {
+        let mut arr = Array::new();
+        arr.push(1);
+        let mut parent = Item::Value(Value::Array(arr));
+        replace_existing_array_item(&mut parent, 0, value(2));
+        assert_eq!(parent[0].as_integer(), Some(2));
+    }
+
+    #[test]
+    fn remove_existing_array_item_handles_aot() {
+        let mut aot = ArrayOfTables::new();
+        let mut t1 = Table::new();
+        t1.insert("id", value(1));
+        let mut t2 = Table::new();
+        t2.insert("id", value(2));
+        aot.push(t1);
+        aot.push(t2);
+        let mut parent = Item::ArrayOfTables(aot);
+
+        remove_existing_array_item(&mut parent, 0);
+
+        let aot = parent.as_array_of_tables().unwrap();
+        assert_eq!(aot.len(), 1);
+        assert_eq!(aot.get(0).and_then(|t| t.get("id")).and_then(Item::as_integer), Some(2));
+    }
+
+    #[test]
+    fn update_existing_tablelike_key_with_none_marks_item_none_for_non_inline_table() {
+        let mut table = Table::new();
+        table.insert("name", value("tom"));
+        update_existing_tablelike_key(&mut table, "name", Item::None, false);
+        assert!(table.get("name").is_none());
+    }
+
+    #[test]
+    fn handle_tablelike_path_sets_value_for_table() {
+        let mut parent = Item::Table(Table::new());
+        let result = handle_tablelike_path(&mut parent, "name", value("new"));
+        assert!(result.is_ok());
+        assert_eq!(parent["name"].as_str(), Some("new"));
+    }
+
 }

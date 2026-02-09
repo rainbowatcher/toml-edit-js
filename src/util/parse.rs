@@ -74,4 +74,18 @@ mod tests {
         assert_eq!(path_keys, vec!["foo", " bar"]);
         assert_eq!(value_key, "baz");
     }
+
+    #[test]
+    fn test_parse_edit_path_empty_input() {
+        let (path_keys, value_key) = parse_edit_path("");
+        assert!(path_keys.is_empty());
+        assert_eq!(value_key, "");
+    }
+
+    #[test]
+    fn test_parse_edit_path_single_quoted_segment() {
+        let (path_keys, value_key) = parse_edit_path(r#""foo.bar""#);
+        assert!(path_keys.is_empty());
+        assert_eq!(value_key, "foo.bar");
+    }
 }
