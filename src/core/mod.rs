@@ -1,3 +1,6 @@
+//! High-level wasm-exposed APIs.
+//!
+//! This module bridges JavaScript values and `toml_edit` document structures.
 pub(crate) mod error;
 
 use toml_edit::{Document, DocumentMut, Item, Value};
@@ -15,11 +18,13 @@ use crate::{
 };
 
 #[wasm_bindgen(start)]
+/// Installs panic hooks for better browser console error output.
 pub fn init_panic_hook() {
     console_error_panic_hook::set_once();
 }
 
 #[wasm_bindgen]
+/// Parses a TOML string into a JavaScript value tree.
 pub fn parse(input: &str) -> Result<JsValue, JsValue> {
     match Document::parse(input) {
         Ok(doc) => Ok(from_item(doc.as_item())),
@@ -28,6 +33,9 @@ pub fn parse(input: &str) -> Result<JsValue, JsValue> {
 }
 
 #[wasm_bindgen]
+/// Serializes a JavaScript value into TOML text.
+///
+/// The conversion strategy depends on value shape and stringify options.
 pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<String, JsValue> {
     let opts = StringifyOptions::new(opts)?;
 
@@ -47,6 +55,9 @@ pub fn stringify(input: JsValue, opts: Option<IStringifyOptions>) -> Result<Stri
 }
 
 #[wasm_bindgen]
+/// Edits a TOML document by path and returns the updated text.
+///
+/// Path segments support dotted keys and array index notation like `foo.bar.[0]`.
 pub fn edit(
     input: &str,
     path: &str,

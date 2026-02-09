@@ -1,8 +1,13 @@
+//! Tree navigation helpers for edit paths.
+
 use toml_edit::{Item, Table, Value};
 
 use crate::{core::error::TomlEditJsError, toml_err, util::array::parse_array_index};
 
 #[inline]
+/// Resolves the parent item that contains the final path key.
+///
+/// Missing intermediate table keys are created on demand.
 pub fn find_parent_item<'a>(
     item: &'a mut Item,
     path_keys: &Vec<&str>,

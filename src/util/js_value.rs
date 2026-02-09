@@ -1,3 +1,5 @@
+//! Converters between JavaScript values and `toml_edit` data structures.
+
 use toml_edit::{
     Array, ArrayOfTables, Date, Datetime, Formatted, InlineTable, Item, Offset, Table, TableLike,
     Time, Value,
@@ -8,6 +10,7 @@ use web_sys::js_sys::{Array as JsArray, Date as JsDate, Object as JsObject};
 use crate::util::value::from_f64;
 
 #[inline]
+/// Converts a JavaScript primitive/object/array to a TOML value when possible.
 pub fn to_value(js_value: &JsValue, inline: bool) -> Option<Value> {
     if let Some(b) = js_value.as_bool() {
         Some(Value::Boolean(Formatted::new(b)))
@@ -31,6 +34,7 @@ pub fn to_value(js_value: &JsValue, inline: bool) -> Option<Value> {
 }
 
 #[inline]
+/// Converts JavaScript values to TOML items, including table and null handling.
 pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
     if js_value.is_bigint() {
         throw_str("Bigint is not supported")
@@ -46,6 +50,7 @@ pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
 }
 
 #[inline]
+/// Converts a JS object into a TOML table recursively.
 pub fn to_table(js_object: &JsObject, inline: bool) -> Table {
     let entries = JsObject::entries(js_object);
 
@@ -66,6 +71,7 @@ pub fn to_table(js_object: &JsObject, inline: bool) -> Table {
 }
 
 #[inline]
+/// Converts a JS object into a TOML inline table.
 pub fn to_inline_table(js_object: &JsObject) -> InlineTable {
     let entries = JsObject::entries(js_object);
 
@@ -83,11 +89,13 @@ pub fn to_inline_table(js_object: &JsObject) -> InlineTable {
 }
 
 #[inline]
+/// Converts a JS array into a TOML array.
 pub fn to_array(js_array: &JsArray) -> Array {
     js_array.iter().filter_map(|i| to_value(&i, true)).collect::<Array>()
 }
 
 #[inline]
+/// Converts a JS `Date` into a TOML UTC datetime.
 pub fn to_datetime(js_date: &JsDate) -> Datetime {
     // Note: JS `get_utc_month()` is 0-indexed (0-11), while TOML is 1-indexed (1-12).
     // We must add 1 to the month.
@@ -111,6 +119,7 @@ pub fn to_datetime(js_date: &JsDate) -> Datetime {
 }
 
 #[inline]
+/// Converts a TOML item into a JavaScript value tree.
 pub fn from_item(item: &Item) -> JsValue {
     match item {
         Item::Table(t) => from_table_like(t),
@@ -121,6 +130,7 @@ pub fn from_item(item: &Item) -> JsValue {
 }
 
 #[inline]
+/// Converts any table-like TOML node into a JS object.
 pub fn from_table_like(table: &dyn TableLike) -> JsValue {
     let entries = table
         .iter()
@@ -135,16 +145,19 @@ pub fn from_table_like(table: &dyn TableLike) -> JsValue {
 }
 
 #[inline]
+/// Converts an array-of-tables into a JS array of objects.
 pub fn from_array_of_tables(aot: &ArrayOfTables) -> JsValue {
     aot.iter().map(|tbl| from_table_like(tbl)).collect::<JsArray>().into()
 }
 
 #[inline]
+/// Converts a TOML array into a JS array.
 pub fn from_array(arr: &Array) -> JsValue {
     arr.iter().map(from_value).collect::<JsArray>().into()
 }
 
 #[inline]
+/// Converts a TOML value into its JS representation.
 pub fn from_value(value: &Value) -> JsValue {
     match value {
         Value::String(formatted) => JsValue::from_str(formatted.value()),

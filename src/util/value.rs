@@ -1,6 +1,11 @@
+//! Numeric conversion helpers.
+
 use toml_edit::{Formatted, Value};
 
 #[inline]
+/// Converts an `f64` from JS into the most suitable TOML numeric value.
+///
+/// Integer-range finite numbers become `Integer`; others become `Float`.
 pub fn from_f64(value: f64) -> Value {
     if value.fract() != 0.0 || !value.is_finite() {
         Value::Float(Formatted::new(value))

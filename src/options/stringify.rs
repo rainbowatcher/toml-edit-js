@@ -1,3 +1,5 @@
+//! Stringify option definitions and JS input validation.
+
 use wasm_bindgen::{JsCast as _, JsValue, prelude::wasm_bindgen, throw_str};
 use web_sys::js_sys::{Array as JsArray, Object as JsObject};
 
@@ -27,8 +29,11 @@ extern "C" {
 }
 
 #[derive(Clone)]
+/// Normalized stringify options used by serialization routines.
 pub struct StringifyOptions {
+    /// Whether to keep a trailing newline in output.
     pub final_newline: bool,
+    /// Whether to prefer inline tables for object values.
     pub inline: bool,
     // pub indent: u8,
     // pub min_items: u8,
@@ -46,6 +51,7 @@ impl Default for StringifyOptions {
 }
 
 impl StringifyOptions {
+    /// Parses and validates user-provided stringify options from JS.
     pub fn new(i: Option<IStringifyOptions>) -> Result<StringifyOptions, TomlEditJsError<'static>> {
         let mut opt = StringifyOptions::default();
         if let Some(ieo) = i {

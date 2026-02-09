@@ -1,3 +1,12 @@
+//! Core `set` mutation logic for `edit(path, value)`.
+//!
+//! This module routes path updates across:
+//! - normal tables
+//! - inline tables
+//! - arrays
+//! - arrays of tables
+//!
+//! The implementation preserves local decor to keep comments/whitespace stable.
 use std::cmp::Ordering;
 use std::cmp::Ordering::Less;
 
@@ -20,6 +29,7 @@ use crate::{
 };
 
 #[inline]
+/// Sets a value under a parsed parent path and terminal key/index.
 pub fn set_value<'a>(
     obj: &'a mut Item,
     path_keys: &Vec<&'a str>,
@@ -39,6 +49,7 @@ pub fn set_value<'a>(
 }
 
 #[inline]
+/// Handles array index writes/replaces/removals for a resolved parent item.
 fn handle_array_path<'a>(
     parent: &mut Item,
     index: usize,
@@ -63,6 +74,7 @@ fn handle_array_path<'a>(
 }
 
 #[inline]
+/// Handles table-like key writes for a resolved parent item.
 fn handle_tablelike_path<'a>(
     parent: &mut Item,
     value_key: &'a str,
@@ -78,6 +90,7 @@ fn handle_tablelike_path<'a>(
 }
 
 #[inline]
+/// Inserts into an array-like parent when target index does not exist yet.
 fn insert_array_item<'a>(
     parent: &mut Item,
     index: usize,
@@ -96,6 +109,7 @@ fn insert_array_item<'a>(
 }
 
 #[inline]
+/// Inserts a value/table/aot payload into a TOML array.
 fn insert_into_value_array<'a>(
     arr: &mut Array,
     index: usize,
@@ -149,6 +163,7 @@ fn insert_into_value_array<'a>(
 }
 
 #[inline]
+/// Inserts a table-compatible value into an array-of-tables.
 fn insert_into_aot<'a>(
     aot: &mut toml_edit::ArrayOfTables,
     index: usize,
@@ -177,6 +192,7 @@ fn insert_into_aot<'a>(
 }
 
 #[inline]
+/// Replaces an existing array-of-tables element.
 fn replace_aot_item<'a>(
     aot: &mut toml_edit::ArrayOfTables,
     index: usize,
@@ -201,6 +217,7 @@ fn replace_aot_item<'a>(
 }
 
 #[inline]
+/// Removes an existing array element from array or array-of-tables parent.
 fn remove_existing_array_item(parent: &mut Item, index: usize) {
     if let Item::Value(Value::Array(arr)) = parent {
         remove_array_item_and_fix_format(arr, index);
@@ -210,6 +227,7 @@ fn remove_existing_array_item(parent: &mut Item, index: usize) {
 }
 
 #[inline]
+/// Removes one array item and normalizes single-element trailing decor.
 fn remove_array_item_and_fix_format(arr: &mut Array, index: usize) {
     arr.remove(index);
     if arr.len() == 1 {
@@ -221,6 +239,7 @@ fn remove_array_item_and_fix_format(arr: &mut Array, index: usize) {
 }
 
 #[inline]
+/// Replaces an existing array item while preserving existing decor when possible.
 fn replace_existing_array_item(parent: &mut Item, index: usize, value_item: Item) {
     if let Item::Value(existing) = &parent[index] {
         parent[index] = preserve_existing_value_decor(existing, value_item);
@@ -230,6 +249,7 @@ fn replace_existing_array_item(parent: &mut Item, index: usize, value_item: Item
 }
 
 #[inline]
+/// Applies existing value decor to replacement items.
 fn preserve_existing_value_decor(existing: &Value, value_item: Item) -> Item {
     let (prefix, suffix) = get_value_decor(existing);
     if let Item::Value(value) = value_item {
@@ -239,11 +259,10 @@ fn preserve_existing_value_decor(existing: &Value, value_item: Item) -> Item {
     }
 }
 
-// insert will overwrite the decoration of the original key
-// When the table is empty, only write the default decoration
-// When the table has values, we need to read the existing decoration and apply it to the newly written value
-// When the key to be written exists, only the value should be modified without changing the key's decoration
 #[inline]
+/// Inserts or updates a key in a table-like item.
+///
+/// Behavior differs for inline table vs standard table to prevent decor drift.
 fn insert_tablelike<'a>(
     table: &mut (dyn TableLike + 'a),
     key: &str,
@@ -264,6 +283,7 @@ fn insert_tablelike<'a>(
 }
 
 #[inline]
+/// Updates an existing table-like key in place.
 fn update_existing_tablelike_key<'a>(
     table: &mut (dyn TableLike + 'a),
     key: &str,
@@ -297,6 +317,7 @@ fn update_existing_tablelike_key<'a>(
 }
 
 #[inline]
+/// Removes an inline table key and strips comment fragments from following keys.
 fn remove_inline_table_key_and_clean_comments<'a>(table: &mut (dyn TableLike + 'a), key: &str) {
     table.remove(key);
     let keys: Vec<String> = table.iter().map(|(k, _)| k.to_string()).collect();
@@ -310,6 +331,7 @@ fn remove_inline_table_key_and_clean_comments<'a>(table: &mut (dyn TableLike + '
 }
 
 #[inline]
+/// Inserts a new key for non-existing table-like entry.
 fn insert_new_tablelike_key<'a>(
     table: &mut (dyn TableLike + 'a),
     key: &str,
@@ -324,12 +346,16 @@ fn insert_new_tablelike_key<'a>(
 }
 
 #[inline]
+/// Dispatches insertion strategy for value payloads in table-like items.
 fn insert_new_tablelike_value<'a>(
     table: &mut (dyn TableLike + 'a),
     key: &str,
     value: Value,
     is_inline_table: bool,
 ) {
+    // High-level dispatcher only:
+    // 1) collect context from existing entries
+    // 2) route to inline/non-inline insertion strategy
     let ctx = collect_tablelike_insert_context(table, key);
     if !is_inline_table {
         insert_non_inline_tablelike_value(table, key, value, &ctx);
@@ -338,12 +364,18 @@ fn insert_new_tablelike_value<'a>(
     insert_inline_tablelike_value(table, key, value, &ctx);
 }
 
+/// Snapshot of decor and ordering context used during table-like insertion.
 struct TablelikeInsertContext {
+    // Relative position of the new key against first/last existing keys.
     first_cmp: Ordering,
     last_cmp: Ordering,
+
+    // Decor data from the current last key, used by inline-tail insertion.
     last_key_name: String,
     last_key_prefix: String,
     last_key_suffix: String,
+
+    // Value decor anchors reused to preserve local formatting style.
     first_prefix: String,
     first_suffix: String,
     last_prefix: String,
@@ -351,6 +383,7 @@ struct TablelikeInsertContext {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Relative insertion position for new inline-table keys.
 enum InlineInsertPosition {
     First,
     Middle,
@@ -358,10 +391,12 @@ enum InlineInsertPosition {
 }
 
 #[inline]
+/// Collects insertion anchors from first/last keys and values.
 fn collect_tablelike_insert_context(
     table: &mut dyn TableLike,
     key: &str,
 ) -> TablelikeInsertContext {
+    // Invariant: this function is called only when table is non-empty.
     let values = table.get_values();
     let first = values.first().unwrap();
     let last = values.last().unwrap();
@@ -398,7 +433,12 @@ fn collect_tablelike_insert_context(
 }
 
 #[inline]
+/// Maps key ordering comparisons to inline insertion position.
 fn decide_inline_insert_position(first_cmp: Ordering, last_cmp: Ordering) -> InlineInsertPosition {
+    // Keep the exact legacy ordering behavior:
+    // (Less, Less) => append at tail
+    // (Less, _)    => insert in middle
+    // otherwise    => insert at head
     match (first_cmp, last_cmp) {
         (Less, Less) => InlineInsertPosition::Last,
         (Less, _) => InlineInsertPosition::Middle,
@@ -407,12 +447,15 @@ fn decide_inline_insert_position(first_cmp: Ordering, last_cmp: Ordering) -> Inl
 }
 
 #[inline]
+/// Inserts into a normal table while preserving tail formatting style.
 fn insert_non_inline_tablelike_value(
     table: &mut dyn TableLike,
     key: &str,
     value: Value,
     ctx: &TablelikeInsertContext,
 ) {
+    // Non-inline insertion reuses tail value prefix and a cleaned tail suffix
+    // to keep formatting consistent with neighboring entries.
     table.insert(
         key,
         Item::Value(value.decorated(&ctx.last_prefix, clean_insert_suffix(&ctx.last_suffix))),
@@ -420,12 +463,14 @@ fn insert_non_inline_tablelike_value(
 }
 
 #[inline]
+/// Inserts into an inline table with position-sensitive decor strategy.
 fn insert_inline_tablelike_value(
     table: &mut dyn TableLike,
     key: &str,
     value: Value,
     ctx: &TablelikeInsertContext,
 ) {
+    // Inline insertion has position-specific decor policies.
     match decide_inline_insert_position(ctx.first_cmp, ctx.last_cmp) {
         InlineInsertPosition::Last => insert_inline_tablelike_last(table, key, value, ctx),
         InlineInsertPosition::Middle => {
@@ -438,12 +483,18 @@ fn insert_inline_tablelike_value(
 }
 
 #[inline]
+/// Appends into inline table tail and normalizes key/value decor.
 fn insert_inline_tablelike_last(
     table: &mut dyn TableLike,
     key: &str,
     value: Value,
     ctx: &TablelikeInsertContext,
 ) {
+    // Tail insertion needs four ordered steps to avoid decor drift:
+    // 1) clear suffix on previous tail value
+    // 2) insert new value with cleaned tail decor
+    // 3) copy tail key decor to new key
+    // 4) normalize new value decor from old tail value
     if let Some(Item::Value(last_item)) = table.get_mut(&ctx.last_key_name) {
         last_item.decor_mut().set_suffix("");
     }

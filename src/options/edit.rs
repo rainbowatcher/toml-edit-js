@@ -1,3 +1,5 @@
+//! Edit option definitions and JS input validation.
+
 use wasm_bindgen::{JsCast as _, JsValue, prelude::wasm_bindgen};
 use web_sys::js_sys::{Array as JsArray, Object as JsObject};
 
@@ -26,8 +28,11 @@ extern "C" {
     pub type IEditOptions;
 }
 
+/// Normalized edit options used by internal Rust operations.
 pub struct EditOptions {
+    /// Whether to keep a trailing newline in output.
     pub final_newline: bool,
+    /// Whether JS objects should be emitted as inline tables when possible.
     pub inline: bool,
 }
 
@@ -42,6 +47,7 @@ impl Default for EditOptions {
 }
 
 impl EditOptions {
+    /// Parses and validates user-provided edit options from JS.
     pub fn new(i: Option<IEditOptions>) -> Result<EditOptions, TomlEditJsError<'static>> {
         let mut opt = EditOptions::default();
         if let Some(ieo) = i {
