@@ -85,6 +85,33 @@ describe("array edit", () => {
         `)
     })
 
+    it("delete from two-item inline array keeps inline formatting", () => {
+        const input = dedent`
+            [foo]
+            bar = [1, 2]
+        `
+        expect(edit(input, "foo.bar.[1]", null, opt)).toBe(dedent`
+            [foo]
+            bar = [1]
+        `)
+    })
+
+    it("delete from two-item multiline array keeps multiline formatting", () => {
+        const input = dedent`
+            [foo]
+            bar = [
+                1,
+                2
+            ]
+        `
+        expect(edit(input, "foo.bar.[1]", null, opt)).toBe(dedent`
+            [foo]
+            bar = [
+                1
+            ]
+        `)
+    })
+
 
     describe("invalid case", () => {
         it("set out of boundary", () => {

@@ -230,11 +230,14 @@ fn remove_existing_array_item(parent: &mut Item, index: usize) {
 /// Removes one array item and normalizes single-element trailing decor.
 fn remove_array_item_and_fix_format(arr: &mut Array, index: usize) {
     arr.remove(index);
-    if arr.len() == 1 {
-        if let Some(first) = arr.get_mut(0) {
-            let (prefix, _) = get_value_decor(first);
-            *first = first.clone().decorated(prefix, "\n");
-        }
+    if arr.len() != 1 {
+        return;
+    }
+
+    if let Some(first) = arr.get_mut(0) {
+        let (prefix, _) = get_value_decor(first);
+        let suffix = if prefix.contains('\n') { "\n" } else { "" };
+        *first = first.clone().decorated(prefix, suffix);
     }
 }
 
