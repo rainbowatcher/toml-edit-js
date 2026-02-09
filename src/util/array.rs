@@ -1,7 +1,12 @@
+use crate::{core::error::TomlEditJsError, toml_err};
+
 #[inline]
-pub fn parse_array_index(key: &str) -> Result<usize, ()> {
-    key.strip_prefix('[')
-        .and_then(|s| s.strip_suffix(']'))
-        .ok_or_else(|| ())
-        .and_then(|i| i.parse::<usize>().map_err(|_| ()))
+pub fn parse_array_index(key: &'_ str) -> Result<usize, TomlEditJsError<'_>> {
+    match key.strip_prefix('[').and_then(|s| s.strip_suffix(']')) {
+        Some(inner) => match inner.parse::<usize>() {
+            Ok(index) => Ok(index),
+            Err(_) => toml_err!(KeyError(key)),
+        },
+        None => toml_err!(KeyError(key)),
+    }
 }

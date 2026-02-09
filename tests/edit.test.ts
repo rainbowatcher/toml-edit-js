@@ -281,6 +281,178 @@ describe("edit with sync init", () => {
     })
 })
 
+describe("edit with comment", () => {
+    beforeAll(async () => {
+        await init()
+    })
+
+    const inputTableMixedComments = dedent`
+        # Table comment
+        [foo]
+        # Before bar
+        bar = 1 # inline comment
+        # After bar
+        # Second line of comment
+        baz = 2
+    `
+    const inputArrayComments = dedent`
+        # Array comment
+        items = [
+            # comment before first element
+            1, # inline comment
+            # comment before second element
+            2
+        ]
+    `
+    const inputInlineTableComments = dedent`
+        # Table comment
+        foo = {
+            # comment before first element
+            a = 1, # inline comment
+            # comment before second element
+            b = 2
+        }
+    `
+
+    describe("edit table", () => {
+        it("set existing item", () => {
+            expect(edit(inputTableMixedComments, "foo.bar", "qux", opt)).toBe(dedent`
+                # Table comment
+                [foo]
+                # Before bar
+                bar = "qux" # inline comment
+                # After bar
+                # Second line of comment
+                baz = 2
+            `)
+            expect(edit(inputTableMixedComments, "foo.baz", "qux", opt)).toBe(dedent`
+                # Table comment
+                [foo]
+                # Before bar
+                bar = 1 # inline comment
+                # After bar
+                # Second line of comment
+                baz = "qux"
+            `)
+        })
+
+        it("add new value", () => {
+            expect(edit(inputTableMixedComments, "foo.qux", "qux", opt)).toBe(dedent`
+                # Table comment
+                [foo]
+                # Before bar
+                bar = 1 # inline comment
+                # After bar
+                # Second line of comment
+                baz = 2
+                qux = "qux"
+            `)
+        })
+
+        it("remove value", () => {
+            expect(edit(inputTableMixedComments, "foo.bar", undefined, opt)).toBe(dedent`
+                # Table comment
+                [foo]
+                # After bar
+                # Second line of comment
+                baz = 2
+            `)
+        })
+    })
+
+    describe("edit array", () => {
+        it("set existing item", () => {
+            expect(edit(inputArrayComments, "items.[0]", 3, opt)).toBe(dedent`
+                # Array comment
+                items = [
+                    # comment before first element
+                    3, # inline comment
+                    # comment before second element
+                    2
+                ]
+            `)
+            expect(edit(inputArrayComments, "items.[1]", 4, opt)).toBe(dedent`
+                # Array comment
+                items = [
+                    # comment before first element
+                    1, # inline comment
+                    # comment before second element
+                    4
+                ]
+            `)
+        })
+
+        it("add new item", () => {
+            expect(edit(inputArrayComments, "items.[2]", 3, opt)).toBe(dedent`
+                # Array comment
+                items = [
+                    # comment before first element
+                    1, # inline comment
+                    # comment before second element
+                    2,
+                    3
+                ]
+            `)
+        })
+
+        it("remove item", () => {
+            expect(edit(inputArrayComments, "items.[1]", undefined, opt)).toBe(dedent`
+                # Array comment
+                items = [
+                    # comment before first element
+                    1
+                ]
+            `)
+        })
+    })
+
+    describe("edit inlinetable", () => {
+        it("set existing key", () => {
+            expect(edit(inputInlineTableComments, "foo.a", 3, opt)).toBe(dedent`
+                # Table comment
+                foo = {
+                    # comment before first element
+                    a = 3, # inline comment
+                    # comment before second element
+                    b = 2
+                }
+            `)
+            expect(edit(inputInlineTableComments, "foo.b", 4, opt)).toBe(dedent`
+                # Table comment
+                foo = {
+                    # comment before first element
+                    a = 1, # inline comment
+                    # comment before second element
+                    b = 4
+                }
+            `)
+        })
+
+        it("add new key", () => {
+            expect(edit(inputInlineTableComments, "foo.c", 3, opt)).toBe(dedent`
+                # Table comment
+                foo = {
+                    # comment before first element
+                    a = 1, # inline comment
+                    # comment before second element
+                    b = 2,
+                    c = 3
+                }
+            `)
+        })
+
+        it("remove key", () => {
+            expect(edit(inputInlineTableComments, "foo.a", undefined, opt)).toBe(dedent`
+                # Table comment
+                foo = {
+                    # comment before second element
+                    b = 2
+                }
+            `)
+        })
+    })
+})
+
 
 describe("issue", () => {
     beforeAll(() => {
@@ -344,6 +516,18 @@ describe("issue", () => {
             [package]
             # comment
             rand = "2"
+        `)
+    })
+
+    it("issue#11", () => {
+        const inputWithComment = dedent`
+            [foo]
+            one = 1 # a comment
+        `
+        expect(edit(inputWithComment, "foo.bar", "qux", opt)).toBe(dedent`
+            [foo]
+            one = 1 # a comment
+            bar = "qux"
         `)
     })
 })

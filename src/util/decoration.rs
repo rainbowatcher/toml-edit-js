@@ -38,3 +38,31 @@ pub fn get_item_decor(item: &Item) -> (&str, &str) {
         Item::Table(table) => get_table_decor(table),
     }
 }
+
+#[inline]
+pub fn clean_insert_prefix(prefix: &str) -> &str {
+    match prefix.rfind('\n') {
+        Some(idx) => &prefix[idx..],
+        None => prefix,
+    }
+}
+
+#[inline]
+pub fn clean_insert_suffix(suffix: &str) -> &str {
+    match suffix.find('\n') {
+        Some(idx) => &suffix[idx..],
+        None => "",
+    }
+}
+
+#[inline]
+pub fn strip_leading_inline_comment(prefix: &str) -> &str {
+    if prefix.starts_with(" #") {
+        match prefix.find('\n') {
+            Some(idx) => &prefix[idx..],
+            None => "",
+        }
+    } else {
+        prefix
+    }
+}
