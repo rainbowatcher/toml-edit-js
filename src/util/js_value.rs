@@ -1,3 +1,5 @@
+//! Converters between JavaScript values and `toml_edit` data structures.
+
 use toml_edit::{
     Array, ArrayOfTables, Date, Datetime, Formatted, InlineTable, Item, Offset, Table, TableLike,
     Time, Value,
@@ -8,6 +10,7 @@ use web_sys::js_sys::{Array as JsArray, Date as JsDate, Object as JsObject};
 use crate::util::value::from_f64;
 
 #[inline]
+/// Converts a JavaScript primitive/object/array to a TOML value when possible.
 pub fn to_value(js_value: &JsValue, inline: bool) -> Option<Value> {
     if let Some(b) = js_value.as_bool() {
         Some(Value::Boolean(Formatted::new(b)))
@@ -31,6 +34,7 @@ pub fn to_value(js_value: &JsValue, inline: bool) -> Option<Value> {
 }
 
 #[inline]
+/// Converts JavaScript values to TOML items, including table and null handling.
 pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
     if js_value.is_bigint() {
         throw_str("Bigint is not supported")
@@ -41,12 +45,12 @@ pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
     } else if js_value.is_null() || js_value.is_undefined() {
         Item::None
     } else {
-        web_sys::console::log_1(&JsValue::from_str(&format!("not covered value {:?}", js_value)));
         Item::Value(Value::String(Formatted::new(js_value.as_string().unwrap_or_default())))
     }
 }
 
 #[inline]
+/// Converts a JS object into a TOML table recursively.
 pub fn to_table(js_object: &JsObject, inline: bool) -> Table {
     let entries = JsObject::entries(js_object);
 
@@ -67,6 +71,7 @@ pub fn to_table(js_object: &JsObject, inline: bool) -> Table {
 }
 
 #[inline]
+/// Converts a JS object into a TOML inline table.
 pub fn to_inline_table(js_object: &JsObject) -> InlineTable {
     let entries = JsObject::entries(js_object);
 
@@ -84,11 +89,13 @@ pub fn to_inline_table(js_object: &JsObject) -> InlineTable {
 }
 
 #[inline]
+/// Converts a JS array into a TOML array.
 pub fn to_array(js_array: &JsArray) -> Array {
     js_array.iter().filter_map(|i| to_value(&i, true)).collect::<Array>()
 }
 
 #[inline]
+/// Converts a JS `Date` into a TOML UTC datetime.
 pub fn to_datetime(js_date: &JsDate) -> Datetime {
     // Note: JS `get_utc_month()` is 0-indexed (0-11), while TOML is 1-indexed (1-12).
     // We must add 1 to the month.
@@ -112,6 +119,7 @@ pub fn to_datetime(js_date: &JsDate) -> Datetime {
 }
 
 #[inline]
+/// Converts a TOML item into a JavaScript value tree.
 pub fn from_item(item: &Item) -> JsValue {
     match item {
         Item::Table(t) => from_table_like(t),
@@ -122,6 +130,7 @@ pub fn from_item(item: &Item) -> JsValue {
 }
 
 #[inline]
+/// Converts any table-like TOML node into a JS object.
 pub fn from_table_like(table: &dyn TableLike) -> JsValue {
     let entries = table
         .iter()
@@ -136,16 +145,19 @@ pub fn from_table_like(table: &dyn TableLike) -> JsValue {
 }
 
 #[inline]
+/// Converts an array-of-tables into a JS array of objects.
 pub fn from_array_of_tables(aot: &ArrayOfTables) -> JsValue {
     aot.iter().map(|tbl| from_table_like(tbl)).collect::<JsArray>().into()
 }
 
 #[inline]
+/// Converts a TOML array into a JS array.
 pub fn from_array(arr: &Array) -> JsValue {
     arr.iter().map(from_value).collect::<JsArray>().into()
 }
 
 #[inline]
+/// Converts a TOML value into its JS representation.
 pub fn from_value(value: &Value) -> JsValue {
     match value {
         Value::String(formatted) => JsValue::from_str(formatted.value()),
@@ -155,5 +167,57 @@ pub fn from_value(value: &Value) -> JsValue {
         Value::Datetime(formatted) => JsValue::from_str(&formatted.value().to_string()),
         Value::Array(arr) => from_array(arr),
         Value::InlineTable(table) => from_table_like(table),
+    }
+}
+
+#[cfg(all(test, target_arch = "wasm32"))]
+mod wasm_tests {
+    use super::{from_item, to_item, to_value};
+    use toml_edit::{Item, Value};
+    use wasm_bindgen::JsValue;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+    use web_sys::js_sys::{Array as JsArray, Object as JsObject, Reflect};
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn to_value_converts_primitives() {
+        let b = to_value(&JsValue::from_bool(true), true);
+        assert!(matches!(b, Some(Value::Boolean(_))));
+
+        let s = to_value(&JsValue::from_str("hello"), true);
+        assert!(matches!(s, Some(Value::String(_))));
+
+        let n = to_value(&JsValue::from_f64(42.0), true);
+        assert!(matches!(n, Some(Value::Integer(_))));
+    }
+
+    #[wasm_bindgen_test]
+    fn to_item_converts_null_to_none() {
+        let item = to_item(&JsValue::NULL, true);
+        assert!(matches!(item, Item::None));
+    }
+
+    #[wasm_bindgen_test]
+    fn to_item_converts_object_to_table_when_not_inline() {
+        let obj = JsObject::new();
+        Reflect::set(&obj, &JsValue::from_str("name"), &JsValue::from_str("tom")).unwrap();
+        let item = to_item(&obj.into(), false);
+        assert!(matches!(item, Item::Table(_)));
+        assert_eq!(item["name"].as_str(), Some("tom"));
+    }
+
+    #[wasm_bindgen_test]
+    fn from_item_converts_array_value_to_js_array() {
+        let mut arr = toml_edit::Array::new();
+        arr.push(1);
+        arr.push(2);
+        let item = Item::Value(Value::Array(arr));
+
+        let js_value = from_item(&item);
+        let js_arr = js_value.dyn_into::<JsArray>().unwrap();
+        assert_eq!(js_arr.length(), 2);
+        assert_eq!(js_arr.get(0).as_f64(), Some(1.0));
+        assert_eq!(js_arr.get(1).as_f64(), Some(2.0));
     }
 }

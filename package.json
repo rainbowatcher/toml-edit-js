@@ -15,6 +15,8 @@
         "release": "pnpm bump && pnpm build && pnpm -r publish",
         "test": "vitest",
         "test:wasm": "wasm-pack test --chrome",
+        "test:rust": "cargo test --lib",
+        "coverage:rust": "cargo llvm-cov --lib --fail-under-lines 20",
         "bench": "vitest bench",
         "typecheck": "tsc --noEmit"
     },

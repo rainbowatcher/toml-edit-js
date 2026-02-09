@@ -8,5 +8,5 @@ export default defineConfig({
     toml: true,
     typescript: true,
 }, {
-    ignores: ["bench/fixture/5mb-mixed.toml"],
+    ignores: ["bench/fixture/5mb-mixed.toml", ".alma-snapshots"],
 })

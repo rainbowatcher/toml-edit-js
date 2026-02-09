@@ -1,4 +1,8 @@
-/// parse edit path to path_keys and value_key
+//! Edit-path parsing helpers.
+
+/// Parses an edit path into parent segments and the terminal value key.
+///
+/// Quoted segments can contain dots, e.g. `foo."bar.baz"`.
 #[inline]
 pub fn parse_edit_path(edit_path: &str) -> (Vec<&str>, &str) {
     if edit_path.is_empty() {
@@ -33,6 +37,7 @@ pub fn parse_edit_path(edit_path: &str) -> (Vec<&str>, &str) {
 }
 
 #[inline]
+/// Removes one leading/trailing quote pair from a segment slice boundary.
 fn trim_quotes(start: usize, end: usize, bytes: &[u8]) -> (usize, usize) {
     let mut seg_start = start;
     let mut seg_end = end;
@@ -68,5 +73,19 @@ mod tests {
         let (path_keys, value_key) = parse_edit_path(r#"foo." bar".baz"#);
         assert_eq!(path_keys, vec!["foo", " bar"]);
         assert_eq!(value_key, "baz");
+    }
+
+    #[test]
+    fn test_parse_edit_path_empty_input() {
+        let (path_keys, value_key) = parse_edit_path("");
+        assert!(path_keys.is_empty());
+        assert_eq!(value_key, "");
+    }
+
+    #[test]
+    fn test_parse_edit_path_single_quoted_segment() {
+        let (path_keys, value_key) = parse_edit_path(r#""foo.bar""#);
+        assert!(path_keys.is_empty());
+        assert_eq!(value_key, "foo.bar");
     }
 }

@@ -1,11 +1,16 @@
+//! Tree navigation helpers for edit paths.
+
 use toml_edit::{Item, Table, Value};
 
 use crate::{core::error::TomlEditJsError, toml_err, util::array::parse_array_index};
 
 #[inline]
+/// Resolves the parent item that contains the final path key.
+///
+/// Missing intermediate table keys are created on demand.
 pub fn find_parent_item<'a>(
     item: &'a mut Item,
-    path_keys: Vec<&str>,
+    path_keys: &Vec<&str>,
 ) -> Result<&'a mut Item, TomlEditJsError<'a>> {
     let mut current = item;
     if path_keys.is_empty() {
@@ -62,7 +67,7 @@ mod tests {
         let item = doc.as_item_mut();
         let path = vec!["a", "c"];
 
-        let result = find_parent_item(item, path);
+        let result = find_parent_item(item, &path);
         assert!(result.is_ok());
 
         let found_item = result.unwrap();
@@ -75,7 +80,7 @@ mod tests {
         let mut item = Item::Table(Table::new());
         let path = vec!["a", "b", "c"];
 
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_ok());
         let found_item = result.unwrap();
         *found_item = value("Success!");
@@ -90,7 +95,7 @@ mod tests {
         let item = doc.as_item_mut();
         let path = vec!["a", "b"];
 
-        let result = find_parent_item(item, path);
+        let result = find_parent_item(item, &path);
         assert!(result.is_ok());
 
         let found_item = result.unwrap();
@@ -109,7 +114,7 @@ mod tests {
         item["data"] = Item::Value(arr.into());
 
         let path = vec!["data", "[1]"];
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_ok());
 
         let found_item = result.unwrap();
@@ -132,7 +137,7 @@ mod tests {
         let item = doc.as_item_mut();
         let path = vec!["servers", "[1]", "ip"];
 
-        let result = find_parent_item(item, path);
+        let result = find_parent_item(item, &path);
         assert!(result.is_ok());
 
         let found_item = result.unwrap();
@@ -146,7 +151,7 @@ mod tests {
         item["data"] = Item::Value(Value::Array(Array::from_iter(vec![1, 2])));
 
         let path = vec!["data", "[13]"];
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_err(), "Function should return error");
         println!("{:?}", result);
         assert!(result.err().unwrap().to_string().contains("index out of boundary"));
@@ -158,7 +163,7 @@ mod tests {
         let mut doc: DocumentMut = toml_str.parse().unwrap();
         let mut item = doc.as_item_mut();
         let path = vec!["a", "[0]"];
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_err(), "Function should return error");
         assert!(result.err().unwrap().to_string().contains("is not an array"));
     }
@@ -168,7 +173,7 @@ mod tests {
         let mut item = Item::Table(Table::new());
         item["data"] = Item::Value(Value::Array(Array::from_iter(vec![1, 2])));
         let path = vec!["data", "key"];
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_err(), "Function should return error");
         assert!(result.err().unwrap().to_string().contains("is not a table"));
     }
@@ -178,7 +183,7 @@ mod tests {
         let mut item = Item::Table(Table::new());
         item["config"] = value("enabled");
         let path = vec!["config", "timeout"];
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_err(), "Function should return error");
         assert!(result.err().unwrap().to_string().contains("is not a table"));
     }
@@ -187,8 +192,53 @@ mod tests {
     fn test_error_if_root_is_not_table() {
         let mut item = value("I am a string, not a table");
         let path = vec!["a"];
-        let result = find_parent_item(&mut item, path);
+        let result = find_parent_item(&mut item, &path);
         assert!(result.is_err(), "Function should return error");
         assert!(result.err().unwrap().to_string().contains("item root is not a table or array"));
+    }
+}
+
+#[cfg(test)]
+mod native_tests {
+    use super::find_parent_item;
+    use toml_edit::{Array, Item, Table, Value, value};
+
+    #[test]
+    fn find_parent_item_returns_error_for_empty_path() {
+        let mut root = Item::Table(Table::new());
+        let path = vec![];
+        let result = find_parent_item(&mut root, &path);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("path key is empty"));
+    }
+
+    #[test]
+    fn find_parent_item_creates_missing_nested_tables() {
+        let mut root = Item::Table(Table::new());
+        let path = vec!["a", "b"];
+        let result = find_parent_item(&mut root, &path);
+        assert!(result.is_ok());
+        *result.unwrap() = value("ok");
+        assert_eq!(root["a"]["b"].as_str(), Some("ok"));
+    }
+
+    #[test]
+    fn find_parent_item_returns_error_when_array_index_is_out_of_bounds() {
+        let mut root = Item::Table(Table::new());
+        root["data"] = Item::Value(Value::Array(Array::from_iter([1, 2])));
+        let path = vec!["data", "[5]"];
+        let result = find_parent_item(&mut root, &path);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("index out of boundary"));
+    }
+
+    #[test]
+    fn find_parent_item_returns_error_when_keying_into_array() {
+        let mut root = Item::Table(Table::new());
+        root["data"] = Item::Value(Value::Array(Array::from_iter([1, 2])));
+        let path = vec!["data", "name"];
+        let result = find_parent_item(&mut root, &path);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("is not a table"));
     }
 }
