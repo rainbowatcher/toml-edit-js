@@ -41,7 +41,6 @@ pub fn to_item(js_value: &JsValue, inline: bool) -> Item {
     } else if js_value.is_null() || js_value.is_undefined() {
         Item::None
     } else {
-        web_sys::console::log_1(&JsValue::from_str(&format!("not covered value {:?}", js_value)));
         Item::Value(Value::String(Formatted::new(js_value.as_string().unwrap_or_default())))
     }
 }

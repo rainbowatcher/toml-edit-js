@@ -58,13 +58,7 @@ pub fn edit(
 
     let edit_opts = EditOptions::new(opts)?;
     let (path_keys, value_key) = parse_edit_path(path);
-    set_value(
-        doc.as_item_mut(),
-        path_keys.iter().map(|x| &**x).collect(),
-        value_key,
-        value,
-        &edit_opts,
-    )?;
+    set_value(doc.as_item_mut(), &path_keys, value_key, value, &edit_opts)?;
 
     let mut result_str = doc.to_string();
     if !edit_opts.final_newline {
