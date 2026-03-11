@@ -2,16 +2,16 @@
     "name": "bench",
     "version": "0.3.0",
     "private": true,
-    "packageManager": "pnpm@10.22.0",
+    "packageManager": "pnpm@10.32.1",
     "license": "MIT",
     "scripts": {},
     "dependencies": {
-        "@iarna/toml": "^2.2.5",
+        "@iarna/toml": "^3.0.0",
         "@ltd/j-toml": "^1.38.0",
         "@rainbowatcher/toml-edit-js@v0.3": "npm:@rainbowatcher/toml-edit-js@0.3.0",
         "@rainbowatcher/toml-edit-js@v0.4": "npm:@rainbowatcher/toml-edit-js@0.4.0",
         "@rainbowatcher/toml-edit-js@v0.5": "npm:@rainbowatcher/toml-edit-js@0.5.2",
         "fast-toml": "^0.5.4",
-        "smol-toml": "^1.5.2"
+        "smol-toml": "^1.6.0"
     }
 }
