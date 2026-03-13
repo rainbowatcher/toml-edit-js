@@ -1,3 +1,21 @@
+## <small>0.6.5 (2026-03-13)</small>
+
+* fix: preserve array style when deleting down to one element ([04dcbb1](https://github.com/rainbowatcher/toml-edit-js/commit/04dcbb1))
+* fix: preserve TOML decoration/comments in set operations ([9d91373](https://github.com/rainbowatcher/toml-edit-js/commit/9d91373))
+* fix(set): preserve TOML decoration on array and table mutations ([0d2b2e6](https://github.com/rainbowatcher/toml-edit-js/commit/0d2b2e6))
+* fix(test): move ts directive to right place ([9b7feeb](https://github.com/rainbowatcher/toml-edit-js/commit/9b7feeb))
+* style(code): apply oxc formatting across project files ([6ffb4f2](https://github.com/rainbowatcher/toml-edit-js/commit/6ffb4f2))
+* style(config): reformat project configuration files ([836b047](https://github.com/rainbowatcher/toml-edit-js/commit/836b047))
+* chore: update deps ([4bd7dc5](https://github.com/rainbowatcher/toml-edit-js/commit/4bd7dc5))
+* chore(deps): bump deps ([db07a63](https://github.com/rainbowatcher/toml-edit-js/commit/db07a63))
+* chore(deps): bump deps ([86f23c4](https://github.com/rainbowatcher/toml-edit-js/commit/86f23c4))
+* chore(deps): update conventional-changelog dependency to version 7.2.0 ([c07898a](https://github.com/rainbowatcher/toml-edit-js/commit/c07898a))
+* chore(eslint): add .alma-snapshots to ignored paths ([5a4fd87](https://github.com/rainbowatcher/toml-edit-js/commit/5a4fd87))
+* chore(tooling): migrate lint and format tools to oxc ([5ac9a91](https://github.com/rainbowatcher/toml-edit-js/commit/5ac9a91))
+* docs: add rustdoc and clarify insert behavior ([394bf0d](https://github.com/rainbowatcher/toml-edit-js/commit/394bf0d))
+* refactor: refactor path mutations and add robust array/table edits ([f5bd7e2](https://github.com/rainbowatcher/toml-edit-js/commit/f5bd7e2))
+* refactor(core): pass edit path keys by reference ([e20c587](https://github.com/rainbowatcher/toml-edit-js/commit/e20c587))
+
 ## <small>0.6.4 (2025-11-19)</small>
 
 - chore: disable commit body max line length in commitlint ([1958900](https://github.com/rainbowatcher/toml-edit-js/commit/1958900))
