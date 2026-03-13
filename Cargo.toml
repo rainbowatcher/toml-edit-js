@@ -41,20 +41,20 @@ omit-default-module-path = false
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = [
-    # Optimize level 4
-    "-O4",
-    # Run passes to convergence, continuing while binary size decreases
-    "--converge",
-    "--strip-debug",
-    "--strip-dwarf",
-    # flattens out code, removing nesting
-    # "--flatten",
-    # inline small functions
-    "--inlining",
-    # removes unreachable code
-    "--dce",
-    # Grand Unified Flow Analysis
-    "--gufa",
+  # Optimize level 4
+  "-O4",
+  # Run passes to convergence, continuing while binary size decreases
+  "--converge",
+  "--strip-debug",
+  "--strip-dwarf",
+  # flattens out code, removing nesting
+  # "--flatten",
+  # inline small functions
+  "--inlining",
+  # removes unreachable code
+  "--dce",
+  # Grand Unified Flow Analysis
+  "--gufa",
 ]
 
 [package.metadata.wasm-pack.profile.release.wasm-bindgen]
