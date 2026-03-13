@@ -5,26 +5,24 @@ import v5init, { edit as v5edit } from "@rainbowatcher/toml-edit-js@v0.5"
 import { bench } from "vitest"
 import init, { edit } from "../packages/toml-edit-js/shims"
 
-
 await v3init()
 await v4init()
 await v5init()
 await init()
 const toml = await fs.readFile(`${process.cwd()}/bench/fixture/pyproject.toml`, "utf8")
 
-
 bench("v0.3", () => {
-    v3edit(toml, "flake8.ignore", "W500")
+  v3edit(toml, "flake8.ignore", "W500")
 })
 
 bench("v0.4", () => {
-    v4edit(toml, "flake8.ignore", "W500")
+  v4edit(toml, "flake8.ignore", "W500")
 })
 
 bench("v0.5", () => {
-    v5edit(toml, "flake8.ignore", "W500")
+  v5edit(toml, "flake8.ignore", "W500")
 })
 
 bench("current", () => {
-    edit(toml, "flake8.ignore", "W500")
+  edit(toml, "flake8.ignore", "W500")
 })

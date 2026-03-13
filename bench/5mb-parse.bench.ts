@@ -10,7 +10,6 @@ import { parse as smolParse } from "smol-toml"
 import { bench } from "vitest"
 import curr4init, { parse } from "../packages/toml-edit-js/shims"
 
-
 await v3init()
 await v4init()
 await v5init()
@@ -18,33 +17,33 @@ await curr4init()
 const toml = await fs.readFile(`${process.cwd()}/bench/fixture/5mb-mixed.toml`, "utf8")
 
 bench("v0.3", () => {
-    v3parse(toml)
+  v3parse(toml)
 })
 
 bench("v0.4", () => {
-    v4parse(toml)
+  v4parse(toml)
 })
 
 bench("v0.5", () => {
-    v5parse(toml)
+  v5parse(toml)
 })
 
 bench("smol-toml", () => {
-    smolParse(toml)
+  smolParse(toml)
 })
 
 bench("@iarna/toml", () => {
-    iarnaTomlParse(toml)
+  iarnaTomlParse(toml)
 })
 
 bench("@ltd/j-toml", () => {
-    ltdJTomlParse(toml)
+  ltdJTomlParse(toml)
 })
 
 bench("fast-toml", () => {
-    fastTomlParse(toml)
+  fastTomlParse(toml)
 })
 
 bench("current", () => {
-    parse(toml)
+  parse(toml)
 })

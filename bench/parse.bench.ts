@@ -16,35 +16,34 @@ await v5init()
 await init()
 const toml = await fs.readFile(`${process.cwd()}/bench/fixture/pyproject.toml`, "utf8")
 
-
 bench("v0.3", () => {
-    v3parse(toml)
+  v3parse(toml)
 })
 
 bench("v0.4", () => {
-    v4parse(toml)
+  v4parse(toml)
 })
 
 bench("v0.5", () => {
-    v5parse(toml)
+  v5parse(toml)
 })
 
 bench("@iarna/toml", () => {
-    iarnaTomlParse(toml)
+  iarnaTomlParse(toml)
 })
 
 bench("@ltd/j-toml", () => {
-    ltdJTomlParse(toml)
+  ltdJTomlParse(toml)
 })
 
 bench("fast-toml", () => {
-    fastTomlParse(toml)
+  fastTomlParse(toml)
 })
 
 bench("smol-toml", () => {
-    smolParse(toml)
+  smolParse(toml)
 })
 
 bench("current", () => {
-    parse(toml)
+  parse(toml)
 })

@@ -1,70 +1,68 @@
 class PathTracker {
-    #path = []
+  #path = []
 
-    constructor(target) {
-        this.proxy = this.#createProxy(target, [])
-    }
+  constructor(target) {
+    this.proxy = this.#createProxy(target, [])
+  }
 
-    #createProxy(target, currentPath) {
-        const handler = {
-            get: (obj, key, receiver) => {
-                if (key === "getAccessPath") {
-                    return () => this.#path
-                }
-
-                if (key === "resetPath") {
-                    return () => {
-                        this.#path = []
-                    }
-                }
-
-                const newPath = [...currentPath, key]
-                this.#path = newPath
-
-                const value = Reflect.get(obj, key, receiver)
-
-                if (typeof value === "object" && value !== null) {
-                    return this.#createProxy(value, newPath)
-                }
-
-                return value
-            },
+  #createProxy(target, currentPath) {
+    const handler = {
+      get: (obj, key, receiver) => {
+        if (key === "getAccessPath") {
+          return () => this.#path
         }
 
-        return new Proxy(target, handler)
+        if (key === "resetPath") {
+          return () => {
+            this.#path = []
+          }
+        }
+
+        const newPath = [...currentPath, key]
+        this.#path = newPath
+
+        const value = Reflect.get(obj, key, receiver)
+
+        if (typeof value === "object" && value !== null) {
+          return this.#createProxy(value, newPath)
+        }
+
+        return value
+      },
     }
 
-    /**
+    return new Proxy(target, handler)
+  }
+
+  /**
    * 获取最后一次访问的完整属性路径
    * @returns {string[]} 返回一个包含路径各部分的数组
    */
-    getAccessPath() {
-        return this.#path
-    }
+  getAccessPath() {
+    return this.#path
+  }
 
-    /**
+  /**
    * 重置已记录的访问路径
    */
-    resetPath() {
-        this.#path = []
-    }
+  resetPath() {
+    this.#path = []
+  }
 }
 
 // --- 使用示例 ---
 
 // 1. 定义一个复杂的原始对象
 const data = {
-    user: {
-        posts: [
-            { id: 1, title: "First Post" },
-        ],
-        profile: {
-            contact: {
-                email: "bob@example.com",
-            },
-            name: "Bob",
-        },
+  user: {
+    posts: [{ id: 1, title: "First Post" }],
+    profile: {
+      contact: {
+        email: "bob@example.com",
+      },
+      name: "Bob",
     },
+  },
 }
 
 // 2. 创建 PathTracker 实例
@@ -83,7 +81,7 @@ console.log("访问路径:", tracker.getAccessPath())
 // 输出: 访问路径: [ 'user', 'profile', 'contact', 'email' ]
 
 // 5. 访问另一个属性
-tracker.proxy.user.posts[0].title
+void tracker.proxy.user.posts[0].title
 
 console.log("新的访问路径:", tracker.getAccessPath())
 

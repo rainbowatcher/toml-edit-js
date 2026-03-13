@@ -26,12 +26,7 @@ npm install @rainbowatcher/toml-edit-js
 First, you need to initialize the WebAssembly module. You can do this either asynchronously or synchronously.
 
 ```javascript
-import init, {
-    edit,
-    initSync,
-    parse,
-    stringify,
-} from "@rainbowatcher/toml-edit-js"
+import init, { edit, initSync, parse, stringify } from "@rainbowatcher/toml-edit-js"
 
 // Asynchronous initialization
 await init()
@@ -119,10 +114,10 @@ You can convert a JavaScript object back into a TOML string.
 
 ```javascript
 const data = {
-    database: {
-        ip: "192.168.1.1",
-        ports: [8001, 8002],
-    },
+  database: {
+    ip: "192.168.1.1",
+    ports: [8001, 8002],
+  },
 }
 
 const tomlStr = stringify(data)
@@ -168,17 +163,17 @@ Options for the `edit` function.
 
 ```ts
 type IEditOptions = {
-    /**
-     * Whether to add a final newline to the output.
-     * @default true
-     */
-    finalNewline?: boolean
+  /**
+   * Whether to add a final newline to the output.
+   * @default true
+   */
+  finalNewline?: boolean
 
-    /**
-     * When the value to be written is an object, write it as an inline table.
-     * @default true
-     */
-    inline?: boolean
+  /**
+   * When the value to be written is an object, write it as an inline table.
+   * @default true
+   */
+  inline?: boolean
 }
 ```
 
@@ -188,17 +183,17 @@ Options for the `stringify` function.
 
 ```ts
 type IStringifyOptions = {
-    /**
-     * Whether to add a final newline to the output.
-     * @default true
-     */
-    finalNewline?: boolean
+  /**
+   * Whether to add a final newline to the output.
+   * @default true
+   */
+  finalNewline?: boolean
 
-    /**
-     * Prefer using inline tables for all tables.
-     * @default false
-     */
-    inline?: boolean
+  /**
+   * Prefer using inline tables for all tables.
+   * @default false
+   */
+  inline?: boolean
 }
 ```
 

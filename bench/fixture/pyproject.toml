@@ -1,18 +1,10 @@
 # https://github.com/huggingface/transformers/blob/main/pyproject.toml
 [tool.coverage.run]
 source = ["transformers"]
-omit = [
-    "*/convert_*",
-    "*/__main__.py"
-]
+omit = ["*/convert_*", "*/__main__.py"]
 
 [tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "raise",
-    "except",
-    "register_parameter"
-]
+exclude_lines = ["pragma: no cover", "raise", "except", "register_parameter"]
 
 [tool.ruff]
 target-version = "py39"
@@ -52,9 +44,9 @@ line-ending = "auto"
 addopts = "--doctest-glob='**/*.md'"
 doctest_optionflags = "NUMBER NORMALIZE_WHITESPACE ELLIPSIS"
 markers = [
-    "flash_attn_test: marks tests related to flash attention (deselect with '-m \"not flash_attn_test\"')",
-    "bitsandbytes: select (or deselect with `not`) bitsandbytes integration tests",
-    "generate: marks tests that use the GenerationTesterMixin"
+  "flash_attn_test: marks tests related to flash attention (deselect with '-m \"not flash_attn_test\"')",
+  "bitsandbytes: select (or deselect with `not`) bitsandbytes integration tests",
+  "generate: marks tests that use the GenerationTesterMixin",
 ]
 log_cli = true
 log_cli_level = "WARNING"

@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script type="module">
-        import init, { parse, stringify, edit } from "./shims.js"
-        await init({})
-        const toml = `
+      import init, { parse, stringify, edit } from "./shims.js"
+      await init({})
+      const toml = `
 [package]
 name = "toml-edit-js"
 version = "0.5.2"
@@ -71,50 +71,49 @@ demangle-name-section = true
 dwarf-debug-info = false
 omit-default-module-path = false
 `
-        const tomlEl = document.getElementById("toml")
-        const jsonEl = document.getElementById("json")
-        
-        function _reset() {
-            tomlEl.textContent = toml
-            jsonEl.textContent = ""
-        }
-        
-        function _parse() {
-            jsonEl.textContent = JSON.stringify(parse(tomlEl.textContent), null, 2)
-        }
-        function _stringify() {
-            tomlEl.textContent = stringify(JSON.parse(jsonEl.textContent))
-        }
-        function _edit() {
-            tomlEl.textContent = edit(toml, "package.name", "unknown")
-        }
-        const stringifyBtn = document.getElementById("stringify")
-        const parseBtn = document.getElementById("parse")
-        const editBtn = document.getElementById("edit")
-        const resetBtn = document.getElementById("reset")
+      const tomlEl = document.getElementById("toml")
+      const jsonEl = document.getElementById("json")
 
-        stringifyBtn.onclick = _stringify
-        parseBtn.onclick = _parse
-        editBtn.onclick = _edit
-        resetBtn.onclick = _reset
+      function _reset() {
+        tomlEl.textContent = toml
+        jsonEl.textContent = ""
+      }
 
-        _reset()
+      function _parse() {
+        jsonEl.textContent = JSON.stringify(parse(tomlEl.textContent), null, 2)
+      }
+      function _stringify() {
+        tomlEl.textContent = stringify(JSON.parse(jsonEl.textContent))
+      }
+      function _edit() {
+        tomlEl.textContent = edit(toml, "package.name", "unknown")
+      }
+      const stringifyBtn = document.getElementById("stringify")
+      const parseBtn = document.getElementById("parse")
+      const editBtn = document.getElementById("edit")
+      const resetBtn = document.getElementById("reset")
+
+      stringifyBtn.onclick = _stringify
+      parseBtn.onclick = _parse
+      editBtn.onclick = _edit
+      resetBtn.onclick = _reset
+
+      _reset()
     </script>
     <title>Document</title>
-</head>
-<body data-keep-debug="true">
+  </head>
+  <body data-keep-debug="true">
     <div id="root">
-        <div class="grid grid-cols-2">
-            <pre id="toml" class="h-120 w-full overflow-auto"></pre>
-            <pre id="json" class="h-120 w-full overflow-auto"></pre>
-        </div>
-        <div class="flex gap-4 [&>button]:ring [&>button]:rounded [&>button]:ring-offset-2 m-2">
-            <button id="parse">parse</button>
-            <button id="stringify">stringify</button>
-            <button id="edit">edit</button>
-            <button id="reset">reset</button>
-        </div>
+      <div class="grid grid-cols-2">
+        <pre id="toml" class="h-120 w-full overflow-auto"></pre>
+        <pre id="json" class="h-120 w-full overflow-auto"></pre>
+      </div>
+      <div class="flex gap-4 [&>button]:ring [&>button]:rounded [&>button]:ring-offset-2 m-2">
+        <button id="parse">parse</button>
+        <button id="stringify">stringify</button>
+        <button id="edit">edit</button>
+        <button id="reset">reset</button>
+      </div>
     </div>
-    
-</body>
+  </body>
 </html>
