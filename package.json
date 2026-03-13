@@ -21,7 +21,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@commitlint/config-conventional": "^20.4.3",
+        "@commitlint/config-conventional": "^20.4.4",
         "@rainbowatcher/eslint-config": "^0.21.1",
         "@rainbowatcher/eslint-config-ignore": "^0.21.1",
         "@rainbowatcher/eslint-config-js": "^0.21.1",
@@ -30,16 +30,16 @@
         "@rainbowatcher/eslint-config-prettier": "^0.21.1",
         "@rainbowatcher/eslint-config-toml": "^0.21.1",
         "@rainbowatcher/eslint-config-ts": "^0.21.1",
-        "@types/node": "^25.4.0",
-        "commitlint": "^20.4.3",
+        "@types/node": "^25.5.0",
+        "commitlint": "^20.4.4",
         "conventional-changelog": "^7.2.0",
         "cross-release-cli": "^0.5.0",
         "dedent": "^1.7.2",
         "eslint": "^10.0.3",
         "husky": "^9.1.7",
         "typescript": "^5.9.3",
-        "vitest": "^4.0.18",
-        "wasmup": "^0.10.2"
+        "vitest": "^4.1.0",
+        "wasmup": "^0.10.4"
     },
     "commitlint": {
         "extends": [
