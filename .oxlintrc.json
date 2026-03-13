@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [".alma-snapshots/**", "bench/fixture/5mb-mixed.toml", "packages/**"],
+  "plugins": ["typescript", "vitest", "import", "unicorn"],
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts", "bench/**/*.ts"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

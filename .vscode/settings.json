@@ -1,27 +1,29 @@
 {
-    "[rust]": {
-        "editor.defaultFormatter": "rust-lang.rust-analyzer",
-        "editor.formatOnSave": true,
-    },
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit",
-    },
-    "eslint.validate": [
-        "javascript",
-        "typescript",
-        "toml",
-        "json",
-        "markdown",
-    ],
-    "cSpell.words": [
-        "fract",
-        "indoc",
-        "instanceof",
-        "napi",
-        "rlib",
-        "serde",
-        "smol",
-        "wasmup",
-    ],
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+  "cSpell.words": ["fract", "indoc", "instanceof", "napi", "rlib", "serde", "smol", "wasmup"]
 }
