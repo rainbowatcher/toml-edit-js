@@ -8,6 +8,12 @@
       "env": {
         "node": true
       }
+    },
+    {
+      "files": ["bench/**/*.bench.ts"],
+      "rules": {
+        "vitest/expect-expect": "off"
+      }
     }
   ]
 }

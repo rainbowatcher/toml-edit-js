@@ -7,7 +7,7 @@ import v5init, { parse as v5parse } from "@rainbowatcher/toml-edit-js@v0.5"
 // @ts-expect-error type miss
 import fastTomlParse from "fast-toml"
 import { parse as smolParse } from "smol-toml"
-import { bench } from "vitest"
+import { test } from "vitest"
 import curr4init, { parse } from "../packages/toml-edit-js/shims"
 
 await v3init()
@@ -16,34 +16,31 @@ await v5init()
 await curr4init()
 const toml = await fs.readFile(`${process.cwd()}/bench/fixture/5mb-mixed.toml`, "utf8")
 
-bench("v0.3", () => {
-  v3parse(toml)
-})
-
-bench("v0.4", () => {
-  v4parse(toml)
-})
-
-bench("v0.5", () => {
-  v5parse(toml)
-})
-
-bench("smol-toml", () => {
-  smolParse(toml)
-})
-
-bench("@iarna/toml", () => {
-  iarnaTomlParse(toml)
-})
-
-bench("@ltd/j-toml", () => {
-  ltdJTomlParse(toml)
-})
-
-bench("fast-toml", () => {
-  fastTomlParse(toml)
-})
-
-bench("current", () => {
-  parse(toml)
+test("5mb parse", async ({ bench }) => {
+  await bench.compare(
+    bench("v0.3", () => {
+      v3parse(toml)
+    }),
+    bench("v0.4", () => {
+      v4parse(toml)
+    }),
+    bench("v0.5", () => {
+      v5parse(toml)
+    }),
+    bench("smol-toml", () => {
+      smolParse(toml)
+    }),
+    bench("@iarna/toml", () => {
+      iarnaTomlParse(toml)
+    }),
+    bench("@ltd/j-toml", () => {
+      ltdJTomlParse(toml)
+    }),
+    bench("fast-toml", () => {
+      fastTomlParse(toml)
+    }),
+    bench("current", () => {
+      parse(toml)
+    }),
+  )
 })
