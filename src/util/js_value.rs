@@ -107,11 +107,16 @@ pub fn to_datetime(js_date: &JsDate) -> Datetime {
 
     // Note: JS provides milliseconds, while TOML supports nanoseconds.
     // We convert milliseconds to nanoseconds by multiplying by 1,000,000.
+    // A zero millisecond part is represented as `None` (no fractional part),
+    // keeping the serialized form stable, e.g. `1970-01-01T00:00:00Z`.
+    let millis = js_date.get_utc_milliseconds();
     let time = Time {
         hour: js_date.get_utc_hours() as u8,
         minute: js_date.get_utc_minutes() as u8,
-        second: js_date.get_utc_seconds() as u8,
-        nanosecond: js_date.get_utc_milliseconds() * 1_000_000,
+        // Note: toml_edit 0.25 made `second` / `nanosecond` optional (TOML 1.1
+        // allows omitting seconds). A JS `Date` always carries seconds, so `Some`.
+        second: Some(js_date.get_utc_seconds() as u8),
+        nanosecond: (millis != 0).then(|| millis * 1_000_000),
     };
 
     // We use UTC components, so the offset is always 'Z' (Zulu time).
