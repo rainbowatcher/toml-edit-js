@@ -4,7 +4,7 @@ import v3init, { stringify as v3stringify } from "@rainbowatcher/toml-edit-js@v0
 import v4init, { stringify as v4stringify } from "@rainbowatcher/toml-edit-js@v0.4"
 import v5init, { stringify as v5stringify } from "@rainbowatcher/toml-edit-js@v0.5"
 import { stringify as smolStringify } from "smol-toml"
-import { bench } from "vitest"
+import { test } from "vitest"
 import init, { stringify } from "../packages/toml-edit-js/shims"
 
 const toml = {
@@ -31,30 +31,28 @@ await v4init()
 await v5init()
 await init()
 
-bench("v0.3", () => {
-  v3stringify(toml)
-})
-
-bench("v0.4", () => {
-  v4stringify(toml)
-})
-
-bench("v0.5", () => {
-  v5stringify(toml)
-})
-
-bench("smol-toml", () => {
-  smolStringify(toml)
-})
-
-bench("@iarna/toml", () => {
-  iarnaTomlStringify(toml)
-})
-
-bench("@ltd/j-toml", () => {
-  ltdJTomlStringify(toml)
-})
-
-bench("current", () => {
-  stringify(toml)
+test("stringify", async ({ bench }) => {
+  await bench.compare(
+    bench("v0.3", () => {
+      v3stringify(toml)
+    }),
+    bench("v0.4", () => {
+      v4stringify(toml)
+    }),
+    bench("v0.5", () => {
+      v5stringify(toml)
+    }),
+    bench("smol-toml", () => {
+      smolStringify(toml)
+    }),
+    bench("@iarna/toml", () => {
+      iarnaTomlStringify(toml)
+    }),
+    bench("@ltd/j-toml", () => {
+      ltdJTomlStringify(toml)
+    }),
+    bench("current", () => {
+      stringify(toml)
+    }),
+  )
 })
